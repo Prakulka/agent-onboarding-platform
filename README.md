@@ -1,6 +1,6 @@
 # Agent Onboarding Platform Prototype
 
-A modern, responsive web application for managing declarative agents through their complete lifecycle.
+A modern, responsive web application for managing agents through their complete lifecycle.
 
 ## 🚀 Features
 
@@ -100,4 +100,3 @@ Perfect for:
 
 ---
 
-Built with ❤️ for rapid prototyping and product validation.
