@@ -272,6 +272,398 @@ class AgentManager {
     }
 
     /**
+     * Switch playground main tabs (Evaluation vs Quick Actions)
+     */
+    switchPlaygroundTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.playground-nav-tab').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[onclick="agentManager.switchPlaygroundTab('${tabName}')"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('.playground-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`playground-${tabName}-tab`).classList.add('active');
+    }
+
+    /**
+     * Switch T-Prompt tabs (Prompt Optimization vs Quick Actions)
+     */
+    switchTPromptTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.tprompt-nav-tab').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[onclick="switchTPromptTab('${tabName}')"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('.tprompt-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`tprompt-${tabName}-tab`).classList.add('active');
+    }
+
+    /**
+     * Handle quick action clicks
+     */
+    quickAction(actionType, template = null) {
+        console.log(`Quick action triggered: ${actionType}`, template ? `with template: ${template}` : '');
+        
+        switch(actionType) {
+            case 'compareModels':
+                this.switchPlaygroundTab('evaluation');
+                this.switchEvaluationTab('sidebyside');
+                this.showToast('Switched to Side-by-Side Model Comparison', 'info');
+                break;
+                
+            case 'benchmarkModel':
+                this.switchPlaygroundTab('evaluation');
+                this.switchEvaluationTab('rating');
+                this.showToast('Benchmark evaluation mode activated', 'info');
+                break;
+                
+            case 'modelHealth':
+                this.showToast('Running model health check...', 'info');
+                setTimeout(() => {
+                    this.showToast('All models are healthy and operational', 'success');
+                }, 2000);
+                break;
+                
+            case 'loadTemplate':
+                this.switchPlaygroundTab('evaluation');
+                this.switchEvaluationTab('rating');
+                this.loadEvaluationTemplate(template);
+                break;
+                
+            case 'promptGenerator':
+                this.switchPlaygroundTab('evaluation');
+                this.switchEvaluationTab('rating');
+                this.showToast('Prompt generator activated', 'info');
+                break;
+                
+            case 'batchEvaluation':
+                this.switchPlaygroundTab('evaluation');
+                this.showToast('Batch evaluation mode enabled', 'info');
+                break;
+                
+            case 'exportResults':
+                this.exportEvaluationResults();
+                break;
+                
+            default:
+                this.showToast(`Action "${actionType}" not yet implemented`, 'warning');
+        }
+    }
+
+    /**
+     * Load evaluation template based on type
+     */
+    loadEvaluationTemplate(templateType) {
+        const templates = {
+            'customer-service': {
+                name: 'Customer Service Evaluation',
+                prompt: 'You are a customer service representative. Help customers with their inquiries professionally and efficiently.',
+                toast: 'Customer service evaluation template loaded'
+            },
+            'code-generation': {
+                name: 'Code Generation Evaluation',
+                prompt: 'You are a programming assistant. Generate clean, efficient, and well-documented code.',
+                toast: 'Code generation evaluation template loaded'
+            },
+            'data-analysis': {
+                name: 'Data Analysis Evaluation',
+                prompt: 'You are a data analyst. Analyze the provided data and generate meaningful insights.',
+                toast: 'Data analysis evaluation template loaded'
+            }
+        };
+        
+        const template = templates[templateType];
+        if (template) {
+            this.showToast(template.toast, 'success');
+            // Here you would actually populate the evaluation form with the template data
+        }
+    }
+
+    /**
+     * Export evaluation results
+     */
+    exportEvaluationResults() {
+        const data = {
+            timestamp: new Date().toISOString(),
+            evaluations: [
+                {
+                    name: 'Email Assistant Test',
+                    model: 'dev-gpt-4',
+                    score: 8.5,
+                    temperature: 0.3
+                }
+            ]
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `evaluation-results-${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showToast('Evaluation results exported successfully', 'success');
+    }
+
+    /**
+     * Launch Playground with agent-specific config
+     */
+    launchPlayground() {
+        this.showToast('Launching Playground with agent-specific configuration...', 'info');
+        
+        // Simulate loading session
+        setTimeout(() => {
+            this.showToast('Playground session loaded successfully', 'success');
+            // Here you would implement the actual playground launch logic
+            // For now, we'll switch to the playground view
+            this.switchMainTab('playground');
+            this.switchPlaygroundTab('evaluation');
+        }, 1500);
+    }
+
+    /**
+     * Open Playground Session for GitHub Copilot agent
+     */
+    openPlaygroundSession() {
+        this.showToast('Opening Copilot Playground session...', 'info');
+        
+        // Simulate session loading
+        setTimeout(() => {
+            this.showToast('Playground session opened with preloaded configuration', 'success');
+            // Switch to playground and auto-load configuration
+            this.switchMainTab('playground');
+            this.switchPlaygroundTab('evaluation');
+        }, 1000);
+    }
+
+    /**
+     * View Previous Evaluation Results
+     */
+    viewPreviousResults() {
+        this.showToast('Loading previous evaluation results...', 'info');
+        
+        // Simulate loading results
+        setTimeout(() => {
+            // Create and show a modal with results
+            this.showResultsModal();
+        }, 800);
+    }
+
+    /**
+     * Show Results Modal
+     */
+    showResultsModal() {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('results-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Create modal HTML
+        const modal = document.createElement('div');
+        modal.id = 'results-modal';
+        modal.innerHTML = `
+            <div class="modal-overlay" onclick="this.parentElement.remove()">
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3>Previous Evaluation Results</h3>
+                        <button class="modal-close" onclick="this.closest('#results-modal').remove()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="result-summary">
+                            <h4>Last Evaluation Run</h4>
+                            <div class="result-metrics">
+                                <div class="metric">
+                                    <span class="metric-label">Latency:</span>
+                                    <span class="metric-value">245ms</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Accuracy:</span>
+                                    <span class="metric-value">94.2%</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-label">Structured Output:</span>
+                                    <span class="metric-value">Valid</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn-outline" onclick="window.open('#', '_blank')">View Full Logs</button>
+                            <button class="btn-outline" onclick="window.open('#', '_blank')">Open Sydney Trace</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add modal styles
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+
+        document.body.appendChild(modal);
+        this.showToast('Previous evaluation results loaded', 'success');
+    }
+
+    /**
+     * Open Learning Resources
+     */
+    openLearningResources() {
+        this.showToast('Opening learning resources...', 'info');
+        
+        // Simulate opening resources
+        setTimeout(() => {
+            // Create and show resources modal
+            this.showLearningResourcesModal();
+        }, 500);
+    }
+
+    /**
+     * Show Learning Resources Modal
+     */
+    showLearningResourcesModal() {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('learning-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Create modal HTML
+        const modal = document.createElement('div');
+        modal.id = 'learning-modal';
+        modal.innerHTML = `
+            <div class="modal-overlay" onclick="this.parentElement.remove()">
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3>Learning Resources</h3>
+                        <button class="modal-close" onclick="this.closest('#learning-modal').remove()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="resource-list">
+                            <div class="resource-item">
+                                <h4>🎓 AI Academy</h4>
+                                <p>Comprehensive courses on prompt engineering and AI agent development</p>
+                                <button class="btn-primary" onclick="window.open('#', '_blank')">Access Academy</button>
+                            </div>
+                            <div class="resource-item">
+                                <h4>🎪 Demo Fest</h4>
+                                <p>Interactive demonstrations and hands-on workshops</p>
+                                <button class="btn-primary" onclick="window.open('#', '_blank')">Join Demo Fest</button>
+                            </div>
+                            <div class="resource-item">
+                                <h4>🏥 Prompt Clinic</h4>
+                                <p>Get expert feedback on your prompts and agent configurations</p>
+                                <button class="btn-primary" onclick="window.open('#', '_blank')">Visit Clinic</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add modal styles
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+
+        document.body.appendChild(modal);
+        this.showToast('Learning resources opened', 'success');
+    }
+
+    /**
+     * Show toast notification
+     */
+    showToast(message, type = 'info') {
+        // Create toast element if it doesn't exist
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+        `;
+        
+        // Set background color based on type
+        switch(type) {
+            case 'success':
+                toast.style.backgroundColor = '#4CAF50';
+                break;
+            case 'warning':
+                toast.style.backgroundColor = '#FF9800';
+                break;
+            case 'error':
+                toast.style.backgroundColor = '#F44336';
+                break;
+            default:
+                toast.style.backgroundColor = '#2196F3';
+        }
+        
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    /**
      * Select a prompt in the evaluation interface
      */
     selectPrompt(promptId) {
@@ -2041,3 +2433,434 @@ let agentManager;
 document.addEventListener('DOMContentLoaded', () => {
     agentManager = new AgentManager();
 });
+
+// Global function for T-Prompt tab switching
+function switchTPromptTab(tabName) {
+    if (agentManager) {
+        agentManager.switchTPromptTab(tabName);
+    }
+}
+
+// T-Prompt Quick Action Functions
+function runTMigrate() {
+    agentManager.showToast('Running T-Migrate benchmark...', 'info');
+    
+    setTimeout(() => {
+        showTMigrateModal();
+    }, 2000);
+}
+
+function createManifestPR() {
+    agentManager.showToast('Creating manifest PR via T-Prompt...', 'info');
+    
+    setTimeout(() => {
+        agentManager.showToast('Manifest PR created successfully', 'success');
+        showManifestPRModal();
+    }, 1500);
+}
+
+function viewTPromptHistory() {
+    agentManager.showToast('Loading T-Prompt run history...', 'info');
+    
+    setTimeout(() => {
+        showTPromptHistoryModal();
+    }, 800);
+}
+
+function openMetricsDashboard() {
+    agentManager.showToast('Opening Comet metrics dashboard...', 'info');
+    
+    setTimeout(() => {
+        agentManager.showToast('Metrics dashboard opened', 'success');
+        // In a real app, this would open the actual Comet dashboard
+        window.open('#', '_blank');
+    }, 500);
+}
+
+function checkLiveSiteReadiness() {
+    agentManager.showToast('Checking live site readiness...', 'info');
+    
+    setTimeout(() => {
+        showLiveSiteReadinessModal();
+    }, 1000);
+}
+
+function integrateLiquidFiles() {
+    agentManager.showToast('Generating ADO tasks with liquid templates...', 'info');
+    
+    setTimeout(() => {
+        agentManager.showToast('ADO tasks generated successfully', 'success');
+        showLiquidIntegrationModal();
+    }, 1500);
+}
+
+function openManifestEditor() {
+    agentManager.showToast('Opening manifest editor...', 'info');
+    
+    setTimeout(() => {
+        showManifestEditorModal();
+    }, 500);
+}
+
+function viewPromptRecommendations() {
+    agentManager.showToast('Loading prompt recommendations...', 'info');
+    
+    setTimeout(() => {
+        showPromptRecommendationsModal();
+    }, 800);
+}
+
+function viewAgentHealthInsights() {
+    agentManager.showToast('Loading agent health insights...', 'info');
+    
+    setTimeout(() => {
+        showAgentHealthInsightsModal();
+    }, 1000);
+}
+
+// Modal Functions for T-Prompt Quick Actions
+function showTMigrateModal() {
+    const modal = createModal('tmigrate-modal', 'T-Migrate Results', `
+        <div class="tmigrate-results">
+            <div class="migration-summary">
+                <h4>Migration Summary</h4>
+                <div class="summary-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Migration Status:</span>
+                        <span class="metric-value success">✅ Completed</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Performance Score:</span>
+                        <span class="metric-value">92/100</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Compatibility:</span>
+                        <span class="metric-value success">✅ Compatible</span>
+                    </div>
+                </div>
+            </div>
+            <div class="migration-actions">
+                <button class="btn-outline" onclick="window.open('#', '_blank')">View Full Report</button>
+                <button class="btn-primary" onclick="window.open('#', '_blank')">Open PR</button>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('T-Migrate completed successfully', 'success');
+}
+
+function showManifestPRModal() {
+    const modal = createModal('manifest-pr-modal', 'Manifest PR Created', `
+        <div class="pr-details">
+            <div class="pr-info">
+                <h4>Pull Request #1234</h4>
+                <p>Manifest updates for GitHub Copilot agent</p>
+                <div class="pr-meta">
+                    <span class="pr-status">🟡 Pending Review</span>
+                    <span class="pr-branch">feature/manifest-update</span>
+                </div>
+            </div>
+            <div class="pr-actions">
+                <button class="btn-outline" onclick="window.open('#', '_blank')">View PR</button>
+                <button class="btn-primary" onclick="window.open('#', '_blank')">Open in GitHub</button>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+}
+
+function showTPromptHistoryModal() {
+    const modal = createModal('tprompt-history-modal', 'T-Prompt Run History', `
+        <div class="history-table-container">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Run Type</th>
+                        <th>Timestamp</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Benchmark</td>
+                        <td>2025-09-04 10:30</td>
+                        <td><span class="status-success">✅ Success</span></td>
+                        <td>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">PR</button>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">Report</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Migration</td>
+                        <td>2025-09-03 14:15</td>
+                        <td><span class="status-success">✅ Success</span></td>
+                        <td>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">PR</button>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">Report</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Optimization</td>
+                        <td>2025-09-02 09:45</td>
+                        <td><span class="status-warning">⚠️ Warning</span></td>
+                        <td>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">PR</button>
+                            <button class="btn-outline-small" onclick="window.open('#', '_blank')">Report</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('T-Prompt history loaded', 'success');
+}
+
+function showLiveSiteReadinessModal() {
+    const modal = createModal('readiness-modal', 'Live Site Readiness Check', `
+        <div class="readiness-checklist">
+            <div class="checklist-item">
+                <span class="check-icon">✅</span>
+                <div class="check-content">
+                    <h5>ICM Ownership</h5>
+                    <p>Agent ownership properly configured</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check-icon">✅</span>
+                <div class="check-content">
+                    <h5>XAMP Probes</h5>
+                    <p>Health monitoring probes active</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check-icon">⚠️</span>
+                <div class="check-content">
+                    <h5>Validation Status</h5>
+                    <p>1 validation pending review</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <span class="check-icon">✅</span>
+                <div class="check-content">
+                    <h5>Performance Metrics</h5>
+                    <p>All metrics within acceptable range</p>
+                </div>
+            </div>
+        </div>
+        <div class="readiness-actions">
+            <button class="btn-outline">View Details</button>
+            <button class="btn-primary">Deploy to Live</button>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('Live site readiness check completed', 'info');
+}
+
+function showLiquidIntegrationModal() {
+    const modal = createModal('liquid-modal', 'Liquid File Integration', `
+        <div class="liquid-results">
+            <h4>ADO Tasks Generated</h4>
+            <div class="task-list">
+                <div class="task-item">
+                    <span class="task-icon">📊</span>
+                    <div class="task-content">
+                        <h5>Metrics Collection Task</h5>
+                        <p>Task ID: ADO-12345</p>
+                    </div>
+                    <button class="btn-outline-small">View</button>
+                </div>
+                <div class="task-item">
+                    <span class="task-icon">🧪</span>
+                    <div class="task-content">
+                        <h5>Test Dataset Generation</h5>
+                        <p>Task ID: ADO-12346</p>
+                    </div>
+                    <button class="btn-outline-small">View</button>
+                </div>
+                <div class="task-item">
+                    <span class="task-icon">📝</span>
+                    <div class="task-content">
+                        <h5>Template Validation</h5>
+                        <p>Task ID: ADO-12347</p>
+                    </div>
+                    <button class="btn-outline-small">View</button>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+}
+
+function showManifestEditorModal() {
+    const modal = createModal('manifest-editor-modal', 'Manifest Editor', `
+        <div class="manifest-editor-content">
+            <div class="editor-toolbar">
+                <button class="btn-outline-small">Validate</button>
+                <button class="btn-outline-small">Format</button>
+                <button class="btn-primary">Submit PR</button>
+            </div>
+            <textarea class="manifest-textarea" rows="15" placeholder="Edit your manifest here...">{
+  "name": "github-copilot-agent",
+  "version": "1.0.0",
+  "description": "GitHub Copilot agent for code assistance",
+  "capabilities": [
+    "code-generation",
+    "code-review",
+    "debugging"
+  ]
+}</textarea>
+            <div class="editor-status">
+                <span class="status-valid">✅ Valid JSON</span>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('Manifest editor opened', 'success');
+}
+
+function showPromptRecommendationsModal() {
+    const modal = createModal('recommendations-modal', 'Prompt Recommendations', `
+        <div class="recommendations-list">
+            <div class="recommendation-item">
+                <div class="rec-header">
+                    <h5>High-Performance Code Generation</h5>
+                    <span class="rec-score">Score: 94/100</span>
+                </div>
+                <p class="rec-description">Optimized for generating clean, efficient code with proper error handling.</p>
+                <div class="rec-actions">
+                    <button class="btn-outline-small" onclick="copyToClipboard('code-gen-prompt')">Copy</button>
+                    <button class="btn-outline-small">Copy to Playground</button>
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Eval</button>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <div class="rec-header">
+                    <h5>Context-Aware Debugging</h5>
+                    <span class="rec-score">Score: 91/100</span>
+                </div>
+                <p class="rec-description">Enhanced debugging capabilities with contextual code analysis.</p>
+                <div class="rec-actions">
+                    <button class="btn-outline-small" onclick="copyToClipboard('debug-prompt')">Copy</button>
+                    <button class="btn-outline-small">Copy to Playground</button>
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Eval</button>
+                </div>
+            </div>
+            <div class="recommendation-item">
+                <div class="rec-header">
+                    <h5>Code Review Assistant</h5>
+                    <span class="rec-score">Score: 89/100</span>
+                </div>
+                <p class="rec-description">Comprehensive code review with security and performance insights.</p>
+                <div class="rec-actions">
+                    <button class="btn-outline-small" onclick="copyToClipboard('review-prompt')">Copy</button>
+                    <button class="btn-outline-small">Copy to Playground</button>
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Eval</button>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('Prompt recommendations loaded', 'success');
+}
+
+function showAgentHealthInsightsModal() {
+    const modal = createModal('health-insights-modal', 'Agent Health Insights', `
+        <div class="health-alerts">
+            <div class="alert-card warning">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h5>Performance Degradation</h5>
+                    <p>Response time increased by 15% in the last 24 hours</p>
+                    <span class="alert-time">2 hours ago</span>
+                </div>
+                <div class="alert-actions">
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Logs</button>
+                    <button class="btn-primary-small" onclick="suggestRerun()">Suggest Re-run</button>
+                </div>
+            </div>
+            <div class="alert-card info">
+                <div class="alert-icon">ℹ️</div>
+                <div class="alert-content">
+                    <h5>New Evaluation Available</h5>
+                    <p>Latest benchmark shows improved accuracy metrics</p>
+                    <span class="alert-time">6 hours ago</span>
+                </div>
+                <div class="alert-actions">
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Report</button>
+                    <button class="btn-primary-small">Apply Changes</button>
+                </div>
+            </div>
+            <div class="alert-card success">
+                <div class="alert-icon">✅</div>
+                <div class="alert-content">
+                    <h5>Health Check Passed</h5>
+                    <p>All systems operational, performance within normal range</p>
+                    <span class="alert-time">1 day ago</span>
+                </div>
+                <div class="alert-actions">
+                    <button class="btn-outline-small" onclick="window.open('#', '_blank')">View Details</button>
+                </div>
+            </div>
+        </div>
+    `);
+    
+    document.body.appendChild(modal);
+    agentManager.showToast('Agent health insights loaded', 'info');
+}
+
+// Helper function to create modals
+function createModal(id, title, content) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById(id);
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    const modal = document.createElement('div');
+    modal.id = id;
+    modal.innerHTML = `
+        <div class="modal-overlay" onclick="this.parentElement.remove()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3>${title}</h3>
+                    <button class="modal-close" onclick="this.closest('#${id}').remove()">×</button>
+                </div>
+                <div class="modal-body">
+                    ${content}
+                </div>
+            </div>
+        </div>
+    `;
+
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+
+    return modal;
+}
+
+// Helper functions
+function copyToClipboard(promptType) {
+    agentManager.showToast(`${promptType} copied to clipboard`, 'success');
+}
+
+function suggestRerun() {
+    agentManager.showToast('Re-run evaluation suggested', 'info');
+}

@@ -180,7 +180,7 @@
                     <!-- Navigation Tabs -->
                     <div class="configure-tabs">
                         <button class="tab-button active" onclick="agentManager.switchConfigureTab('details')">Details</button>
-                        <button class="tab-button" onclick="agentManager.switchConfigureTab('ado')">ADO Tasks</button>
+                        <button class="tab-button" onclick="agentManager.switchConfigureTab('tasks')">Tasks</button>
                         <button class="tab-button" onclick="agentManager.switchConfigureTab('features')">Features Progress</button>
                         <button class="tab-button" onclick="agentManager.switchConfigureTab('activity')">Activity History</button>
                         <button class="tab-button" onclick="agentManager.switchConfigureTab('agility')">Agility</button>
@@ -502,25 +502,11 @@
                 </div>
             </div>
             
-            <!-- ADO Tasks Tab Content -->
-            <div id="configure-ado-tab" class="tab-content">
-                <div class="ado-tasks-container">
-                    <div class="ado-header">
-                        <div class="info-banner">
-                            <span class="info-icon">ℹ️</span>
-                            <span>As the owner, you need to complete the following tasks first.</span>
-                        </div>
-                    </div>
-                    
+            <!-- Tasks Tab Content -->
+            <div id="configure-tasks-tab" class="tab-content">
+                <div class="tasks-container">
                     <div class="tasks-table-container">
                         <table class="tasks-table">
-                            <thead>
-                                <tr>
-                                    <th>Task</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
                                 <tr>
                                     <td>
                                         <div class="task-item">
@@ -1435,23 +1421,34 @@
 
             <!-- Playground View -->
             <div id="playground-view" class="view">
-                <div class="evaluation-container">
-                    <div class="evaluation-header">
-                        <h2>Evaluation</h2>
-                        <div class="session-info">
-                            <span class="session-label">Session</span>
-                            <span class="session-name">New Evaluation</span>
-                            <div class="header-actions">
-                                <button class="btn-icon" title="Share"><span>👤</span></button>
-                                <button class="btn-icon" title="Lock"><span>🔒</span></button>
-                                <button class="btn-icon" title="Copy"><span>📋</span></button>
-                                <button class="btn-icon" title="Export"><span>⬆️</span></button>
-                                <button class="btn-icon" title="Download"><span>⬇️</span></button>
-                                <button class="btn-icon" title="Comments"><span>💬</span></button>
-                                <button class="btn-icon" title="Print"><span>🖨️</span></button>
+                <div class="playground-header">
+                    <h2>Evaluate Models</h2>
+                </div>
+                
+                <!-- Playground Navigation Tabs -->
+                <div class="playground-nav-tabs">
+                    <button class="playground-nav-tab active" onclick="agentManager.switchPlaygroundTab('evaluation')">Evaluation</button>
+                    <button class="playground-nav-tab" onclick="agentManager.switchPlaygroundTab('quick-actions')">Quick Actions</button>
+                </div>
+                
+                <!-- Evaluation Tab Content -->
+                <div id="playground-evaluation-tab" class="playground-tab-content active">
+                    <div class="evaluation-container">
+                        <div class="evaluation-header">
+                            <div class="session-info">
+                                <span class="session-label">Session</span>
+                                <span class="session-name">New Evaluation</span>
+                                <div class="header-actions">
+                                    <button class="btn-icon" title="Share"><span>👤</span></button>
+                                    <button class="btn-icon" title="Lock"><span>🔒</span></button>
+                                    <button class="btn-icon" title="Copy"><span>📋</span></button>
+                                    <button class="btn-icon" title="Export"><span>⬆️</span></button>
+                                    <button class="btn-icon" title="Download"><span>⬇️</span></button>
+                                    <button class="btn-icon" title="Comments"><span>💬</span></button>
+                                    <button class="btn-icon" title="Print"><span>🖨️</span></button>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     
                     <!-- Evaluation Tabs -->
                     <div class="evaluation-tabs">
@@ -1654,62 +1651,274 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Quick Actions Tab Content -->
+            <div id="playground-quick-actions-tab" class="playground-tab-content">
+                <div class="quick-actions-container">
+                    <div class="quick-actions-header">
+                        <h3>Quick Actions</h3>
+                        <p>Quick access to commonly used evaluation tools and resources</p>
+                    </div>
+                    
+                    <div class="quick-actions-grid">
+                        <!-- One-Click Playground Launch -->
+                        <div class="action-card">
+                            <div class="action-icon">🚀</div>
+                            <div class="action-content">
+                                <h4>One-Click Playground Launch</h4>
+                                <p>Launch Playground with agent-specific config and test dataset.</p>
+                                <div class="action-details">
+                                    <span>Auto-load session → Link to Sydney trace</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary action-button" onclick="launchPlayground()">Launch Playground</button>
+                        </div>
+
+                        <!-- Open Playground Session -->
+                        <div class="action-card">
+                            <div class="action-icon">🎮</div>
+                            <div class="action-content">
+                                <h4>Open Playground Session</h4>
+                                <p>Open Copilot Playground with preloaded session for GitHub Copilot agent.</p>
+                                <div class="action-details">
+                                    <span>Link to Playground → Auto-load agent config and prompt</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary action-button" onclick="openPlaygroundSession()">Open Session</button>
+                        </div>
+
+                        <!-- View Previous Evaluation Results -->
+                        <div class="action-card">
+                            <div class="action-icon">📊</div>
+                            <div class="action-content">
+                                <h4>View Previous Evaluation Results</h4>
+                                <p>View results from last evaluation run. Includes latency, accuracy, and structured output.</p>
+                                <div class="action-details">
+                                    <span>Modal → Show summary → Link to full logs or Sydney trace</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary action-button" onclick="viewPreviousResults()">View Results</button>
+                        </div>
+
+                        <!-- Learning Resources -->
+                        <div class="action-card">
+                            <div class="action-icon">📚</div>
+                            <div class="action-content">
+                                <h4>Learning Resources</h4>
+                                <p>Access prompt engineering courses and demo sessions.</p>
+                                <div class="action-details">
+                                    <span>AI Academy, Demo Fest, Prompt Clinic</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary action-button" onclick="openLearningResources()">Access Resources</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
             <!-- T-Prompt View -->
             <div id="tprompt-view" class="view">
                 <div class="tprompt-container">
-                    <h2>T-Prompt Optimization</h2>
-                    <p>Optimize your agent prompts for better performance</p>
+                    <div class="tprompt-header">
+                        <h2>Evaluate Prompts</h2>
+                        <p>Optimize your agent prompts for better performance</p>
+                    </div>
                     
-                    <div class="tprompt-layout">
-                        <div class="prompt-editor">
-                            <h3>Prompt Editor</h3>
-                            <div class="form-group">
-                                <label for="current-prompt">Current Prompt</label>
-                                <textarea id="current-prompt" rows="8" placeholder="Enter your agent prompt here..."></textarea>
-                            </div>
-                            
-                            <div class="prompt-tools">
-                                <button class="btn-outline" onclick="analyzePrompt()">Analyze Prompt</button>
-                                <button class="btn-outline" onclick="suggestImprovements()">Suggest Improvements</button>
-                                <button class="btn-primary" onclick="optimizePrompt()">Optimize Prompt</button>
-                            </div>
-                        </div>
-                        
-                        <div class="prompt-analysis">
-                            <h3>Analysis Results</h3>
-                            <div id="analysis-results" class="analysis-content">
-                                <div class="analysis-section">
-                                    <h4>Prompt Quality Score</h4>
-                                    <div class="score-display">
-                                        <div class="score-circle">
-                                            <span class="score-value">-</span>
-                                        </div>
+                    <!-- Navigation Tabs -->
+                    <div class="tprompt-nav-tabs">
+                        <button class="tprompt-nav-tab active" onclick="switchTPromptTab('optimization')">
+                            Prompt Optimization
+                        </button>
+                        <button class="tprompt-nav-tab" onclick="switchTPromptTab('quick-actions')">
+                            Quick Actions
+                        </button>
+                    </div>
+                    
+                    <!-- Tab Content Container -->
+                    <div class="tprompt-tab-content-container">
+                        <!-- Prompt Optimization Tab Content -->
+                        <div id="tprompt-optimization-tab" class="tprompt-tab-content active">
+                            <div class="tprompt-layout">
+                                <div class="prompt-editor">
+                                    <h3>Prompt Editor</h3>
+                                    <div class="form-group">
+                                        <label for="current-prompt">Current Prompt</label>
+                                        <textarea id="current-prompt" rows="8" placeholder="Enter your agent prompt here..."></textarea>
+                                    </div>
+                                    
+                                    <div class="prompt-tools">
+                                        <button class="btn-outline" onclick="analyzePrompt()">Analyze Prompt</button>
+                                        <button class="btn-outline" onclick="suggestImprovements()">Suggest Improvements</button>
+                                        <button class="btn-primary" onclick="optimizePrompt()">Optimize Prompt</button>
                                     </div>
                                 </div>
                                 
-                                <div class="analysis-section">
-                                    <h4>Improvement Suggestions</h4>
-                                    <ul id="suggestions-list" class="suggestions">
-                                        <li class="placeholder">Analyze your prompt to see suggestions</li>
-                                    </ul>
+                                <div class="prompt-analysis">
+                                    <h3>Analysis Results</h3>
+                                    <div id="analysis-results" class="analysis-content">
+                                        <div class="analysis-section">
+                                            <h4>Prompt Quality Score</h4>
+                                            <div class="score-display">
+                                                <div class="score-circle">
+                                                    <span class="score-value">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="analysis-section">
+                                            <h4>Improvement Suggestions</h4>
+                                            <ul id="suggestions-list" class="suggestions">
+                                                <li class="placeholder">Analyze your prompt to see suggestions</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="analysis-section">
+                                            <h4>Performance Metrics</h4>
+                                            <div class="performance-grid">
+                                                <div class="performance-item">
+                                                    <span class="perf-label">Clarity:</span>
+                                                    <span class="perf-score" id="clarity-score">-</span>
+                                                </div>
+                                                <div class="performance-item">
+                                                    <span class="perf-label">Specificity:</span>
+                                                    <span class="perf-score" id="specificity-score">-</span>
+                                                </div>
+                                                <div class="performance-item">
+                                                    <span class="perf-label">Context:</span>
+                                                    <span class="perf-score" id="context-score">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions Tab Content -->
+                        <div id="tprompt-quick-actions-tab" class="tprompt-tab-content">
+                            <div class="tprompt-quick-actions-container">
+                                <div class="tprompt-quick-actions-header">
+                                    <h3>Quick Actions</h3>
+                                    <p>Streamlined access to T-Prompt tools and evaluation resources</p>
                                 </div>
                                 
-                                <div class="analysis-section">
-                                    <h4>Performance Metrics</h4>
-                                    <div class="performance-grid">
-                                        <div class="performance-item">
-                                            <span class="perf-label">Clarity:</span>
-                                            <span class="perf-score" id="clarity-score">-</span>
+                                <div class="tprompt-quick-actions-grid">
+                                    <!-- Run T-Migrate -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">🔄</div>
+                                        <div class="action-content">
+                                            <h4>Run T-Migrate</h4>
+                                            <p>Run T-Migrate to benchmark agent migration. View migration report and PR status.</p>
+                                            <div class="action-details">
+                                                <span>Trigger T-Migrate run → Show modal with migration summary and link to PR</span>
+                                            </div>
                                         </div>
-                                        <div class="performance-item">
-                                            <span class="perf-label">Specificity:</span>
-                                            <span class="perf-score" id="specificity-score">-</span>
+                                        <button class="btn-primary action-button" onclick="runTMigrate()">Run T-Migrate</button>
+                                    </div>
+
+                                    <!-- Create Manifest PR -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">📝</div>
+                                        <div class="action-content">
+                                            <h4>Create Manifest PR</h4>
+                                            <p>Generate and submit manifest PR for GitHub Copilot agent via T-Prompt.</p>
+                                            <div class="action-details">
+                                                <span>Auto-fill manifest fields → Submit PR → Show PR link</span>
+                                            </div>
                                         </div>
-                                        <div class="performance-item">
-                                            <span class="perf-label">Context:</span>
-                                            <span class="perf-score" id="context-score">-</span>
+                                        <button class="btn-primary action-button" onclick="createManifestPR()">Create PR</button>
+                                    </div>
+
+                                    <!-- T-Prompt Run History -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">📊</div>
+                                        <div class="action-content">
+                                            <h4>T-Prompt Run History</h4>
+                                            <p>View previous T-Prompt runs for GitHub Copilot agent.</p>
+                                            <div class="action-details">
+                                                <span>Table → Filter by run type, timestamp → Link to PR and report</span>
+                                            </div>
                                         </div>
+                                        <button class="btn-primary action-button" onclick="viewTPromptHistory()">View History</button>
+                                    </div>
+
+                                    <!-- Evaluation Metrics Dashboard -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">📈</div>
+                                        <div class="action-content">
+                                            <h4>Evaluation Metrics Dashboard</h4>
+                                            <p>View Comet metrics and evaluation dashboards.</p>
+                                            <div class="action-details">
+                                                <span>Link to Comet → Show metric authoring history</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="openMetricsDashboard()">Open Dashboard</button>
+                                    </div>
+
+                                    <!-- Live Site Readiness -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">✅</div>
+                                        <div class="action-content">
+                                            <h4>Live Site Readiness</h4>
+                                            <p>Check live site readiness for GitHub Copilot agent.</p>
+                                            <div class="action-details">
+                                                <span>Show ICM ownership, XAMP probes, validation status</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="checkLiveSiteReadiness()">Check Readiness</button>
+                                    </div>
+
+                                    <!-- Liquid File Integration -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">💧</div>
+                                        <div class="action-content">
+                                            <h4>Liquid File Integration</h4>
+                                            <p>Generate ADO tasks using liquid templates for metrics and test datasets.</p>
+                                            <div class="action-details">
+                                                <span>Auto-fill template → Submit to ADO</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="integrateLiquidFiles()">Generate Tasks</button>
+                                    </div>
+
+                                    <!-- Manifest Editor -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">⚙️</div>
+                                        <div class="action-content">
+                                            <h4>Manifest Editor</h4>
+                                            <p>Edit and validate manifest directly in Nexus.</p>
+                                            <div class="action-details">
+                                                <span>Inline editor → Validate → Submit PR via T-Prompt</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="openManifestEditor()">Open Editor</button>
+                                    </div>
+
+                                    <!-- Prompt Recommendations -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">💡</div>
+                                        <div class="action-content">
+                                            <h4>Prompt Recommendations</h4>
+                                            <p>View recommended prompt structures based on T-Prompt benchmarks.</p>
+                                            <div class="action-details">
+                                                <span>Suggestions list → Copy to Playground → Link to eval run</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="viewPromptRecommendations()">View Recommendations</button>
+                                    </div>
+
+                                    <!-- Agent Health Insights -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">🩺</div>
+                                        <div class="action-content">
+                                            <h4>Agent Health Insights</h4>
+                                            <p>View anomalies and performance degradation alerts.</p>
+                                            <div class="action-details">
+                                                <span>Alert cards → Link to evaluation logs → Suggest re-run</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="viewAgentHealthInsights()">View Insights</button>
                                     </div>
                                 </div>
                             </div>
