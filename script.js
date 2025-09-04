@@ -1,512 +1,2043 @@
 'use strict';
 
 /**
- * Agent Onboarding Platform JavaScript
- * Handles navigation, demo data, and interactive features
+ * Application state and data management
  */
-
-// Mock data for demonstration
-const mockAgents = [
-    {
-        id: 1,
-        name: 'Sales Assistant Pro',
-        product: 'CRM Suite',
-        host: 'agent-01.platform.com',
-        owner: 'sarah.johnson@company.com',
-        created: '2024-08-15',
-        status: 'approved',
-        successRate: 96.5,
-        latency: 0.8,
-        usage: 3247
-    },
-    {
-        id: 2,
-        name: 'Research Analyzer',
-        product: 'Data Analytics',
-        host: 'agent-02.platform.com',
-        owner: 'mike.chen@company.com',
-        created: '2024-08-20',
-        status: 'pending',
-        successRate: 91.2,
-        latency: 1.4,
-        usage: 1852
-    },
-    {
-        id: 3,
-        name: 'Ops Monitor',
-        product: 'Infrastructure',
-        host: 'agent-03.platform.com',
-        owner: 'lisa.wong@company.com',
-        created: '2024-08-25',
-        status: 'approved',
-        successRate: 98.1,
-        latency: 0.6,
-        usage: 4123
-    },
-    {
-        id: 4,
-        name: 'Customer Support Bot',
-        product: 'Support Portal',
-        host: 'agent-04.platform.com',
-        owner: 'alex.rodriguez@company.com',
-        created: '2024-08-28',
-        status: 'rejected',
-        successRate: 87.3,
-        latency: 2.1,
-        usage: 987
+class AgentManager {
+    constructor() {
+        this.agents = this.loadAgents();
+        this.currentView = 'dashboard';
+        this.onboardingStep = 0;
+        this.isFirstVisit = this.checkFirstVisit();
+        this.helpMenuOpen = false;
+        this.init();
     }
-];
 
-// Application state
-let appState = {
-    hasAgents: false,
-    currentSection: 'agents'
-};
-
-/**
- * Initialize the application
- */
-function initializeApp() {
-    try {
-        setupEventListeners();
-        loadAppState();
-        updateUI();
-        console.log('Application initialized successfully');
-    } catch (error) {
-        console.error('Error initializing application:', error);
+    /**
+     * Initialize the application
+     */
+    init() {
+        this.setupEventListeners();
+        this.renderAgentsTable();
+        this.checkAgentsState();
+        this.initializeCharts();
+        this.updatePreview();
+        this.updateManifest(); // Initialize manifest
+        this.updateConfigManifest(); // Initialize config manifest
+        this.syncDashboardMetrics(); // Sync dashboard metrics with KPIs
+        
+        // Show onboarding for first-time users
+        if (this.isFirstVisit) {
+            setTimeout(() => this.showOnboarding(), 1000);
+        }
     }
-}
 
-/**
- * Setup event listeners for navigation and interactions
- */
-function setupEventListeners() {
-    try {
-        // Sidebar navigation
-        const sidebarLinks = document.querySelectorAll('.sidebar__link');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', handleNavigation);
-        });
-
-        // Demo toggle button
-        const demoToggle = document.getElementById('demo-toggle');
-        if (demoToggle) {
-            demoToggle.addEventListener('click', toggleDemoData);
+    /**
+     * Load agents from localStorage with fallback to sample data
+     */
+    loadAgents() {
+        try {
+            const stored = localStorage.getItem('agents');
+            if (stored) {
+                return JSON.parse(stored);
+            }
+        } catch (error) {
+            console.error('Error loading agents from localStorage:', error);
         }
 
-        // Create agent button
-        const createAgentBtn = document.getElementById('create-agent-btn');
-        if (createAgentBtn) {
-            createAgentBtn.addEventListener('click', () => {
-                navigateToSection('create');
+        // Sample data for demonstration
+        return [
+            {
+                id: 1,
+                name: 'BizChat',
+                product: 'M365',
+                host: 'BizChat',
+                owner: 'System',
+                status: 'Active',
+                successRate: 96.5,
+                responseTime: 1.1,
+                lastActive: '2024-12-04',
+                createdDate: '2024-11-15',
+                interactions: 2847
+            },
+            {
+                id: 2,
+                name: 'LearningAgent',
+                product: 'M365',
+                host: 'Outlook',
+                owner: 'AI Team',
+                status: 'Active',
+                successRate: 92.8,
+                responseTime: 1.3,
+                lastActive: '2024-12-04',
+                createdDate: '2024-11-20',
+                interactions: 1653
+            },
+            {
+                id: 3,
+                name: 'SampleAgent',
+                product: 'M365',
+                host: 'BizChat',
+                owner: 'Dev Team',
+                status: 'Testing',
+                successRate: 89.2,
+                responseTime: 1.5,
+                lastActive: '2024-12-03',
+                createdDate: '2024-11-25',
+                interactions: 892
+            },
+            {
+                id: 4,
+                name: 'CustomerSupportBot',
+                product: 'Teams',
+                host: 'BizChat',
+                owner: 'Support Team',
+                status: 'Active',
+                successRate: 94.7,
+                responseTime: 0.9,
+                lastActive: '2024-12-04',
+                createdDate: '2024-10-30',
+                interactions: 4156
+            }
+        ];
+    }
+
+    /**
+     * Save agents to localStorage
+     */
+    saveAgents() {
+        try {
+            localStorage.setItem('agents', JSON.stringify(this.agents));
+        } catch (error) {
+            console.error('Error saving agents to localStorage:', error);
+        }
+    }
+
+    /**
+     * Setup event listeners for navigation and interactions
+     */
+    setupEventListeners() {
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = e.target.dataset.view;
+                this.switchView(view);
+            });
+        });
+
+        // Lifecycle steps
+        document.querySelectorAll('.lifecycle-step').forEach(step => {
+            step.addEventListener('click', () => {
+                const stepType = step.dataset.step;
+                this.handleLifecycleStep(stepType);
+            });
+        });
+
+        // Form inputs for live preview and manifest generation
+        document.getElementById('short-name')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('full-name')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('agent-version')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('branch-name')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('agent-description')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('deployment-target-date')?.addEventListener('input', () => this.updateManifest());
+        document.getElementById('plugin-features')?.addEventListener('change', () => this.updateManifest());
+        document.getElementById('headless-agent')?.addEventListener('change', () => this.updateManifest());
+        
+        // Add event listeners for new form fields
+        document.querySelectorAll('input[name="highest-ring"]').forEach(input => {
+            input.addEventListener('change', () => this.updateManifest());
+        });
+        document.querySelectorAll('input[name="agent-type"]').forEach(input => {
+            input.addEventListener('change', () => this.updateManifest());
+        });
+        
+        // Configuration form event listeners
+        document.getElementById('config-short-name')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-full-name')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-agent-version')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-branch-name')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-agent-description')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-deployment-target-date')?.addEventListener('input', () => this.updateConfigManifest());
+        document.getElementById('config-plugin-features')?.addEventListener('change', () => this.updateConfigManifest());
+        document.getElementById('config-headless-agent')?.addEventListener('change', () => this.updateConfigManifest());
+        
+        document.querySelectorAll('input[name="config-highest-ring"]').forEach(input => {
+            input.addEventListener('change', () => this.updateConfigManifest());
+        });
+        document.querySelectorAll('input[name="config-agent-type"]').forEach(input => {
+            input.addEventListener('change', () => this.updateConfigManifest());
+        });
+        
+        // Legacy form inputs
+        document.getElementById('agent-name')?.addEventListener('input', () => this.updatePreview());
+        document.getElementById('agent-description')?.addEventListener('input', () => this.updatePreview());
+        document.getElementById('product-select')?.addEventListener('change', () => this.updatePreview());
+        document.getElementById('host-select')?.addEventListener('change', () => this.updatePreview());
+
+        // Agent form submission
+        document.querySelector('.agent-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.createAgent();
+        });
+
+        // Search functionality
+        document.querySelector('.search-input')?.addEventListener('input', (e) => {
+            this.filterAgents(e.target.value);
+        });
+
+        // Filter dropdown functionality
+        document.querySelector('.filter-select')?.addEventListener('change', (e) => {
+            this.filterAgentsByProduct(e.target.value);
+        });
+    }
+
+    /**
+     * Switch between different views
+     */
+    switchView(view) {
+        // Update navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // For configure view, don't highlight any nav link since it's not in the main nav
+        if (view !== 'configure') {
+            const navLink = document.querySelector(`[data-view="${view}"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+        }
+
+        // Update views
+        document.querySelectorAll('.view').forEach(v => {
+            v.classList.remove('active');
+        });
+        document.getElementById(`${view}-view`).classList.add('active');
+
+        // Update page title
+        const titles = {
+            dashboard: 'Agent Dashboard',
+            create: 'Create New Agent',
+            configure: 'Configure Agent',
+            metrics: 'Performance Metrics',
+            playground: 'Evaluate Models',
+            tprompt: 'Evaluate Prompts'
+        };
+        document.getElementById('page-title').textContent = titles[view] || 'Dashboard';
+
+        this.currentView = view;
+
+        // Initialize view-specific functionality
+        if (view === 'metrics') {
+            this.initializeCharts();
+            this.renderMetricsTable();
+        } else if (view === 'playground') {
+            this.initializeEvaluation();
+        }
+    }
+
+    /**
+     * Switch between configure agent tabs
+     */
+    switchConfigureTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[onclick="agentManager.switchConfigureTab('${tabName}')"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`configure-${tabName}-tab`).classList.add('active');
+    }
+
+    /**
+     * Switch evaluation tabs in the evaluate models page
+     */
+    switchEvaluationTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.eval-tab').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[onclick="agentManager.switchEvaluationTab('${tabName}')"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('.eval-tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+    }
+
+    /**
+     * Select a prompt in the evaluation interface
+     */
+    selectPrompt(promptId) {
+        // Update selected row
+        document.querySelectorAll('.prompt-row').forEach(row => {
+            row.classList.remove('active');
+        });
+        
+        // Find and activate the clicked row
+        const clickedRow = event.target.closest('.prompt-row');
+        if (clickedRow) {
+            clickedRow.classList.add('active');
+        }
+
+        // Update prompt details panel (mock data for now)
+        this.updatePromptDetails(promptId);
+    }
+
+    /**
+     * Update prompt details panel with mock data
+     */
+    updatePromptDetails(promptId) {
+        // This would normally fetch real data
+        const mockPromptData = {
+            1: {
+                name: "Email Assistant Test",
+                badge: "New Prompt",
+                model: "dev-gpt-41-shortco-2025-04-14",
+                temperature: 0.3,
+                maxTokens: 200,
+                topP: 1,
+                frequencyPenalty: 0,
+                presencePenalty: 0
+            }
+        };
+
+        const data = mockPromptData[promptId] || mockPromptData[1];
+        
+        // Update UI elements
+        document.querySelector('.prompt-info h3').textContent = `Prompt ${promptId}`;
+        document.querySelector('.prompt-badge').textContent = data.badge;
+        
+        // Update model parameters
+        const sliders = document.querySelectorAll('.parameter-slider');
+        const values = document.querySelectorAll('.parameter-value');
+        
+        sliders[0].value = data.temperature;
+        values[0].textContent = data.temperature;
+        
+        sliders[1].value = data.maxTokens;
+        values[1].textContent = data.maxTokens;
+        
+        sliders[2].value = data.topP;
+        values[2].textContent = data.topP;
+        
+        sliders[3].value = data.frequencyPenalty;
+        values[3].textContent = data.frequencyPenalty;
+        
+        sliders[4].value = data.presencePenalty;
+        values[4].textContent = data.presencePenalty;
+    }
+
+    /**
+     * Initialize evaluation interface
+     */
+    initializeEvaluation() {
+        // Initialize parameter sliders
+        document.querySelectorAll('.parameter-slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const valueDisplay = e.target.parentElement.querySelector('.parameter-value');
+                if (valueDisplay) {
+                    valueDisplay.textContent = e.target.value;
+                }
+            });
+        });
+
+        // Initialize select all checkbox
+        const selectAllCheckbox = document.querySelector('.select-all');
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', (e) => {
+                const checkboxes = document.querySelectorAll('.prompt-row input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
             });
         }
 
-        // Template buttons
-        const templateButtons = document.querySelectorAll('.template-card__button');
-        templateButtons.forEach(button => {
-            button.addEventListener('click', handleTemplateSelection);
-        });
+        // Initialize default selection
+        this.selectPrompt(1);
+    }
 
-        // Model switch buttons
-        const modelButtons = document.querySelectorAll('.model-card .btn--primary');
-        modelButtons.forEach(button => {
-            button.addEventListener('click', handleModelSwitch);
+    /**
+     * Handle lifecycle step clicks with guidance
+     */
+    handleLifecycleStep(step) {
+        // Update step indicators
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
         });
+        document.querySelector(`[data-step="${step}"]`).classList.add('active');
 
-        // Optimization buttons
-        const optimizeButtons = document.querySelectorAll('.optimization-card .btn');
-        optimizeButtons.forEach(button => {
-            button.addEventListener('click', handleOptimizationAction);
-        });
+        // Map steps to views
+        const stepViewMap = {
+            create: 'create',
+            configure: 'configure',
+            evaluate: 'playground',
+            'evaluate-prompts': 'tprompt',
+            deploy: 'dashboard',
+            monitor: 'metrics'
+        };
 
-        // Test buttons
-        const testButtons = document.querySelectorAll('.scenario-item .btn');
-        testButtons.forEach(button => {
-            button.addEventListener('click', handleTestScenario);
-        });
-
-        // Agent form
-        const agentForm = document.getElementById('agent-form');
-        if (agentForm) {
-            agentForm.addEventListener('submit', handleFormSubmit);
+        if (stepViewMap[step]) {
+            this.switchView(stepViewMap[step]);
             
-            // Set default date to today
-            const createdDateInput = document.getElementById('created-date');
-            if (createdDateInput) {
-                const today = new Date().toISOString().split('T')[0];
-                createdDateInput.value = today;
+            // Show guidance for new users
+            if (this.isFirstVisit || !localStorage.getItem(`guidance_${step}_shown`)) {
+                setTimeout(() => {
+                    this.showStepGuidance(step);
+                    localStorage.setItem(`guidance_${step}_shown`, 'true');
+                }, 500);
             }
         }
-
-    } catch (error) {
-        console.error('Error setting up event listeners:', error);
     }
-}
 
-/**
- * Handle sidebar navigation
- * @param {Event} event - Click event
- */
-function handleNavigation(event) {
-    event.preventDefault();
-    
-    try {
-        const sectionName = event.target.dataset.section;
-        if (sectionName) {
-            navigateToSection(sectionName);
-        }
-    } catch (error) {
-        console.error('Error handling navigation:', error);
-    }
-}
-
-/**
- * Navigate to a specific section
- * @param {string} sectionName - Name of the section to navigate to
- */
-function navigateToSection(sectionName) {
-    try {
-        // Update active sidebar item
-        const sidebarItems = document.querySelectorAll('.sidebar__item');
-        sidebarItems.forEach(item => {
-            item.classList.remove('sidebar__item--active');
-        });
-
-        const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
-        if (activeLink) {
-            activeLink.parentElement.classList.add('sidebar__item--active');
-        }
-
-        // Update content sections
-        const contentSections = document.querySelectorAll('.content-section');
-        contentSections.forEach(section => {
-            section.classList.remove('content-section--active');
-        });
-
-        const targetSection = document.getElementById(`${sectionName}-section`);
-        if (targetSection) {
-            targetSection.classList.add('content-section--active');
-        }
-
-        // Update app state
-        appState.currentSection = sectionName;
-        saveAppState();
-
-    } catch (error) {
-        console.error('Error navigating to section:', error);
-    }
-}
-
-/**
- * Toggle demo data state
- */
-function toggleDemoData() {
-    try {
-        appState.hasAgents = !appState.hasAgents;
-        updateUI();
-        saveAppState();
-        
-        const action = appState.hasAgents ? 'enabled' : 'disabled';
-        console.log(`Demo data ${action}`);
-    } catch (error) {
-        console.error('Error toggling demo data:', error);
-    }
-}
-
-/**
- * Update UI based on current state
- */
-function updateUI() {
-    try {
+    /**
+     * Check if agents exist and show appropriate state
+     */
+    checkAgentsState() {
         const noAgentsState = document.getElementById('no-agents-state');
-        const agentsListState = document.getElementById('agents-list-state');
-        
-        if (appState.hasAgents) {
-            // Show agents list
-            if (noAgentsState) noAgentsState.style.display = 'none';
-            if (agentsListState) agentsListState.style.display = 'block';
-            populateAgentsTable();
+        const agentsState = document.getElementById('agents-state');
+
+        if (this.agents.length === 0) {
+            noAgentsState.style.display = 'block';
+            agentsState.style.display = 'none';
         } else {
-            // Show no agents state
-            if (noAgentsState) noAgentsState.style.display = 'block';
-            if (agentsListState) agentsListState.style.display = 'none';
+            noAgentsState.style.display = 'none';
+            agentsState.style.display = 'block';
         }
-    } catch (error) {
-        console.error('Error updating UI:', error);
     }
-}
 
-/**
- * Populate the agents table with mock data
- */
-function populateAgentsTable() {
-    try {
-        const tableBody = document.getElementById('agents-table-body');
-        if (!tableBody) return;
+    /**
+     * Render the agents table with action buttons
+     */
+    renderAgentsTable() {
+        const tbody = document.getElementById('agents-table-body');
+        if (!tbody) return;
 
-        tableBody.innerHTML = '';
+        tbody.innerHTML = this.agents.map(agent => `
+            <tr data-agent-id="${agent.id}">
+                <td>
+                    <div class="agent-name-cell">
+                        <div class="agent-avatar">🤖</div>
+                        <span class="agent-name">${agent.name}</span>
+                    </div>
+                </td>
+                <td><span class="product-tag">${agent.product}</span></td>
+                <td><span class="status-badge status-${agent.status.toLowerCase()}">${agent.status}</span></td>
+                <td>
+                    <div class="success-rate">
+                        <span>${agent.successRate}%</span>
+                        <div class="rate-bar">
+                            <div class="rate-fill" style="width: ${agent.successRate}%"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>${this.formatDate(agent.lastActive)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon" onclick="agentManager.editAgent(${agent.id})" title="Edit">✏️</button>
+                        <button class="btn-icon" onclick="agentManager.evaluateAgent(${agent.id})" title="Evaluate">🧪</button>
+                        <button class="btn-icon" onclick="agentManager.viewMetrics(${agent.id})" title="Metrics">📊</button>
+                        <button class="btn-icon" onclick="agentManager.deployAgent(${agent.id})" title="Deploy">🚀</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
 
-        mockAgents.forEach(agent => {
-            const row = createAgentTableRow(agent);
-            tableBody.appendChild(row);
+    /**
+     * Update the dynamic manifest based on form inputs
+     */
+    updateManifest() {
+        const shortName = document.getElementById('short-name')?.value || 'EAgent';
+        const fullName = document.getElementById('full-name')?.value || 'EmailAgent';
+        const agentVersion = document.getElementById('agent-version')?.value || '1.0.0';
+        const branchName = document.getElementById('branch-name')?.value || 'main';
+        const description = document.getElementById('agent-description')?.value || '';
+        const deploymentDate = document.getElementById('deployment-target-date')?.value || '';
+        
+        // Get selected highest ring
+        const selectedRing = document.querySelector('input[name="highest-ring"]:checked')?.value || 'DEV';
+        
+        // Get agent type
+        const agentType = document.querySelector('input[name="agent-type"]:checked')?.value || '1P';
+        
+        const pluginSelect = document.getElementById('plugin-features');
+        const selectedPlugins = pluginSelect ? Array.from(pluginSelect.selectedOptions).map(opt => opt.value) : ['canvas', 'code_interpreter', 'fetch_enterprise_chat', 'image_understanding'];
+        
+        // Generate plugins object
+        const pluginsObject = {};
+        selectedPlugins.forEach(plugin => {
+            pluginsObject[plugin] = {};
         });
-    } catch (error) {
-        console.error('Error populating agents table:', error);
-    }
-}
-
-/**
- * Create a table row for an agent
- * @param {Object} agent - Agent data object
- * @returns {HTMLElement} Table row element
- */
-function createAgentTableRow(agent) {
-    const row = document.createElement('tr');
-    
-    const statusClass = `status-badge status-badge--${agent.status}`;
-    const statusText = agent.status.charAt(0).toUpperCase() + agent.status.slice(1);
-    
-    row.innerHTML = `
-        <td><strong>${agent.name}</strong></td>
-        <td>${agent.product}</td>
-        <td>${agent.host}</td>
-        <td>${agent.owner}</td>
-        <td>${formatDate(agent.created)}</td>
-        <td><span class="${statusClass}">${statusText}</span></td>
-        <td>
-            <div class="action-buttons">
-                <button class="btn btn--secondary btn--small" onclick="editAgent(${agent.id})">Edit</button>
-                <button class="btn btn--secondary btn--small" onclick="evaluateAgent(${agent.id})">Evaluate</button>
-                <button class="btn btn--secondary btn--small" onclick="viewMetrics(${agent.id})">Metrics</button>
-            </div>
-        </td>
-    `;
-    
-    return row;
-}
-
-/**
- * Format date string for display
- * @param {string} dateString - Date in YYYY-MM-DD format
- * @returns {string} Formatted date string
- */
-function formatDate(dateString) {
-    try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        });
-    } catch (error) {
-        console.error('Error formatting date:', error);
-        return dateString;
-    }
-}
-
-/**
- * Handle template selection
- * @param {Event} event - Click event
- */
-function handleTemplateSelection(event) {
-    try {
-        const templateCard = event.target.closest('.template-card');
-        const templateTitle = templateCard.querySelector('.template-card__title').textContent;
         
-        // Navigate to create form and pre-populate template
-        navigateToSection('create');
-        
-        // Pre-populate form based on template
-        setTimeout(() => {
-            populateTemplateForm(templateTitle);
-        }, 100);
-        
-    } catch (error) {
-        console.error('Error handling template selection:', error);
-    }
-}
-
-/**
- * Populate form with template data
- * @param {string} templateTitle - Title of the selected template
- */
-function populateTemplateForm(templateTitle) {
-    try {
-        const templateSelect = document.getElementById('template');
-        const agentNameInput = document.getElementById('agent-name');
-        const productSelect = document.getElementById('product');
-        const descriptionTextarea = document.getElementById('description');
-        
-        if (templateTitle.includes('Sales')) {
-            if (templateSelect) templateSelect.value = 'sales';
-            if (agentNameInput) agentNameInput.value = 'Sales Assistant Pro';
-            if (productSelect) productSelect.value = 'CRM Suite';
-            if (descriptionTextarea) descriptionTextarea.value = 'Automate lead qualification, follow-ups, and customer engagement workflows to increase sales efficiency.';
-        } else if (templateTitle.includes('Research')) {
-            if (templateSelect) templateSelect.value = 'research';
-            if (agentNameInput) agentNameInput.value = 'Research Analyzer';
-            if (productSelect) productSelect.value = 'Data Analytics';
-            if (descriptionTextarea) descriptionTextarea.value = 'Gather, analyze, and synthesize information from multiple sources to provide comprehensive research insights.';
-        } else if (templateTitle.includes('OpsGenie')) {
-            if (templateSelect) templateSelect.value = 'opsgenie';
-            if (agentNameInput) agentNameInput.value = 'Ops Monitor';
-            if (productSelect) productSelect.value = 'Infrastructure';
-            if (descriptionTextarea) descriptionTextarea.value = 'Monitor systems, handle incidents, and manage operational workflows to ensure system reliability.';
-        }
-    } catch (error) {
-        console.error('Error populating template form:', error);
-    }
-}
-
-/**
- * Handle form submission
- * @param {Event} event - Form submit event
- */
-function handleFormSubmit(event) {
-    event.preventDefault();
-    
-    try {
-        const formData = new FormData(event.target);
-        const agentData = {
-            name: document.getElementById('agent-name').value,
-            product: document.getElementById('product').value,
-            host: document.getElementById('host').value,
-            owner: document.getElementById('owner').value,
-            createdDate: document.getElementById('created-date').value,
-            signoff: document.getElementById('signoff').value,
-            description: document.getElementById('description').value,
-            template: document.getElementById('template').value
+        // Update manifest JSON
+        const manifest = {
+            version: agentVersion,
+            name: shortName,
+            display_name: fullName,
+            description: description,
+            branch: branchName,
+            deployment_target: deploymentDate,
+            highest_allowed_ring: selectedRing,
+            agent_type: agentType,
+            parent_agent: {
+                name: "BaseChatAgent"
+            },
+            patches: [
+                {
+                    op: "add",
+                    path: "/chat/orchestration/plugins",
+                    value: pluginsObject
+                }
+            ]
         };
         
-        // Validate required fields
-        const requiredFields = ['name', 'product', 'host', 'owner', 'createdDate', 'signoff'];
-        const missingFields = requiredFields.filter(field => !agentData[field]);
+        // Remove empty fields
+        Object.keys(manifest).forEach(key => {
+            if (manifest[key] === '' || manifest[key] === null) {
+                delete manifest[key];
+            }
+        });
         
-        if (missingFields.length > 0) {
-            alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+        const manifestCode = document.getElementById('manifest-code');
+        if (manifestCode) {
+            manifestCode.textContent = JSON.stringify(manifest, null, 2);
+        }
+        
+        // Update line numbers
+        this.updateLineNumbers();
+        
+        // Update plugin selection count
+        const pluginCount = document.querySelector('.plugin-selection small');
+        if (pluginCount) {
+            pluginCount.textContent = `${selectedPlugins.length} Item(s) Selected`;
+        }
+    }
+    
+    /**
+     * Update line numbers in manifest editor
+     */
+    updateLineNumbers() {
+        const manifestCode = document.getElementById('manifest-code');
+        const lineNumbers = document.getElementById('manifest-line-numbers');
+        
+        if (manifestCode && lineNumbers) {
+            const lines = manifestCode.textContent.split('\n');
+            lineNumbers.innerHTML = lines.map((_, index) => `<div>${index + 1}</div>`).join('');
+        }
+    }
+
+    /**
+     * Update configuration manifest editor
+     */
+    updateConfigManifest() {
+        const shortName = document.getElementById('config-short-name')?.value || 'EmailAgent';
+        const fullName = document.getElementById('config-full-name')?.value || 'Email Assistant';
+        const agentVersion = document.getElementById('config-agent-version')?.value || '1.0.0';
+        const branchName = document.getElementById('config-branch-name')?.value || 'main';
+        const description = document.getElementById('config-agent-description')?.value || '';
+        const deploymentDate = document.getElementById('config-deployment-target-date')?.value || '';
+        
+        // Get selected highest ring
+        const selectedRing = document.querySelector('input[name="config-highest-ring"]:checked')?.value || 'DEV';
+        
+        // Get agent type
+        const agentType = document.querySelector('input[name="config-agent-type"]:checked')?.value || '1P';
+        
+        const pluginSelect = document.getElementById('config-plugin-features');
+        const selectedPlugins = pluginSelect ? Array.from(pluginSelect.selectedOptions).map(opt => opt.value) : ['canvas', 'code_interpreter', 'email_search'];
+        
+        // Generate plugins object
+        const pluginsObject = {};
+        selectedPlugins.forEach(plugin => {
+            pluginsObject[plugin] = {};
+        });
+        
+        // Update manifest JSON
+        const manifest = {
+            version: agentVersion,
+            name: shortName,
+            display_name: fullName,
+            description: description,
+            branch: branchName,
+            deployment_target: deploymentDate,
+            highest_allowed_ring: selectedRing,
+            agent_type: agentType,
+            parent_agent: {
+                name: "BaseChatAgent"
+            },
+            patches: [
+                {
+                    op: "add",
+                    path: "/chat/orchestration/plugins",
+                    value: pluginsObject
+                }
+            ]
+        };
+        
+        // Remove empty fields
+        Object.keys(manifest).forEach(key => {
+            if (manifest[key] === '' || manifest[key] === null) {
+                delete manifest[key];
+            }
+        });
+        
+        const manifestCode = document.getElementById('config-manifest-code');
+        if (manifestCode) {
+            manifestCode.textContent = JSON.stringify(manifest, null, 2);
+        }
+        
+        // Update line numbers for config manifest
+        const configLineNumbers = document.getElementById('config-manifest-line-numbers');
+        if (configLineNumbers && manifestCode) {
+            const lines = manifestCode.textContent.split('\n');
+            configLineNumbers.innerHTML = lines.map((_, index) => `<div>${index + 1}</div>`).join('');
+        }
+        
+        // Update plugin selection count
+        const pluginCount = document.querySelector('#config-plugin-features + small');
+        if (pluginCount) {
+            pluginCount.textContent = `${selectedPlugins.length} Item(s) Selected`;
+        }
+    }
+
+    /**
+     * Update agent configuration
+     */
+    updateAgentConfiguration() {
+        const shortName = document.getElementById('config-short-name')?.value;
+        const fullName = document.getElementById('config-full-name')?.value;
+        const agentVersion = document.getElementById('config-agent-version')?.value;
+        const branchName = document.getElementById('config-branch-name')?.value;
+        const description = document.getElementById('config-agent-description')?.value;
+        const deploymentDate = document.getElementById('config-deployment-target-date')?.value;
+        
+        if (!shortName || !fullName) {
+            alert('Please fill in the required fields (Agent Name and Display Name)');
             return;
         }
-        
-        // Simulate agent creation
-        console.log('Creating agent with data:', agentData);
-        alert(`Agent "${agentData.name}" created successfully!`);
-        
-        // Reset form
-        event.target.reset();
-        
-        // Set default date again
-        const createdDateInput = document.getElementById('created-date');
-        if (createdDateInput) {
-            const today = new Date().toISOString().split('T')[0];
-            createdDateInput.value = today;
-        }
-        
-        // Navigate to agents list if demo data is enabled
-        if (appState.hasAgents) {
-            navigateToSection('agents');
-        }
-        
-    } catch (error) {
-        console.error('Error handling form submission:', error);
-        alert('Error creating agent. Please try again.');
-    }
-}
 
-/**
- * Agent action handlers
- */
-
-/**
- * Edit agent handler
- * @param {number} agentId - ID of the agent to edit
- */
-function editAgent(agentId) {
-    try {
-        const agent = mockAgents.find(a => a.id === agentId);
-        if (agent) {
-            alert(`Editing agent: ${agent.name}`);
-            // In a real application, this would open the edit form
-        }
-    } catch (error) {
-        console.error('Error editing agent:', error);
-    }
-}
-
-/**
- * Evaluate agent handler
- * @param {number} agentId - ID of the agent to evaluate
- */
-function evaluateAgent(agentId) {
-    try {
-        const agent = mockAgents.find(a => a.id === agentId);
-        if (agent) {
-            alert(`Starting evaluation for: ${agent.name}`);
-            // In a real application, this would start the evaluation process
-        }
-    } catch (error) {
-        console.error('Error evaluating agent:', error);
-    }
-}
-
-/**
- * View metrics handler
- * @param {number} agentId - ID of the agent to view metrics for
- */
-function viewMetrics(agentId) {
-    try {
-        const agent = mockAgents.find(a => a.id === agentId);
-        if (agent) {
-            alert(`Viewing metrics for: ${agent.name}`);
-            navigateToSection('metrics');
-        }
-    } catch (error) {
-        console.error('Error viewing metrics:', error);
-    }
-}
-
-/**
- * Save application state to localStorage
- */
-function saveAppState() {
-    try {
-        if (typeof Storage !== 'undefined') {
-            localStorage.setItem('agentPlatformState', JSON.stringify(appState));
-        }
-    } catch (error) {
-        console.error('Error saving app state:', error);
-    }
-}
-
-/**
- * Load application state from localStorage
- */
-function loadAppState() {
-    try {
-        if (typeof Storage !== 'undefined') {
-            const savedState = localStorage.getItem('agentPlatformState');
-            if (savedState) {
-                const parsedState = JSON.parse(savedState);
-                appState = { ...appState, ...parsedState };
+        // Find the agent being configured and update it
+        if (this.currentEditingAgent) {
+            const agentIndex = this.agents.findIndex(agent => agent.id === this.currentEditingAgent.id);
+            if (agentIndex !== -1) {
+                // Update the agent with new configuration
+                this.agents[agentIndex] = {
+                    ...this.agents[agentIndex],
+                    name: shortName,
+                    fullName: fullName,
+                    version: agentVersion || '1.0.0',
+                    branch: branchName || 'main',
+                    description: description,
+                    deploymentDate: deploymentDate,
+                    lastActive: new Date().toISOString().split('T')[0]
+                };
+                
+                // Save to localStorage
+                localStorage.setItem('agents', JSON.stringify(this.agents));
+                
+                // Update the display
+                this.renderAgentsTable();
+                
+                // Show success message
+                alert('Agent configuration updated successfully!');
+                
+                // Switch back to dashboard
+                this.switchView('dashboard');
             }
         }
-    } catch (error) {
-        console.error('Error loading app state:', error);
-        // Reset to default state if loading fails
-        appState = {
-            hasAgents: false,
-            currentSection: 'agents'
+    }
+
+    /**
+     * Populate configuration form with agent data
+     */
+    populateConfigForm(agent) {
+        this.currentEditingAgent = agent;
+        
+        // Populate form fields
+        if (document.getElementById('config-short-name')) {
+            document.getElementById('config-short-name').value = agent.name || '';
+        }
+        if (document.getElementById('config-full-name')) {
+            document.getElementById('config-full-name').value = agent.fullName || '';
+        }
+        if (document.getElementById('config-agent-version')) {
+            document.getElementById('config-agent-version').value = agent.version || '1.0.0';
+        }
+        if (document.getElementById('config-branch-name')) {
+            document.getElementById('config-branch-name').value = agent.branch || 'main';
+        }
+        if (document.getElementById('config-agent-description')) {
+            document.getElementById('config-agent-description').value = agent.description || '';
+        }
+        if (document.getElementById('config-deployment-target-date')) {
+            document.getElementById('config-deployment-target-date').value = agent.deploymentDate || '';
+        }
+        
+        // Update the manifest immediately
+        this.updateConfigManifest();
+    }
+
+    /**
+     * Create a new agent from enhanced form data
+     */
+    createAgent() {
+        // Get enhanced form data
+        const shortName = document.getElementById('short-name')?.value;
+        const fullName = document.getElementById('full-name')?.value;
+        const agentVersion = document.getElementById('agent-version')?.value;
+        const branchName = document.getElementById('branch-name')?.value;
+        const description = document.getElementById('agent-description')?.value;
+        const deploymentDate = document.getElementById('deployment-target-date')?.value;
+        const isHeadless = document.getElementById('headless-agent')?.checked;
+        const agentId = document.getElementById('agent-id')?.value;
+        const websiteUrl = document.getElementById('website-url')?.value;
+        const privacyUrl = document.getElementById('privacy-url')?.value;
+        const termsUrl = document.getElementById('terms-url')?.value;
+        const appStoreDescription = document.getElementById('app-store-description')?.value;
+        const applicationId = document.getElementById('application-id')?.value;
+        const titleId = document.getElementById('title-id')?.value;
+        const developer = document.getElementById('developer')?.value;
+        
+        // Get selected rings
+        const selectedRings = Array.from(document.querySelectorAll('input[name="highest-ring"]:checked')).map(input => input.value);
+        const highestRing = document.querySelector('input[name="highest-ring"]:checked')?.value;
+        
+        // Get agent type
+        const agentType = document.querySelector('input[name="agent-type"]:checked')?.value;
+        
+        // Get selected plugins
+        const pluginSelect = document.getElementById('plugin-features');
+        const selectedPlugins = pluginSelect ? Array.from(pluginSelect.selectedOptions).map(opt => opt.value) : [];
+
+        if (!shortName || !fullName) {
+            alert('Please fill in the required fields (Short Name and Full Name)');
+            return;
+        }
+
+        const newAgent = {
+            id: Date.now(),
+            name: shortName,
+            fullName: fullName,
+            version: agentVersion || '1.0.0',
+            branch: branchName || 'main',
+            description: description || appStoreDescription || 'No description provided',
+            product: 'M365', // Default for new enhanced agents
+            host: 'BizChat', // Default for new enhanced agents
+            owner: 'Current User',
+            status: 'Testing',
+            successRate: 0,
+            responseTime: 0,
+            lastActive: new Date().toISOString().split('T')[0],
+            createdDate: new Date().toISOString().split('T')[0],
+            interactions: 0,
+            // Enhanced fields
+            deploymentDate,
+            isHeadless,
+            agentId,
+            websiteUrl,
+            privacyUrl,
+            termsUrl,
+            highestRing,
+            agentType,
+            selectedRings,
+            applicationId,
+            titleId,
+            developer,
+            plugins: selectedPlugins
         };
+
+        this.agents.push(newAgent);
+        this.saveAgents();
+        this.renderAgentsTable();
+        this.checkAgentsState();
+        
+        // Show success message and redirect
+        alert('Agent created successfully!');
+        this.switchView('dashboard');
+        
+        // Reset form
+        document.querySelector('.agent-form').reset();
+        this.updateManifest();
+    }
+
+    /**
+     * Update the agent preview in create view
+     */
+    updatePreview() {
+        const name = document.getElementById('agent-name')?.value || 'Your Agent';
+        const description = document.getElementById('agent-description')?.value || 'Agent description will appear here...';
+        const product = document.getElementById('product-select')?.value || 'Product';
+        const host = document.getElementById('host-select')?.value || 'Host';
+
+        const previewName = document.getElementById('preview-name');
+        const previewDescription = document.getElementById('preview-description');
+        const previewProduct = document.getElementById('preview-product');
+        const previewHost = document.getElementById('preview-host');
+
+        if (previewName) previewName.textContent = name;
+        if (previewDescription) previewDescription.textContent = description;
+        if (previewProduct) previewProduct.textContent = product;
+        if (previewHost) previewHost.textContent = host;
+    }
+
+    /**
+     * Filter agents based on search query
+     */
+    filterAgents(query) {
+        const productFilter = document.querySelector('.filter-select')?.value || '';
+        let filteredAgents = this.agents;
+
+        // Apply search filter
+        if (query.trim()) {
+            filteredAgents = filteredAgents.filter(agent => 
+                agent.name.toLowerCase().includes(query.toLowerCase()) ||
+                agent.product.toLowerCase().includes(query.toLowerCase()) ||
+                agent.owner.toLowerCase().includes(query.toLowerCase()) ||
+                agent.status.toLowerCase().includes(query.toLowerCase())
+            );
+        }
+
+        // Apply product filter
+        if (productFilter) {
+            filteredAgents = filteredAgents.filter(agent => 
+                agent.product === productFilter
+            );
+        }
+
+        this.renderFilteredAgents(filteredAgents);
+    }
+
+    /**
+     * Filter agents by product
+     */
+    filterAgentsByProduct(product) {
+        const searchQuery = document.querySelector('.search-input')?.value || '';
+        let filteredAgents = this.agents;
+
+        // Apply product filter
+        if (product) {
+            filteredAgents = filteredAgents.filter(agent => 
+                agent.product === product
+            );
+        }
+
+        // Apply search filter
+        if (searchQuery.trim()) {
+            filteredAgents = filteredAgents.filter(agent => 
+                agent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                agent.product.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                agent.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                agent.status.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        this.renderFilteredAgents(filteredAgents);
+    }
+
+    /**
+     * Clear all filters and show all agents
+     */
+    clearFilters() {
+        document.querySelector('.search-input').value = '';
+        document.querySelector('.filter-select').value = '';
+        this.renderAgentsTable();
+    }
+
+    /**
+     * Render filtered agents
+     */
+    renderFilteredAgents(agents) {
+        const tbody = document.getElementById('agents-table-body');
+        if (!tbody) return;
+
+        if (agents.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="no-results">
+                        <div class="no-results-content">
+                            <div class="no-results-icon">🔍</div>
+                            <h4>No agents found</h4>
+                            <p>Try adjusting your search or filter criteria</p>
+                            <button class="btn-primary" onclick="agentManager.clearFilters()">Clear Filters</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = agents.map(agent => `
+            <tr data-agent-id="${agent.id}">
+                <td>
+                    <div class="agent-name-cell">
+                        <div class="agent-avatar">🤖</div>
+                        <span class="agent-name">${agent.name}</span>
+                    </div>
+                </td>
+                <td><span class="product-tag">${agent.product}</span></td>
+                <td><span class="status-badge status-${agent.status.toLowerCase()}">${agent.status}</span></td>
+                <td>
+                    <div class="success-rate">
+                        <span>${agent.successRate}%</span>
+                        <div class="rate-bar">
+                            <div class="rate-fill" style="width: ${agent.successRate}%"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>${this.formatDate(agent.lastActive)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon" onclick="agentManager.editAgent(${agent.id})" title="Edit">✏️</button>
+                        <button class="btn-icon" onclick="agentManager.evaluateAgent(${agent.id})" title="Evaluate">🧪</button>
+                        <button class="btn-icon" onclick="agentManager.viewMetrics(${agent.id})" title="Metrics">📊</button>
+                        <button class="btn-icon" onclick="agentManager.deployAgent(${agent.id})" title="Deploy">🚀</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    /**
+     * Initialize charts for metrics view
+     */
+    initializeCharts() {
+        // Initialize all metrics charts with comprehensive data
+        
+        // 1. Engagement Chart (Line trend)
+        const engagementCtx = document.getElementById('engagementChart');
+        if (engagementCtx && !engagementCtx.chart) {
+            engagementCtx.chart = new Chart(engagementCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'Avg Actions per User',
+                        data: [2.1, 2.3, 2.2, 2.4, 2.6, 2.5, 2.4, 2.4],
+                        borderColor: '#2196F3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 3 }
+                    }
+                }
+            });
+        }
+
+        // 2. Quality Chart (Stacked bar + line)
+        const qualityCtx = document.getElementById('qualityChart');
+        if (qualityCtx && !qualityCtx.chart) {
+            qualityCtx.chart = new Chart(qualityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Task Success',
+                            data: [85, 87, 89, 88],
+                            backgroundColor: '#4CAF50',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Groundedness',
+                            data: [92, 91, 93, 94],
+                            backgroundColor: '#2196F3',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Low Toxicity',
+                            data: [98, 97, 98, 99],
+                            backgroundColor: '#FF9800',
+                            stack: 'Stack 0'
+                        },
+                        {
+                            label: 'Overall Quality',
+                            data: [87, 88, 90, 87],
+                            type: 'line',
+                            borderColor: '#9C27B0',
+                            backgroundColor: 'transparent',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 100, position: 'left' },
+                        y1: { type: 'linear', display: true, position: 'right', max: 100 }
+                    }
+                }
+            });
+        }
+
+        // 3. Active User Trend (Multi-series line)
+        const activeUserCtx = document.getElementById('activeUserChart');
+        if (activeUserCtx && !activeUserCtx.chart) {
+            activeUserCtx.chart = new Chart(activeUserCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'DAU',
+                            data: [12500, 13200, 12800, 13500],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'transparent'
+                        },
+                        {
+                            label: 'WAU',
+                            data: [45000, 47500, 46200, 48000],
+                            borderColor: '#2196F3',
+                            backgroundColor: 'transparent'
+                        },
+                        {
+                            label: 'MAU',
+                            data: [125000, 128000, 132000, 135000],
+                            borderColor: '#FF9800',
+                            backgroundColor: 'transparent'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 4. Citation Rate Trend (Line)
+        const citationCtx = document.getElementById('citationChart');
+        if (citationCtx && !citationCtx.chart) {
+            citationCtx.chart = new Chart(citationCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'Citation Rate %',
+                        data: [78, 82, 85, 83, 87, 89, 86, 88],
+                        borderColor: '#9C27B0',
+                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: false, min: 70, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // 5. Queries Trend (Column with moving average)
+        const queriesCtx = document.getElementById('queriesChart');
+        if (queriesCtx && !queriesCtx.chart) {
+            queriesCtx.chart = new Chart(queriesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Total Queries',
+                            data: [125000, 142000, 138000, 151000],
+                            backgroundColor: '#2196F3'
+                        },
+                        {
+                            label: 'Moving Average',
+                            data: [125000, 133500, 135000, 139000],
+                            type: 'line',
+                            borderColor: '#FF5722',
+                            backgroundColor: 'transparent',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true },
+                        y1: { type: 'linear', display: false, position: 'right' }
+                    }
+                }
+            });
+        }
+
+        // 6. Queries Per UU Trend (Line)
+        const queriesPerUUCtx = document.getElementById('queriesPerUUChart');
+        if (queriesPerUUCtx && !queriesPerUUCtx.chart) {
+            queriesPerUUCtx.chart = new Chart(queriesPerUUCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'Queries per Unique User',
+                        data: [8.2, 8.7, 8.4, 9.1, 9.3, 8.9, 9.2, 9.5],
+                        borderColor: '#FF9800',
+                        backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true, max: 12 }
+                    }
+                }
+            });
+        }
+
+        // 7. Availability Trend (Line with SLO threshold)
+        const availabilityCtx = document.getElementById('availabilityChart');
+        if (availabilityCtx && !availabilityCtx.chart) {
+            availabilityCtx.chart = new Chart(availabilityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [
+                        {
+                            label: 'Availability %',
+                            data: [99.95, 99.87, 99.92, 99.89, 99.97, 99.94, 99.91, 99.98],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'SLO Threshold (99.9%)',
+                            data: [99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9, 99.9],
+                            borderColor: '#FF5722',
+                            backgroundColor: 'transparent',
+                            borderDash: [5, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: false, min: 99.8, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // 8. SAT Rate Trend (Line)
+        const satRateCtx = document.getElementById('satRateChart');
+        if (satRateCtx && !satRateCtx.chart) {
+            satRateCtx.chart = new Chart(satRateCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'SAT Rate %',
+                        data: [84, 86, 88, 85, 89, 91, 87, 90],
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: false, min: 80, max: 95 }
+                    }
+                }
+            });
+        }
+
+        // 9. Thumbs Up Per 100K Queries (Column)
+        const thumbsUpCtx = document.getElementById('thumbsUpChart');
+        if (thumbsUpCtx && !thumbsUpCtx.chart) {
+            thumbsUpCtx.chart = new Chart(thumbsUpCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Thumbs Up per 100K',
+                        data: [2340, 2580, 2720, 2650],
+                        backgroundColor: '#4CAF50'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 10. Thumbs Down Per 100K Queries (Column)
+        const thumbsDownCtx = document.getElementById('thumbsDownChart');
+        if (thumbsDownCtx && !thumbsDownCtx.chart) {
+            thumbsDownCtx.chart = new Chart(thumbsDownCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Thumbs Down per 100K',
+                        data: [420, 380, 350, 390],
+                        backgroundColor: '#F44336'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 11. Feedback Chart (Stacked bar)
+        const feedbackCtx = document.getElementById('feedbackChart');
+        if (feedbackCtx && !feedbackCtx.chart) {
+            feedbackCtx.chart = new Chart(feedbackCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Positive',
+                            data: [1200, 1350, 1420, 1380],
+                            backgroundColor: '#4CAF50'
+                        },
+                        {
+                            label: 'Neutral',
+                            data: [450, 420, 400, 430],
+                            backgroundColor: '#FF9800'
+                        },
+                        {
+                            label: 'Negative',
+                            data: [180, 150, 140, 160],
+                            backgroundColor: '#F44336'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { stacked: true },
+                        y: { stacked: true, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // 12. Retention Ratio Chart (Line for WAU/MAU ratio)
+        const retentionRatioCtx = document.getElementById('retentionRatioChart');
+        if (retentionRatioCtx && !retentionRatioCtx.chart) {
+            retentionRatioCtx.chart = new Chart(retentionRatioCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                    datasets: [{
+                        label: 'WAU/MAU Ratio',
+                        data: [0.36, 0.37, 0.35, 0.38, 0.39, 0.36, 0.38, 0.37],
+                        borderColor: '#9C27B0',
+                        backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: false, min: 0.3, max: 0.5 }
+                    }
+                }
+            });
+        }
+
+        // Initialize interactive controls
+        this.initializeMetricsControls();
+    }
+
+    /**
+     * Initialize metrics interactive controls
+     */
+    initializeMetricsControls() {
+        // Feedback view toggle
+        document.querySelectorAll('.feedback-controls .btn-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const view = e.target.dataset.view;
+                document.querySelectorAll('.feedback-controls .btn-toggle').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                document.querySelectorAll('.feedback-view').forEach(v => v.classList.remove('active'));
+                document.getElementById(`feedback${view.charAt(0).toUpperCase() + view.slice(1)}`).classList.add('active');
+            });
+        });
+
+        // Retention view toggle
+        document.querySelectorAll('.retention-controls .btn-toggle').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const view = e.target.dataset.view;
+                document.querySelectorAll('.retention-controls .btn-toggle').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                document.querySelectorAll('.retention-view').forEach(v => v.classList.remove('active'));
+                if (view === 'heatmap') {
+                    document.getElementById('retentionHeatmap').classList.add('active');
+                } else {
+                    document.getElementById('retentionRatioChart').classList.add('active');
+                }
+            });
+        });
+
+        // Filter controls
+        document.getElementById('time-filter')?.addEventListener('change', () => this.refreshMetrics());
+        document.getElementById('agent-filter')?.addEventListener('change', () => this.refreshMetrics());
+        document.getElementById('ring-filter')?.addEventListener('change', () => this.refreshMetrics());
+    }
+
+    /**
+     * Refresh metrics data
+     */
+    refreshMetrics() {
+        // Update KPI values with new data
+        document.getElementById('kpi-engagement').textContent = (Math.random() * 2 + 1.5).toFixed(1);
+        document.getElementById('kpi-quality').textContent = (Math.random() * 10 + 85).toFixed(1);
+        document.getElementById('kpi-dau').textContent = (Math.random() * 5 + 10).toFixed(1) + 'K';
+        document.getElementById('kpi-availability').textContent = (99.5 + Math.random() * 0.5).toFixed(1) + '%';
+        
+        // Update dashboard metrics to match
+        document.getElementById('dashboard-engagement').textContent = document.getElementById('kpi-engagement').textContent;
+        document.getElementById('dashboard-quality').textContent = document.getElementById('kpi-quality').textContent;
+        document.getElementById('dashboard-dau').textContent = document.getElementById('kpi-dau').textContent;
+        document.getElementById('dashboard-availability').textContent = document.getElementById('kpi-availability').textContent;
+        
+        // Note: In a real application, this would fetch new data and update all charts
+        console.log('Metrics refreshed with current filter settings');
+    }
+
+    /**
+     * Sync dashboard metrics with KPI values
+     */
+    syncDashboardMetrics() {
+        // Ensure dashboard metrics match KPI values
+        const engagement = document.getElementById('kpi-engagement')?.textContent || '2.4';
+        const quality = document.getElementById('kpi-quality')?.textContent || '87.2';
+        const dau = document.getElementById('kpi-dau')?.textContent || '12.5K';
+        const availability = document.getElementById('kpi-availability')?.textContent || '99.8%';
+        
+        if (document.getElementById('dashboard-engagement')) {
+            document.getElementById('dashboard-engagement').textContent = engagement;
+        }
+        if (document.getElementById('dashboard-quality')) {
+            document.getElementById('dashboard-quality').textContent = quality;
+        }
+        if (document.getElementById('dashboard-dau')) {
+            document.getElementById('dashboard-dau').textContent = dau;
+        }
+        if (document.getElementById('dashboard-availability')) {
+            document.getElementById('dashboard-availability').textContent = availability;
+        }
+    }
+
+    /**
+     * Navigate to metrics page with focus on specific metric
+     */
+    navigateToMetrics(metricType) {
+        // Switch to metrics view
+        this.switchView('metrics');
+        
+        // Update lifecycle step to highlight "Agent Metrics"
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        document.querySelector('[data-step="monitor"]').classList.add('active');
+        
+        // Optional: Scroll to or highlight the specific metric chart
+        setTimeout(() => {
+            let targetChart = null;
+            switch(metricType) {
+                case 'engagement':
+                    targetChart = document.getElementById('engagementChart');
+                    break;
+                case 'quality':
+                    targetChart = document.getElementById('qualityChart');
+                    break;
+                case 'dau':
+                    targetChart = document.getElementById('activeUserChart');
+                    break;
+                case 'availability':
+                    targetChart = document.getElementById('availabilityChart');
+                    break;
+            }
+            
+            if (targetChart) {
+                targetChart.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Add temporary highlight effect
+                const container = targetChart.closest('.chart-container');
+                if (container) {
+                    container.style.border = '2px solid var(--primary-color)';
+                    container.style.borderRadius = '8px';
+                    setTimeout(() => {
+                        container.style.border = '';
+                    }, 2000);
+                }
+            }
+        }, 100);
+    }
+
+    /**
+     * Render detailed metrics table
+     */
+    renderMetricsTable() {
+        const tbody = document.getElementById('metrics-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = this.agents.map(agent => `
+            <tr>
+                <td>${agent.name}</td>
+                <td>${agent.successRate}%</td>
+                <td>${this.generateRandomScore(85, 95)}</td>
+                <td>${(Math.random() * 2 + 1.5).toFixed(1)}</td>
+                <td>${(Math.random() * 5 + 10).toFixed(1)}K</td>
+                <td>${this.generateRandomScore(75, 90)}%</td>
+                <td>${(99.5 + Math.random() * 0.5).toFixed(2)}%</td>
+                <td>${this.generateRandomScore(80, 95)}%</td>
+            </tr>
+        `).join('');
+    }
+
+    /**
+     * Agent action handlers
+     */
+    editAgent(id) {
+        this.switchView('configure');
+        
+        // Update lifecycle step to highlight "Configure Agent"
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        document.querySelector('[data-step="configure"]').classList.add('active');
+        
+        const agent = this.agents.find(a => a.id === id);
+        if (agent) {
+            // Populate configure form with agent data using the new comprehensive form
+            this.populateConfigForm(agent);
+        }
+    }
+
+    evaluateAgent(id) {
+        this.switchView('playground');
+        
+        // Update lifecycle step to highlight "Evaluate Models"
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        document.querySelector('[data-step="evaluate"]').classList.add('active');
+        
+        document.getElementById('test-agent').value = this.agents.find(a => a.id === id)?.name.toLowerCase();
+    }
+
+    viewMetrics(id) {
+        this.switchView('metrics');
+        
+        // Update lifecycle step to highlight "Monitor"
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        document.querySelector('[data-step="monitor"]').classList.add('active');
+    }
+
+    deployAgent(id) {
+        // Update lifecycle step to highlight "Deploy"
+        document.querySelectorAll('.lifecycle-step').forEach(s => {
+            s.classList.remove('active');
+        });
+        document.querySelector('[data-step="deploy"]').classList.add('active');
+        
+        const agent = this.agents.find(a => a.id === id);
+        if (agent) {
+            agent.status = 'Active';
+            this.saveAgents();
+            this.renderAgentsTable();
+            alert(`${agent.name} deployed successfully!`);
+        }
+    }
+
+    /**
+     * Utility functions
+     */
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();
+    }
+
+    generateRandomScore(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
 
-// Initialize the application when the DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeApp);
+/**
+ * Global utility functions
+ */
+function showCreateView() {
+    agentManager.switchView('create');
+}
 
-// Make functions available globally for onclick handlers
-window.editAgent = editAgent;
-window.evaluateAgent = evaluateAgent;
-window.viewMetrics = viewMetrics;
-window.handleModelSwitch = handleModelSwitch;
-window.handleOptimizationAction = handleOptimizationAction;
-window.handleTestScenario = handleTestScenario;
+function showDashboard() {
+    agentManager.switchView('dashboard');
+}
+
+function addSuggestion(text) {
+    const promptInput = document.getElementById('prompt-input');
+    if (promptInput) {
+        promptInput.value = text;
+    }
+}
+
+function runPlaygroundTest() {
+    const agent = document.getElementById('test-agent').value;
+    const prompt = document.getElementById('test-prompt').value;
+    const model = document.getElementById('model-selection').value;
+
+    if (!agent || !prompt) {
+        alert('Please select an agent and enter a test prompt');
+        return;
+    }
+
+    // Simulate test execution
+    const testOutput = document.getElementById('test-output');
+    const responseTime = document.getElementById('test-response-time');
+    const tokens = document.getElementById('test-tokens');
+    const confidence = document.getElementById('test-confidence');
+
+    testOutput.innerHTML = `
+        <div class="test-result">
+            <h4>Test Response:</h4>
+            <p>Based on your prompt "${prompt}", the ${agent} agent would respond with comprehensive assistance. This is a simulated response demonstrating the agent's capabilities.</p>
+            <div class="response-metadata">
+                <span class="timestamp">Generated at: ${new Date().toLocaleTimeString()}</span>
+                <span class="model-used">Model: ${model}</span>
+            </div>
+        </div>
+    `;
+
+    responseTime.textContent = `${(Math.random() * 2 + 0.5).toFixed(2)}s`;
+    tokens.textContent = `${Math.floor(Math.random() * 150 + 50)}`;
+    confidence.textContent = `${(Math.random() * 20 + 80).toFixed(1)}%`;
+}
+
+function analyzePrompt() {
+    const prompt = document.getElementById('current-prompt').value;
+    if (!prompt) {
+        alert('Please enter a prompt to analyze');
+        return;
+    }
+
+    // Simulate analysis
+    const score = Math.floor(Math.random() * 30 + 70);
+    document.querySelector('.score-value').textContent = score;
+
+    const suggestions = [
+        'Add more specific context about the agent\'s role',
+        'Include examples of expected responses',
+        'Clarify the tone and style preferences',
+        'Add constraints for response length'
+    ];
+
+    const suggestionsList = document.getElementById('suggestions-list');
+    suggestionsList.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
+
+    document.getElementById('clarity-score').textContent = Math.floor(Math.random() * 30 + 70);
+    document.getElementById('specificity-score').textContent = Math.floor(Math.random() * 30 + 70);
+    document.getElementById('context-score').textContent = Math.floor(Math.random() * 30 + 70);
+}
+
+function suggestImprovements() {
+    analyzePrompt();
+    alert('Analysis complete! Check the suggestions panel for recommendations.');
+}
+
+function optimizePrompt() {
+    const currentPrompt = document.getElementById('current-prompt');
+    if (!currentPrompt.value) {
+        alert('Please enter a prompt to optimize');
+        return;
+    }
+
+    const optimizedPrompt = `You are a highly specialized AI assistant with expertise in ${currentPrompt.value.toLowerCase().includes('sales') ? 'sales and customer engagement' : 'problem-solving and analysis'}. 
+
+Your role is to: ${currentPrompt.value}
+
+Guidelines:
+- Provide clear, actionable responses
+- Maintain a professional yet approachable tone
+- Ask clarifying questions when needed
+- Offer specific examples and recommendations
+
+Response format: Always structure your responses with clear headings and bullet points for easy reading.`;
+
+    currentPrompt.value = optimizedPrompt;
+    analyzePrompt();
+    alert('Prompt optimized! The improved version has been applied.');
+}
+
+function saveAgentConfiguration() {
+    const name = document.getElementById('compliant-agent-name').value;
+    const version = document.getElementById('version-number').value;
+    const branch = document.getElementById('branch-name').value;
+    
+    if (!name || !version) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    alert('Agent configuration saved successfully!');
+    agentManager.switchView('dashboard');
+}
+
+/**
+ * Onboarding and Help System
+ */
+
+// Check if this is the user's first visit
+AgentManager.prototype.checkFirstVisit = function() {
+    return !localStorage.getItem('hasVisited');
+};
+
+// Show onboarding overlay
+AgentManager.prototype.showOnboarding = function() {
+    const overlay = document.getElementById('onboarding-overlay');
+    overlay.classList.add('active');
+    this.onboardingStep = 0;
+    this.updateOnboardingStep();
+};
+
+// Close onboarding overlay
+AgentManager.prototype.closeOnboarding = function() {
+    const overlay = document.getElementById('onboarding-overlay');
+    overlay.classList.remove('active');
+    localStorage.setItem('hasVisited', 'true');
+};
+
+// Navigate onboarding steps
+AgentManager.prototype.nextOnboardingStep = function() {
+    const totalSteps = document.querySelectorAll('.onboarding-step').length;
+    if (this.onboardingStep < totalSteps - 1) {
+        this.onboardingStep++;
+        this.updateOnboardingStep();
+    } else {
+        this.closeOnboarding();
+    }
+};
+
+AgentManager.prototype.previousOnboardingStep = function() {
+    if (this.onboardingStep > 0) {
+        this.onboardingStep--;
+        this.updateOnboardingStep();
+    }
+};
+
+// Update onboarding step display
+AgentManager.prototype.updateOnboardingStep = function() {
+    // Update step content
+    document.querySelectorAll('.onboarding-step').forEach((step, index) => {
+        step.classList.toggle('active', index === this.onboardingStep);
+    });
+    
+    // Update dots
+    document.querySelectorAll('.onboarding-dots .dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === this.onboardingStep);
+    });
+    
+    // Update navigation buttons
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    
+    prevBtn.disabled = this.onboardingStep === 0;
+    nextBtn.textContent = this.onboardingStep === document.querySelectorAll('.onboarding-step').length - 1 ? 'Get Started' : 'Next';
+};
+
+// Go to specific onboarding step
+AgentManager.prototype.goToOnboardingStep = function(stepIndex) {
+    const totalSteps = document.querySelectorAll('.onboarding-step').length;
+    if (stepIndex >= 0 && stepIndex < totalSteps) {
+        this.onboardingStep = stepIndex;
+        this.updateOnboardingStep();
+    }
+};
+
+// Interactive onboarding actions
+AgentManager.prototype.onboardingPreviewAction = function(feature) {
+    // Add visual feedback
+    this.showOnboardingFeedback(`Exploring ${feature.charAt(0).toUpperCase() + feature.slice(1)} features...`);
+    
+    setTimeout(() => {
+        switch(feature) {
+            case 'create':
+                this.closeOnboarding();
+                this.switchView('create');
+                this.showStepTooltip(
+                    'Create Agent View',
+                    'Here you can build your AI agent from scratch or use our templates. Try filling out the form or selecting a template!',
+                    'Got it',
+                    () => this.hideStepTooltip()
+                );
+                break;
+            case 'configure':
+                this.closeOnboarding();
+                this.switchView('configure');
+                this.showStepTooltip(
+                    'Configure Agent View',
+                    'This is where you fine-tune your agent\'s settings, manage plugins, and review deployment configurations.',
+                    'Explore Tabs',
+                    () => {
+                        this.hideStepTooltip();
+                        this.switchConfigureTab('features');
+                    }
+                );
+                break;
+            case 'monitor':
+                this.closeOnboarding();
+                this.switchView('metrics');
+                this.showStepTooltip(
+                    'Performance Metrics',
+                    'Monitor your agent\'s performance with detailed analytics, user feedback, and operational insights.',
+                    'View Charts',
+                    () => this.hideStepTooltip()
+                );
+                break;
+        }
+    }, 600);
+};
+
+AgentManager.prototype.onboardingLifecycleAction = function(step) {
+    this.showOnboardingFeedback(`Learning about ${step} step...`);
+    
+    setTimeout(() => {
+        switch(step) {
+            case 'create':
+                this.closeOnboarding();
+                this.switchView('create');
+                this.showStepTooltip(
+                    'Step 1: Create Agent',
+                    'Start by defining your agent\'s basic information. Choose a template or build from scratch!',
+                    'Try Templates',
+                    () => {
+                        this.hideStepTooltip();
+                        // Scroll to templates
+                        document.querySelector('.templates-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }
+                );
+                break;
+            case 'configure':
+                this.closeOnboarding();
+                this.switchView('configure');
+                this.showStepTooltip(
+                    'Step 2: Configure Agent',
+                    'Set up your agent\'s plugins, permissions, and deployment settings. Each tab contains important configuration options.',
+                    'Explore Tabs',
+                    () => {
+                        this.hideStepTooltip();
+                        this.switchConfigureTab('ado');
+                    }
+                );
+                break;
+            case 'evaluate':
+                this.closeOnboarding();
+                this.switchView('playground');
+                this.showStepTooltip(
+                    'Step 3: Evaluate & Test',
+                    'Test your agent\'s responses and experiment with different inputs to ensure it works as expected.',
+                    'Start Testing',
+                    () => this.hideStepTooltip()
+                );
+                break;
+            case 'deploy':
+                this.closeOnboarding();
+                this.switchView('dashboard');
+                this.showStepTooltip(
+                    'Step 4: Deploy',
+                    'Once your agent is ready, you can deploy it to your target environment and monitor the rollout.',
+                    'View Dashboard',
+                    () => this.hideStepTooltip()
+                );
+                break;
+            case 'monitor':
+                this.closeOnboarding();
+                this.switchView('metrics');
+                this.showStepTooltip(
+                    'Step 5: Monitor',
+                    'Track your agent\'s performance with comprehensive metrics and analytics to ensure optimal operation.',
+                    'Explore Metrics',
+                    () => this.hideStepTooltip()
+                );
+                break;
+        }
+    }, 600);
+};
+
+AgentManager.prototype.onboardingTemplateAction = function(templateType) {
+    this.showOnboardingFeedback(`Loading ${templateType} template...`);
+    
+    setTimeout(() => {
+        this.closeOnboarding();
+        this.selectTemplate(templateType);
+        // Additional guidance will be shown by selectTemplate method
+    }, 600);
+};
+
+// Agent interaction
+AgentManager.prototype.interactWithAgent = function(context) {
+    const tips = {
+        welcome: [
+            "💡 Tip: You can always return to this tour by clicking the help widget!",
+            "🚀 Pro tip: Start with a template to see best practices in action!",
+            "🎯 Did you know? Each lifecycle step has contextual guidance to help you!"
+        ],
+        lifecycle: [
+            "📝 Each step builds on the previous one - don't skip ahead too quickly!",
+            "🔄 You can iterate between steps as you refine your agent.",
+            "⚡ The Deploy step includes automated testing and validation!"
+        ],
+        templates: [
+            "🎨 Templates are fully customizable - use them as starting points!",
+            "📊 Each template comes with pre-configured metrics and monitoring.",
+            "🔧 You can mix and match features from different templates!"
+        ]
+    };
+    
+    const contextTips = tips[context] || ["💡 Click around to explore more features!"];
+    const randomTip = contextTips[Math.floor(Math.random() * contextTips.length)];
+    
+    // Show tip in a toast-like notification
+    this.showAgentTip(randomTip);
+};
+
+// Show agent tip
+AgentManager.prototype.showAgentTip = function(tip) {
+    // Create or update tip element
+    let tipElement = document.querySelector('.agent-tip');
+    if (!tipElement) {
+        tipElement = document.createElement('div');
+        tipElement.className = 'agent-tip';
+        document.body.appendChild(tipElement);
+    }
+    
+    tipElement.innerHTML = `
+        <div class="agent-tip-content">
+            <span class="agent-tip-avatar">🤖</span>
+            <span class="agent-tip-text">${tip}</span>
+            <button class="agent-tip-close" onclick="this.parentElement.parentElement.classList.remove('active')">×</button>
+        </div>
+    `;
+    
+    tipElement.classList.add('active');
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        tipElement.classList.remove('active');
+    }, 5000);
+};
+
+// Show onboarding feedback
+AgentManager.prototype.showOnboardingFeedback = function(message) {
+    // Create or update feedback element
+    let feedback = document.querySelector('.onboarding-feedback');
+    if (!feedback) {
+        feedback = document.createElement('div');
+        feedback.className = 'onboarding-feedback';
+        document.querySelector('.onboarding-modal').appendChild(feedback);
+    }
+    
+    feedback.textContent = message;
+    feedback.classList.add('active');
+    
+    setTimeout(() => {
+        feedback.classList.remove('active');
+    }, 2000);
+};
+
+// Step-specific guidance system
+AgentManager.prototype.showStepGuidance = function(step) {
+    const guidance = {
+        create: {
+            title: "Create Your First Agent",
+            message: "Start by giving your agent a name and selecting its capabilities. I'll help you choose the right plugins and settings!",
+            action: "Start Creating",
+            actionFn: () => this.switchView('create')
+        },
+        configure: {
+            title: "Configure Agent Settings",
+            message: "Fine-tune your agent's permissions, deployment settings, and advanced configurations. Make sure to review all tabs!",
+            action: "Configure Now",
+            actionFn: () => this.switchView('configure')
+        },
+        evaluate: {
+            title: "Test Your Agent",
+            message: "Before deploying, test your agent's responses and optimize its prompts. This ensures the best user experience!",
+            action: "Test Agent",
+            actionFn: () => this.switchView('playground')
+        },
+        deploy: {
+            title: "Deploy Your Agent",
+            message: "Ready to go live? Review your deployment checklist and launch your agent to users!",
+            action: "Deploy",
+            actionFn: () => this.deployAgent()
+        },
+        monitor: {
+            title: "Monitor Performance",
+            message: "Track how your agent is performing with detailed analytics and user feedback. Continuous improvement is key!",
+            action: "View Metrics",
+            actionFn: () => this.switchView('metrics')
+        }
+    };
+    
+    const stepGuidance = guidance[step];
+    if (!stepGuidance) return;
+    
+    this.showStepTooltip(stepGuidance.title, stepGuidance.message, stepGuidance.action, stepGuidance.actionFn);
+};
+
+// Show step tooltip
+AgentManager.prototype.showStepTooltip = function(title, message, actionText, actionFn) {
+    const tooltip = document.getElementById('step-tooltip');
+    const titleEl = tooltip.querySelector('.tooltip-title');
+    const messageEl = tooltip.querySelector('.tooltip-message');
+    const actionBtn = tooltip.querySelector('.tooltip-action-btn');
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    actionBtn.textContent = actionText;
+    actionBtn.onclick = () => {
+        actionFn();
+        this.hideStepTooltip();
+    };
+    
+    tooltip.classList.add('active');
+};
+
+// Hide step tooltip
+AgentManager.prototype.hideStepTooltip = function() {
+    document.getElementById('step-tooltip').classList.remove('active');
+};
+
+// Help widget functionality
+AgentManager.prototype.toggleHelp = function() {
+    const helpMenu = document.querySelector('.help-menu');
+    this.helpMenuOpen = !this.helpMenuOpen;
+    helpMenu.classList.toggle('active', this.helpMenuOpen);
+};
+
+AgentManager.prototype.showStepGuide = function() {
+    this.toggleHelp();
+    // Show contextual guidance based on current view
+    if (this.currentView === 'dashboard') {
+        this.showStepGuidance('create');
+    } else {
+        this.showStepGuidance(this.currentView);
+    }
+};
+
+AgentManager.prototype.showVideoTutorials = function() {
+    this.toggleHelp();
+    alert('Video tutorials will be available soon! For now, try the interactive tour.');
+};
+
+AgentManager.prototype.showDocumentation = function() {
+    this.toggleHelp();
+    alert('Opening documentation... (This would typically open a help portal)');
+};
+
+AgentManager.prototype.contactSupport = function() {
+    this.toggleHelp();
+    alert('Support ticket system would open here. For now, try the onboarding tour for help!');
+};
+
+// Template selection with onboarding integration
+AgentManager.prototype.selectTemplate = function(templateType) {
+    const templates = {
+        sales: {
+            name: 'SalesAgent',
+            displayName: 'Sales Assistant',
+            description: 'AI agent specialized in lead qualification, customer outreach, and sales process automation.',
+            plugins: ['crm_integration', 'email_automation', 'lead_scoring'],
+            prompt: 'You are a sales assistant AI that helps qualify leads and automate customer outreach...'
+        },
+        research: {
+            name: 'ResearchAgent',
+            displayName: 'Research Assistant',
+            description: 'AI agent that excels at information gathering, data analysis, and research compilation.',
+            plugins: ['web_search', 'data_analysis', 'document_processing'],
+            prompt: 'You are a research assistant AI that helps gather and analyze information...'
+        },
+        opsgenie: {
+            name: 'OpsGenieAgent',
+            displayName: 'Operations Assistant',
+            description: 'AI agent for incident management, operational workflows, and system monitoring.',
+            plugins: ['incident_management', 'monitoring', 'alerting'],
+            prompt: 'You are an operations assistant AI that helps manage incidents and operational workflows...'
+        },
+        support: {
+            name: 'SupportAgent',
+            displayName: 'Customer Support Assistant',
+            description: 'AI agent for customer support, ticket resolution, and user assistance.',
+            plugins: ['ticket_management', 'knowledge_base', 'chat_support'],
+            prompt: 'You are a customer support assistant AI that helps resolve user issues...'
+        }
+    };
+    
+    const template = templates[templateType];
+    if (!template) return;
+    
+    // Switch to create view
+    this.switchView('create');
+    
+    // Pre-fill form with template data
+    setTimeout(() => {
+        document.getElementById('compliant-agent-name').value = template.name;
+        document.getElementById('full-name').value = template.displayName;
+        document.getElementById('agent-description').value = template.description;
+        document.getElementById('system-prompt').value = template.prompt;
+        
+        // Show template guidance
+        this.showStepTooltip(
+            `${template.displayName} Template Selected`,
+            `Great choice! I've pre-filled the form with ${template.displayName} settings. Review and customize the fields as needed, then proceed to configure your agent.`,
+            'Continue Setup',
+            () => this.hideStepTooltip()
+        );
+        
+        // Update manifest
+        this.updateManifest();
+    }, 100);
+};
+
+// Enhanced lifecycle step handling with guidance
+AgentManager.prototype.handleLifecycleStepWithGuidance = function(step) {
+    this.handleLifecycleStep(step);
+    
+    // Show guidance for new users
+    if (this.isFirstVisit || !localStorage.getItem(`guidance_${step}_shown`)) {
+        setTimeout(() => {
+            this.showStepGuidance(step);
+            localStorage.setItem(`guidance_${step}_shown`, 'true');
+        }, 500);
+    }
+};
+
+// Initialize the application
+let agentManager;
+document.addEventListener('DOMContentLoaded', () => {
+    agentManager = new AgentManager();
+});
