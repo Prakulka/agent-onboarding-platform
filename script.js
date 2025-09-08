@@ -221,8 +221,7 @@ class AgentManager {
             create: 'Create New Agent',
             configure: 'Configure Agent',
             metrics: 'Performance Metrics',
-            playground: 'Evaluate Models',
-            tprompt: 'Evaluate Prompts'
+            tprompt: 'Evaluate Agent'
         };
         document.getElementById('page-title').textContent = titles[view] || 'Dashboard';
 
@@ -232,8 +231,6 @@ class AgentManager {
         if (view === 'metrics') {
             this.initializeCharts();
             this.renderMetricsTable();
-        } else if (view === 'playground') {
-            this.initializeEvaluation();
         }
     }
 
@@ -272,23 +269,6 @@ class AgentManager {
     }
 
     /**
-     * Switch playground main tabs (Evaluation vs Quick Actions)
-     */
-    switchPlaygroundTab(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.playground-nav-tab').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[onclick="agentManager.switchPlaygroundTab('${tabName}')"]`).classList.add('active');
-
-        // Update tab content
-        document.querySelectorAll('.playground-tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(`playground-${tabName}-tab`).classList.add('active');
-    }
-
-    /**
      * Switch T-Prompt tabs (Prompt Optimization vs Quick Actions)
      */
     switchTPromptTab(tabName) {
@@ -313,15 +293,11 @@ class AgentManager {
         
         switch(actionType) {
             case 'compareModels':
-                this.switchPlaygroundTab('evaluation');
-                this.switchEvaluationTab('sidebyside');
-                this.showToast('Switched to Side-by-Side Model Comparison', 'info');
+                this.showToast('Model comparison functionality will be available in external playground', 'info');
                 break;
                 
             case 'benchmarkModel':
-                this.switchPlaygroundTab('evaluation');
-                this.switchEvaluationTab('rating');
-                this.showToast('Benchmark evaluation mode activated', 'info');
+                this.showToast('Model benchmarking functionality will be available in external playground', 'info');
                 break;
                 
             case 'modelHealth':
@@ -332,20 +308,15 @@ class AgentManager {
                 break;
                 
             case 'loadTemplate':
-                this.switchPlaygroundTab('evaluation');
-                this.switchEvaluationTab('rating');
-                this.loadEvaluationTemplate(template);
+                this.showToast('Template loading functionality will be available in external playground', 'info');
                 break;
                 
             case 'promptGenerator':
-                this.switchPlaygroundTab('evaluation');
-                this.switchEvaluationTab('rating');
-                this.showToast('Prompt generator activated', 'info');
+                this.showToast('Prompt generator functionality will be available in external playground', 'info');
                 break;
                 
             case 'batchEvaluation':
-                this.switchPlaygroundTab('evaluation');
-                this.showToast('Batch evaluation mode enabled', 'info');
+                this.showToast('Batch evaluation functionality will be available in external playground', 'info');
                 break;
                 
             case 'exportResults':
@@ -419,15 +390,14 @@ class AgentManager {
      * Launch Playground with agent-specific config
      */
     launchPlayground() {
-        this.showToast('Launching Playground with agent-specific configuration...', 'info');
+        this.showToast('Launching external Playground with agent-specific configuration...', 'info');
         
         // Simulate loading session
         setTimeout(() => {
-            this.showToast('Playground session loaded successfully', 'success');
-            // Here you would implement the actual playground launch logic
-            // For now, we'll switch to the playground view
-            this.switchMainTab('playground');
-            this.switchPlaygroundTab('evaluation');
+            this.showToast('External Playground session launched successfully', 'success');
+            // Here you would implement the actual external playground launch logic
+            // For example, opening a new window to the external playground
+            // window.open('https://playground.microsoft.com/', '_blank');
         }, 1500);
     }
 
@@ -435,14 +405,13 @@ class AgentManager {
      * Open Playground Session for GitHub Copilot agent
      */
     openPlaygroundSession() {
-        this.showToast('Opening Copilot Playground session...', 'info');
+        this.showToast('Opening external Copilot Playground session...', 'info');
         
         // Simulate session loading
         setTimeout(() => {
-            this.showToast('Playground session opened with preloaded configuration', 'success');
-            // Switch to playground and auto-load configuration
-            this.switchMainTab('playground');
-            this.switchPlaygroundTab('evaluation');
+            this.showToast('External Playground session opened with preloaded configuration', 'success');
+            // Here you would implement logic to open external playground with config
+            // window.open('https://playground.microsoft.com/copilot', '_blank');
         }, 1000);
     }
 
@@ -2863,4 +2832,289 @@ function copyToClipboard(promptType) {
 
 function suggestRerun() {
     agentManager.showToast('Re-run evaluation suggested', 'info');
+}
+
+// Platform Overview functionality
+function initializePlatformOverview() {
+    // Demo stage navigation
+    const demoBtns = document.querySelectorAll('.demo-btn');
+    const demoStages = document.querySelectorAll('.demo-stage');
+    
+    demoBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stage = btn.dataset.stage;
+            
+            // Update active button
+            demoBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update active stage
+            demoStages.forEach(s => s.classList.remove('active'));
+            const targetStage = document.getElementById(`demo-${stage}`);
+            if (targetStage) {
+                targetStage.classList.add('active');
+            }
+        });
+    });
+    
+    // Tool card interactions
+    const toolCards = document.querySelectorAll('.tool-card');
+    toolCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const tool = card.dataset.tool;
+            showToolDetails(tool);
+        });
+    });
+}
+
+// Show tool details
+function showToolDetails(tool) {
+    const toolInfo = {
+        gallery: {
+            title: "Agent Gallery",
+            description: "Browse 50+ pre-built agent templates with live demos and use case examples.",
+            features: ["Live agent demonstrations", "Use case filtering", "Template customization", "Success metrics"]
+        },
+        playground: {
+            title: "Copilot Playground",
+            description: "Model selection, evaluation, and experimentation platform for optimal agent performance.",
+            features: ["Model comparison", "Performance benchmarking", "Cost analysis", "Capability testing"]
+        },
+        wizard: {
+            title: "Use Case Wizard",
+            description: "Guided questionnaire that translates business needs into technical requirements.",
+            features: ["Requirements capture", "Feasibility assessment", "Resource planning", "Timeline estimation"]
+        },
+        tprompt: {
+            title: "T-Prompt Studio",
+            description: "Advanced prompt engineering with testing and optimization capabilities.",
+            features: ["Prompt optimization", "A/B testing", "Performance metrics", "Rewrite suggestions"]
+        },
+        datagen: {
+            title: "DataGen Platform",
+            description: "Automated test dataset generation and scenario creation for comprehensive testing.",
+            features: ["Scenario generation", "Test data creation", "Quality validation", "Coverage analysis"]
+        },
+        seval: {
+            title: "SEVAL Framework",
+            description: "Comprehensive agent evaluation and quality assessment system.",
+            features: ["Quality scoring", "Performance evaluation", "Compliance checking", "Bias detection"]
+        },
+        deployment: {
+            title: "Deployment Engine",
+            description: "Automated CI/CD and production deployment with safety checks.",
+            features: ["One-click deployment", "Canary releases", "Rollback protection", "Health monitoring"]
+        },
+        comet: {
+            title: "CoMet",
+            description: "Custom quality metrics creation and tracking for business-specific outcomes.",
+            features: ["Custom metrics", "Business alignment", "Performance tracking", "Optimization insights"]
+        },
+        analytics: {
+            title: "Analytics Dashboard",
+            description: "Real-time monitoring and performance insights across all platform tools.",
+            features: ["Real-time metrics", "Cross-tool insights", "Predictive analytics", "Custom reporting"]
+        }
+    };
+    
+    const info = toolInfo[tool] || { title: "Tool", description: "Tool description", features: [] };
+    
+    agentManager.showModal(
+        info.title,
+        `<div style="text-align: left;">
+            <p style="margin-bottom: 1rem; line-height: 1.6;">${info.description}</p>
+            <h4 style="margin-bottom: 0.5rem; color: var(--primary-color);">Key Features:</h4>
+            <ul style="margin: 0; padding-left: 1.5rem;">
+                ${info.features.map(f => `<li style="margin-bottom: 0.25rem;">${f}</li>`).join('')}
+            </ul>
+        </div>`
+    );
+}
+
+// Initialize Platform Overview when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Small delay to ensure all elements are rendered
+    setTimeout(() => {
+        initializePlatformOverview();
+    }, 500);
+});
+
+// ====================== SEVAL Integration Functions ======================
+
+/**
+ * Launch SEVAL with pre-configured agent settings
+ */
+function launchSEVAL() {
+    const agentId = 'github-copilot-chat-agent-v2';
+    agentManager.showToast('Launching SEVAL with pre-configured agent settings...', 'info');
+    
+    // Simulate SEVAL launch
+    setTimeout(() => {
+        agentManager.showToast('SEVAL evaluation started successfully', 'success');
+        // In real implementation, this would open SEVAL in a new window with the agent ID
+        // window.open(`https://seval.microsoft.com/evaluate?agentId=${agentId}`, '_blank');
+        
+        // Add a new running entry to the table
+        addSEVALRunToTable({
+            date: new Date().toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            }),
+            agentId: agentId,
+            type: 'Production Eval',
+            score: 'Running',
+            status: 'In Progress',
+            duration: '0m 00s',
+            runId: `run-${Date.now()}`
+        });
+    }, 1500);
+}
+
+/**
+ * Refresh SEVAL results table
+ */
+function refreshSEVALResults() {
+    agentManager.showToast('Refreshing SEVAL results...', 'info');
+    
+    // Simulate refresh
+    setTimeout(() => {
+        agentManager.showToast('SEVAL results refreshed', 'success');
+        // In real implementation, this would fetch latest data from SEVAL API
+    }, 1000);
+}
+
+/**
+ * Export SEVAL results
+ */
+function exportSEVALResults() {
+    agentManager.showToast('Exporting SEVAL results...', 'info');
+    
+    // Simulate export
+    setTimeout(() => {
+        agentManager.showToast('SEVAL results exported successfully', 'success');
+        // In real implementation, this would generate and download a CSV/Excel file
+    }, 1500);
+}
+
+/**
+ * View detailed SEVAL results for a specific run
+ */
+function viewSEVALDetails(runId) {
+    agentManager.showToast(`Loading details for ${runId}...`, 'info');
+    
+    // Simulate loading details
+    setTimeout(() => {
+        showSEVALDetailsModal(runId);
+    }, 1000);
+}
+
+/**
+ * Download SEVAL report for a specific run
+ */
+function downloadSEVALReport(runId) {
+    agentManager.showToast(`Downloading report for ${runId}...`, 'info');
+    
+    // Simulate download
+    setTimeout(() => {
+        agentManager.showToast('Report downloaded successfully', 'success');
+        // In real implementation, this would download the actual report file
+    }, 1500);
+}
+
+/**
+ * View progress for a running SEVAL evaluation
+ */
+function viewSEVALProgress(runId) {
+    agentManager.showToast(`Loading progress for ${runId}...`, 'info');
+    
+    // Simulate progress view
+    setTimeout(() => {
+        showSEVALProgressModal(runId);
+    }, 1000);
+}
+
+/**
+ * Cancel a running SEVAL evaluation
+ */
+function cancelSEVALRun(runId) {
+    if (confirm('Are you sure you want to cancel this SEVAL run?')) {
+        agentManager.showToast(`Cancelling ${runId}...`, 'info');
+        
+        // Simulate cancellation
+        setTimeout(() => {
+            agentManager.showToast('SEVAL run cancelled', 'success');
+            // Update the table row to show cancelled status
+            updateSEVALRunStatus(runId, 'Cancelled', '❌ Cancelled');
+        }, 1000);
+    }
+}
+
+/**
+ * Add a new SEVAL run to the results table
+ */
+function addSEVALRunToTable(runData) {
+    const tbody = document.getElementById('seval-results-tbody');
+    if (!tbody) return;
+    
+    const row = document.createElement('tr');
+    row.className = 'result-row';
+    row.innerHTML = `
+        <td>${runData.date}</td>
+        <td>${runData.agentId}</td>
+        <td>${runData.type}</td>
+        <td><span class="score-badge running">⏳ ${runData.score}</span></td>
+        <td><span class="status-badge running">🔄 ${runData.status}</span></td>
+        <td>${runData.duration}</td>
+        <td>
+            <button class="btn-icon-small" title="View Progress" onclick="viewSEVALProgress('${runData.runId}')">👁️</button>
+            <button class="btn-icon-small" title="Cancel Run" onclick="cancelSEVALRun('${runData.runId}')">❌</button>
+        </td>
+    `;
+    
+    tbody.insertBefore(row, tbody.firstChild);
+}
+
+/**
+ * Update SEVAL run status in the table
+ */
+function updateSEVALRunStatus(runId, score, status) {
+    const rows = document.querySelectorAll('#seval-results-tbody tr');
+    rows.forEach(row => {
+        const buttons = row.querySelectorAll('button[onclick*="' + runId + '"]');
+        if (buttons.length > 0) {
+            const scoreCell = row.cells[3];
+            const statusCell = row.cells[4];
+            
+            scoreCell.innerHTML = `<span class="score-badge error">${score}</span>`;
+            statusCell.innerHTML = `<span class="status-badge warning">${status}</span>`;
+            
+            // Update action buttons
+            const actionsCell = row.cells[6];
+            actionsCell.innerHTML = `
+                <button class="btn-icon-small" title="View Details" onclick="viewSEVALDetails('${runId}')">👁️</button>
+                <button class="btn-icon-small" title="Download Report" onclick="downloadSEVALReport('${runId}')">📥</button>
+            `;
+        }
+    });
+}
+
+/**
+ * Show SEVAL details modal
+ */
+function showSEVALDetailsModal(runId) {
+    // Create and show modal with detailed SEVAL results
+    agentManager.showToast(`Showing detailed results for ${runId}`, 'info');
+    // In real implementation, this would show a modal with comprehensive evaluation details
+}
+
+/**
+ * Show SEVAL progress modal
+ */
+function showSEVALProgressModal(runId) {
+    // Create and show modal with current progress
+    agentManager.showToast(`Showing progress for ${runId}`, 'info');
+    // In real implementation, this would show a modal with real-time progress information
 }

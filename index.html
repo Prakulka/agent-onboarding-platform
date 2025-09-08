@@ -17,10 +17,10 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#" class="nav-link active" data-view="dashboard">🏠 My Agents</a></li>
+                <li><a href="#" class="nav-link" data-view="overview">🔗 Platform Overview</a></li>
                 <li><a href="#" class="nav-link" data-view="create">➕ Create Agent</a></li>
                 <li><a href="#" class="nav-link" data-view="metrics">📊 Metrics</a></li>
-                <li><a href="#" class="nav-link" data-view="playground">🧪 Evaluate Models</a></li>
-                <li><a href="#" class="nav-link" data-view="tprompt">💡 Evaluate Prompts</a></li>
+                <li><a href="#" class="nav-link" data-view="tprompt">💡 Evaluate Agent</a></li>
             </ul>
         </nav>
 
@@ -44,13 +44,9 @@
                     <div class="step-icon">⚙️</div>
                     <span>Configure Agent</span>
                 </div>
-                <div class="lifecycle-step" data-step="evaluate">
-                    <div class="step-icon">🧪</div>
-                    <span>Evaluate Models</span>
-                </div>
                 <div class="lifecycle-step" data-step="evaluate-prompts">
                     <div class="step-icon">💡</div>
-                    <span>Evaluate Prompts</span>
+                    <span>Evaluate Agent</span>
                 </div>
                 <div class="lifecycle-step" data-step="deploy">
                     <div class="step-icon">🚀</div>
@@ -164,6 +160,256 @@
                         </table>
                     </div>
                 </div>
+            </div>
+
+            <!-- Platform Overview View -->
+            <div id="overview-view" class="view">
+                <div class="view-header">
+                    <h2>🔗 Nexus Platform Overview</h2>
+                    <p>Integrated AI agent development platform bringing specialized tools together</p>
+                </div>
+
+                <!-- Platform Architecture -->
+                <div class="platform-section">
+                    <h3>🛠️ Integrated Tool Architecture</h3>
+                    <div class="architecture-diagram">
+                        <div class="tool-category">
+                            <h4>Discovery & Design</h4>
+                            <div class="tool-grid">
+                                <div class="tool-card" data-tool="gallery">
+                                    <div class="tool-icon">🎯</div>
+                                    <h5>Agent Gallery</h5>
+                                    <p>Pre-built templates</p>
+                                </div>
+                                <div class="tool-card" data-tool="playground">
+                                    <div class="tool-icon">🧪</div>
+                                    <h5>Copilot Playground</h5>
+                                    <p>Model selection & evaluation</p>
+                                </div>
+                                <div class="tool-card" data-tool="wizard">
+                                    <div class="tool-icon">🧙‍♂️</div>
+                                    <h5>Use Case Wizard</h5>
+                                    <p>Requirements capture</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workflow-arrow">→</div>
+
+                        <div class="tool-category">
+                            <h4>Development & Testing</h4>
+                            <div class="tool-grid">
+                                <div class="tool-card" data-tool="tprompt">
+                                    <div class="tool-icon">💡</div>
+                                    <h5>T-Prompt</h5>
+                                    <p>Prompt engineering & optimization</p>
+                                </div>
+                                <div class="tool-card" data-tool="datagen">
+                                    <div class="tool-icon">📊</div>
+                                    <h5>DataGen</h5>
+                                    <p>Test dataset generation</p>
+                                </div>
+                                <div class="tool-card" data-tool="seval">
+                                    <div class="tool-icon">✅</div>
+                                    <h5>SEVAL</h5>
+                                    <p>Agent evaluation framework</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workflow-arrow">→</div>
+
+                        <div class="tool-category">
+                            <h4>Deployment & Analytics</h4>
+                            <div class="tool-grid">
+                                <div class="tool-card" data-tool="deployment">
+                                    <div class="tool-icon">🚀</div>
+                                    <h5>Deployment Engine</h5>
+                                    <p>CI/CD automation</p>
+                                </div>
+                                <div class="tool-card" data-tool="comet">
+                                    <div class="tool-icon">📈</div>
+                                    <h5>CoMet</h5>
+                                    <p>Custom quality metrics</p>
+                                </div>
+                                <div class="tool-card" data-tool="analytics">
+                                    <div class="tool-icon">📊</div>
+                                    <h5>Analytics Dashboard</h5>
+                                    <p>Real-time monitoring</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Workflow Demo -->
+                <div class="platform-section">
+                    <h3>🎮 Interactive Workflow Demonstration</h3>
+                    <div class="workflow-demo">
+                        <div class="demo-controls">
+                            <button class="demo-btn active" data-stage="discovery">1. Discovery</button>
+                            <button class="demo-btn" data-stage="design">2. Design</button>
+                            <button class="demo-btn" data-stage="development">3. Development</button>
+                            <button class="demo-btn" data-stage="testing">4. Testing</button>
+                            <button class="demo-btn" data-stage="deployment">5. Deployment</button>
+                            <button class="demo-btn" data-stage="monitoring">6. Monitoring</button>
+                        </div>
+
+                        <div class="demo-stage active" id="demo-discovery">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Discovery & Problem Definition</h4>
+                                    <p class="time-traditional">Traditional: 2-4 weeks</p>
+                                    <p class="time-nexus">Nexus: 30 min - 2 hours</p>
+                                    <div class="savings-badge">95%+ Time Saved</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">🎯 Agent Gallery</div>
+                                    <div class="active-tool">🧙‍♂️ Use Case Wizard</div>
+                                    <div class="active-tool">💰 ROI Calculator</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Clear requirements, feasibility assessment, business case ready
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-stage" id="demo-design">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Agent Design & Architecture</h4>
+                                    <p class="time-traditional">Traditional: 4-8 weeks</p>
+                                    <p class="time-nexus">Nexus: 4-8 hours</p>
+                                    <div class="savings-badge">90%+ Time Saved</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">🧪 Copilot Playground</div>
+                                    <div class="active-tool">⚙️ Configuration Interface</div>
+                                    <div class="active-tool">🔐 Security Framework</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Agent architecture defined, model selected, integrations mapped
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-stage" id="demo-development">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Development & Implementation</h4>
+                                    <p class="time-traditional">Traditional: 12-20 weeks</p>
+                                    <p class="time-nexus">Nexus: 1-2 weeks</p>
+                                    <div class="savings-badge">85%+ Time Saved</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">💡 T-Prompt Studio</div>
+                                    <div class="active-tool">📊 DataGen Platform</div>
+                                    <div class="active-tool">🔧 Code Generation</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Working agent with optimized prompts and generated test data
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-stage" id="demo-testing">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Testing & Optimization</h4>
+                                    <p class="time-traditional">Traditional: 6-12 weeks</p>
+                                    <p class="time-nexus">Nexus: 3-5 days</p>
+                                    <div class="savings-badge">90%+ Time Saved</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">✅ SEVAL Framework</div>
+                                    <div class="active-tool">📈 CoMet Metrics</div>
+                                    <div class="active-tool">🛡️ Bias Detection</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Validated agent with 95%+ quality score and compliance
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-stage" id="demo-deployment">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Deployment & Launch</h4>
+                                    <p class="time-traditional">Traditional: 3-6 weeks</p>
+                                    <p class="time-nexus">Nexus: 1-2 days</p>
+                                    <div class="savings-badge">95%+ Time Saved</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">🚀 Deployment Engine</div>
+                                    <div class="active-tool">🔄 CI/CD Pipeline</div>
+                                    <div class="active-tool">📚 Auto-Documentation</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Production-ready agent with monitoring and rollback protection
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-stage" id="demo-monitoring">
+                            <div class="stage-content">
+                                <div class="stage-info">
+                                    <h4>Monitoring & Maintenance</h4>
+                                    <p class="time-traditional">Traditional: Ongoing complexity</p>
+                                    <p class="time-nexus">Nexus: Automated optimization</p>
+                                    <div class="savings-badge">Continuous Value</div>
+                                </div>
+                                <div class="stage-tools">
+                                    <div class="active-tool">📊 Analytics Dashboard</div>
+                                    <div class="active-tool">🔍 Predictive Maintenance</div>
+                                    <div class="active-tool">🔄 Auto-Updates</div>
+                                </div>
+                                <div class="stage-outcome">
+                                    <strong>Outcome:</strong> Self-optimizing agent with proactive issue detection
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool Synergies -->
+                <div class="platform-section">
+                    <h3>🔄 Tool Synergies & Value Multiplication</h3>
+                    <div class="synergies-grid">
+                        <div class="synergy-card">
+                            <div class="synergy-header">
+                                <span class="tool-combo">📊 DataGen + 💡 T-Prompt</span>
+                            </div>
+                            <div class="synergy-content">
+                                <p class="challenge"><strong>Challenge:</strong> Manual test data creation for prompt optimization</p>
+                                <p class="solution"><strong>Solution:</strong> DataGen auto-creates test scenarios for T-Prompt optimization</p>
+                                <p class="outcome"><strong>Outcome:</strong> 90% reduction in testing setup time</p>
+                            </div>
+                        </div>
+
+                        <div class="synergy-card">
+                            <div class="synergy-header">
+                                <span class="tool-combo">🧪 Playground + ✅ SEVAL</span>
+                            </div>
+                            <div class="synergy-content">
+                                <p class="challenge"><strong>Challenge:</strong> Model selection without systematic evaluation</p>
+                                <p class="solution"><strong>Solution:</strong> Playground experiments feed into SEVAL assessment</p>
+                                <p class="outcome"><strong>Outcome:</strong> Data-driven model selection with quality validation</p>
+                            </div>
+                        </div>
+
+                        <div class="synergy-card">
+                            <div class="synergy-header">
+                                <span class="tool-combo">💡 T-Prompt + 📈 CoMet</span>
+                            </div>
+                            <div class="synergy-content">
+                                <p class="challenge"><strong>Challenge:</strong> Generic optimization without business metrics</p>
+                                <p class="solution"><strong>Solution:</strong> T-Prompt optimizes against custom CoMet metrics</p>
+                                <p class="outcome"><strong>Outcome:</strong> Prompts optimized for specific business outcomes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Configure Agent View -->
@@ -1419,324 +1665,41 @@
                 </div>
             </div>
 
-            <!-- Playground View -->
-            <div id="playground-view" class="view">
-                <div class="playground-header">
-                    <h2>Evaluate Models</h2>
-                </div>
-                
-                <!-- Playground Navigation Tabs -->
-                <div class="playground-nav-tabs">
-                    <button class="playground-nav-tab active" onclick="agentManager.switchPlaygroundTab('evaluation')">Evaluation</button>
-                    <button class="playground-nav-tab" onclick="agentManager.switchPlaygroundTab('quick-actions')">Quick Actions</button>
-                </div>
-                
-                <!-- Evaluation Tab Content -->
-                <div id="playground-evaluation-tab" class="playground-tab-content active">
-                    <div class="evaluation-container">
-                        <div class="evaluation-header">
-                            <div class="session-info">
-                                <span class="session-label">Session</span>
-                                <span class="session-name">New Evaluation</span>
-                                <div class="header-actions">
-                                    <button class="btn-icon" title="Share"><span>👤</span></button>
-                                    <button class="btn-icon" title="Lock"><span>🔒</span></button>
-                                    <button class="btn-icon" title="Copy"><span>📋</span></button>
-                                    <button class="btn-icon" title="Export"><span>⬆️</span></button>
-                                    <button class="btn-icon" title="Download"><span>⬇️</span></button>
-                                    <button class="btn-icon" title="Comments"><span>💬</span></button>
-                                    <button class="btn-icon" title="Print"><span>🖨️</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    
-                    <!-- Evaluation Tabs -->
-                    <div class="evaluation-tabs">
-                        <button class="eval-tab active" onclick="agentManager.switchEvaluationTab('rating')">Rating Based</button>
-                        <button class="eval-tab" onclick="agentManager.switchEvaluationTab('sidebyside')">Side-By-Side</button>
-                        <button class="eval-tab" onclick="agentManager.switchEvaluationTab('model')">Model Comparison</button>
-                        <button class="eval-tab" onclick="agentManager.switchEvaluationTab('response')">Response Comparison</button>
-                    </div>
-                    
-                    <div class="evaluation-content">
-                        <!-- Rating Based Tab -->
-                        <div id="rating-tab" class="eval-tab-content active">
-                            <div class="evaluation-layout">
-                                <!-- Left Panel - Prompts List -->
-                                <div class="prompts-panel">
-                                    <div class="prompts-header">
-                                        <h3>Prompts</h3>
-                                    </div>
-                                    
-                                    <div class="prompts-table-container">
-                                        <table class="prompts-table">
-                                            <thead>
-                                                <tr>
-                                                    <th><input type="checkbox" class="select-all"></th>
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Prompt</th>
-                                                    <th><button class="btn-icon-small">📊</button></th>
-                                                    <th><button class="btn-icon-small">⭐</button></th>
-                                                    <th>Model</th>
-                                                    <th>Temperature</th>
-                                                    <th>Final Score</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="prompt-row active" onclick="agentManager.selectPrompt(1)">
-                                                    <td><input type="checkbox"></td>
-                                                    <td>1</td>
-                                                    <td>Email Assistant Test</td>
-                                                    <td class="prompt-preview">You are an email assistant that helps users...</td>
-                                                    <td><button class="btn-icon-small">📊</button></td>
-                                                    <td><button class="btn-icon-small">⭐</button></td>
-                                                    <td>dev-gpt-4</td>
-                                                    <td>0.3</td>
-                                                    <td><span class="score-badge">8.5</span></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                
-                                <!-- Right Panel - Prompt Details -->
-                                <div class="prompt-details-panel">
-                                    <div class="prompt-header">
-                                        <div class="prompt-info">
-                                            <h3>Prompt 1</h3>
-                                            <span class="prompt-badge">New Prompt</span>
-                                        </div>
-                                        <div class="prompt-actions">
-                                            <button class="btn-icon" title="Copy"><span>📋</span></button>
-                                            <button class="btn-icon" title="Share"><span>🔗</span></button>
-                                            <button class="btn-icon" title="Edit"><span>✏️</span></button>
-                                            <button class="btn-icon" title="Delete"><span>🗑️</span></button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="chat-interface">
-                                        <div class="chat-mode-toggle">
-                                            <div class="toggle-option">
-                                                <span class="toggle-label">Custom Template</span>
-                                                <label class="toggle-switch">
-                                                    <input type="checkbox" checked>
-                                                    <span class="toggle-slider"></span>
-                                                </label>
-                                            </div>
-                                            <div class="chat-mode-info">
-                                                <span class="mode-label">Chat Mode</span>
-                                                <span class="completion-label">Chat Completion</span>
-                                                <button class="btn-icon-small">📋</button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="message-input-section">
-                                            <div class="input-header">
-                                                <button class="btn-outline add-message-btn">
-                                                    <span>🗨️</span> Add Message
-                                                </button>
-                                                <button class="btn-outline generate-prompt-btn">
-                                                    <span>⚡</span> Generate System Prompt
-                                                </button>
-                                                <button class="btn-outline add-message-btn-alt">
-                                                    Add Message <span>📂</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Model Configuration Panel -->
-                                        <div class="model-config-panel">
-                                            <div class="model-selector">
-                                                <label>Custom Template Model</label>
-                                                <select class="model-select">
-                                                    <option value="dev-gpt-41-shortco-2025-04-14">dev-gpt-41-shortco-2025-04-14</option>
-                                                    <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                                                    <option value="gpt-35-turbo">GPT-3.5 Turbo</option>
-                                                </select>
-                                                <button class="btn-icon-small">📋</button>
-                                            </div>
-                                            
-                                            <div class="model-parameters">
-                                                <div class="parameter-group">
-                                                    <label>Temperature</label>
-                                                    <div class="slider-container">
-                                                        <input type="range" min="0" max="2" step="0.1" value="0.3" class="parameter-slider">
-                                                        <span class="parameter-value">0.3</span>
-                                                        <button class="btn-icon-small">📋</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Max Tokens</label>
-                                                    <div class="slider-container">
-                                                        <input type="range" min="1" max="4096" step="1" value="200" class="parameter-slider">
-                                                        <span class="parameter-value">200</span>
-                                                        <button class="btn-icon-small">📋</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Top P</label>
-                                                    <div class="slider-container">
-                                                        <input type="range" min="0" max="1" step="0.01" value="1" class="parameter-slider">
-                                                        <span class="parameter-value">1</span>
-                                                        <button class="btn-icon-small">📋</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Frequency Penalty</label>
-                                                    <div class="slider-container">
-                                                        <input type="range" min="-2" max="2" step="0.01" value="0" class="parameter-slider">
-                                                        <span class="parameter-value">0</span>
-                                                        <button class="btn-icon-small">📋</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Presence Penalty</label>
-                                                    <div class="slider-container">
-                                                        <input type="range" min="-2" max="2" step="0.01" value="0" class="parameter-slider">
-                                                        <span class="parameter-value">0</span>
-                                                        <button class="btn-icon-small">📋</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Stop Sequences</label>
-                                                    <input type="text" placeholder="New Sequence" class="stop-sequence-input">
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label>Seed</label>
-                                                    <input type="number" class="seed-input">
-                                                    <button class="btn-icon-small">📋</button>
-                                                </div>
-                                                
-                                                <div class="parameter-group">
-                                                    <label class="checkbox-label">
-                                                        <input type="checkbox" class="stream-response">
-                                                        <span>Stream Response</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Other Tab Contents (placeholders) -->
-                        <div id="sidebyside-tab" class="eval-tab-content">
-                            <div class="coming-soon">
-                                <h3>Side-By-Side Evaluation</h3>
-                                <p>Compare two models or prompts side by side</p>
-                            </div>
-                        </div>
-                        
-                        <div id="model-tab" class="eval-tab-content">
-                            <div class="coming-soon">
-                                <h3>Model Comparison</h3>
-                                <p>Compare performance across different models</p>
-                            </div>
-                        </div>
-                        
-                        <div id="response-tab" class="eval-tab-content">
-                            <div class="coming-soon">
-                                <h3>Response Comparison</h3>
-                                <p>Analyze and compare model responses</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Quick Actions Tab Content -->
-            <div id="playground-quick-actions-tab" class="playground-tab-content">
-                <div class="quick-actions-container">
-                    <div class="quick-actions-header">
-                        <h3>Quick Actions</h3>
-                        <p>Quick access to commonly used evaluation tools and resources</p>
-                    </div>
-                    
-                    <div class="quick-actions-grid">
-                        <!-- One-Click Playground Launch -->
-                        <div class="action-card">
-                            <div class="action-icon">🚀</div>
-                            <div class="action-content">
-                                <h4>One-Click Playground Launch</h4>
-                                <p>Launch Playground with agent-specific config and test dataset.</p>
-                                <div class="action-details">
-                                    <span>Auto-load session → Link to Sydney trace</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary action-button" onclick="launchPlayground()">Launch Playground</button>
-                        </div>
-
-                        <!-- Open Playground Session -->
-                        <div class="action-card">
-                            <div class="action-icon">🎮</div>
-                            <div class="action-content">
-                                <h4>Open Playground Session</h4>
-                                <p>Open Copilot Playground with preloaded session for GitHub Copilot agent.</p>
-                                <div class="action-details">
-                                    <span>Link to Playground → Auto-load agent config and prompt</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary action-button" onclick="openPlaygroundSession()">Open Session</button>
-                        </div>
-
-                        <!-- View Previous Evaluation Results -->
-                        <div class="action-card">
-                            <div class="action-icon">📊</div>
-                            <div class="action-content">
-                                <h4>View Previous Evaluation Results</h4>
-                                <p>View results from last evaluation run. Includes latency, accuracy, and structured output.</p>
-                                <div class="action-details">
-                                    <span>Modal → Show summary → Link to full logs or Sydney trace</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary action-button" onclick="viewPreviousResults()">View Results</button>
-                        </div>
-
-                        <!-- Learning Resources -->
-                        <div class="action-card">
-                            <div class="action-icon">📚</div>
-                            <div class="action-content">
-                                <h4>Learning Resources</h4>
-                                <p>Access prompt engineering courses and demo sessions.</p>
-                                <div class="action-details">
-                                    <span>AI Academy, Demo Fest, Prompt Clinic</span>
-                                </div>
-                            </div>
-                            <button class="btn-primary action-button" onclick="openLearningResources()">Access Resources</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
             <!-- T-Prompt View -->
             <div id="tprompt-view" class="view">
                 <div class="tprompt-container">
                     <div class="tprompt-header">
-                        <h2>Evaluate Prompts</h2>
+                        <h2>Evaluate Agent</h2>
                         <p>Optimize your agent prompts for better performance</p>
                     </div>
                     
-                    <!-- Navigation Tabs -->
-                    <div class="tprompt-nav-tabs">
-                        <button class="tprompt-nav-tab active" onclick="switchTPromptTab('optimization')">
-                            Prompt Optimization
-                        </button>
-                        <button class="tprompt-nav-tab" onclick="switchTPromptTab('quick-actions')">
-                            Quick Actions
-                        </button>
-                    </div>
-                    
-                    <!-- Tab Content Container -->
-                    <div class="tprompt-tab-content-container">
+                    <!-- Two-Column Layout for Inner and Outer Loop Tools -->
+                    <div class="tools-layout">
+                        <!-- Inner Loop Tools Section -->
+                        <div class="tprompt-section inner-loop-section">
+                            <div class="section-header">
+                                <h3>Inner Loop Tools</h3>
+                                <p>Tools for rapid iteration and prompt optimization</p>
+                            </div>
+                            
+                            <!-- Navigation Tabs for Inner Loop -->
+                            <div class="tprompt-nav-tabs">
+                                <button class="tprompt-nav-tab active" onclick="switchTPromptTab('optimization')">
+                                    Prompt Optimization
+                                </button>
+                                <button class="tprompt-nav-tab" onclick="switchTPromptTab('devui-tools')">
+                                    DevUITools
+                                </button>
+                                <button class="tprompt-nav-tab" onclick="switchTPromptTab('results')">
+                                    Results
+                                </button>
+                                <button class="tprompt-nav-tab" onclick="switchTPromptTab('quick-actions')">
+                                    Quick Actions
+                                </button>
+                            </div>
+                            
+                            <!-- Tab Content Container -->
+                            <div class="tprompt-tab-content-container">
                         <!-- Prompt Optimization Tab Content -->
                         <div id="tprompt-optimization-tab" class="tprompt-tab-content active">
                             <div class="tprompt-layout">
@@ -1789,6 +1752,62 @@
                                                     <span class="perf-score" id="context-score">-</span>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- DevUITools Tab Content -->
+                        <div id="tprompt-devui-tools-tab" class="tprompt-tab-content">
+                            <div class="devui-tools-container">
+                                <div class="devui-tools-header">
+                                    <h3>DevUITools</h3>
+                                    <p>Development and UI tools for agent optimization</p>
+                                </div>
+                                
+                                <!-- Placeholder content for DevUITools -->
+                                <div class="devui-tools-placeholder">
+                                    <div class="placeholder-content">
+                                        <div class="placeholder-icon">🛠️</div>
+                                        <h4>Development Tools Coming Soon</h4>
+                                        <p>Advanced development and UI tools for agent optimization and testing will be available here.</p>
+                                        <div class="planned-features">
+                                            <h5>Planned Features:</h5>
+                                            <ul>
+                                                <li>Interactive prompt debugger</li>
+                                                <li>Real-time prompt validation</li>
+                                                <li>Agent behavior simulator</li>
+                                                <li>UI component testing tools</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Tab Content -->
+                        <div id="tprompt-results-tab" class="tprompt-tab-content">
+                            <div class="results-container">
+                                <div class="results-header">
+                                    <h3>Results</h3>
+                                    <p>View evaluation results and performance metrics</p>
+                                </div>
+                                
+                                <!-- Placeholder content for Results -->
+                                <div class="results-placeholder">
+                                    <div class="placeholder-content">
+                                        <div class="placeholder-icon">📊</div>
+                                        <h4>Results Dashboard Coming Soon</h4>
+                                        <p>Comprehensive evaluation results and performance analytics will be displayed here.</p>
+                                        <div class="planned-features">
+                                            <h5>Planned Features:</h5>
+                                            <ul>
+                                                <li>Evaluation run history</li>
+                                                <li>Performance trend analysis</li>
+                                                <li>Comparison charts</li>
+                                                <li>Export and reporting tools</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -1920,8 +1939,187 @@
                                         </div>
                                         <button class="btn-primary action-button" onclick="viewAgentHealthInsights()">View Insights</button>
                                     </div>
+
+                                    <!-- One-Click Playground Launch -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">🚀</div>
+                                        <div class="action-content">
+                                            <h4>One-Click Playground Launch</h4>
+                                            <p>Launch Playground with agent-specific config and test dataset.</p>
+                                            <div class="action-details">
+                                                <span>Auto-load session → Link to Sydney trace</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="launchPlayground()">Launch Playground</button>
+                                    </div>
+
+                                    <!-- Open Playground Session -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">🎮</div>
+                                        <div class="action-content">
+                                            <h4>Open Playground Session</h4>
+                                            <p>Open Copilot Playground with preloaded session for GitHub Copilot agent.</p>
+                                            <div class="action-details">
+                                                <span>Link to Playground → Auto-load agent config and prompt</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="openPlaygroundSession()">Open Session</button>
+                                    </div>
+
+                                    <!-- View Previous Evaluation Results -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">📊</div>
+                                        <div class="action-content">
+                                            <h4>View Previous Evaluation Results</h4>
+                                            <p>View results from last evaluation run. Includes latency, accuracy, and structured output.</p>
+                                            <div class="action-details">
+                                                <span>Modal → Show summary → Link to full logs or Sydney trace</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="viewPreviousResults()">View Results</button>
+                                    </div>
+
+                                    <!-- Learning Resources -->
+                                    <div class="tprompt-action-card">
+                                        <div class="action-icon">📚</div>
+                                        <div class="action-content">
+                                            <h4>Learning Resources</h4>
+                                            <p>Access prompt engineering courses and demo sessions.</p>
+                                            <div class="action-details">
+                                                <span>AI Academy, Demo Fest, Prompt Clinic</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary action-button" onclick="openLearningResources()">Access Resources</button>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                        </div>
+                        
+                        <!-- Outer Loop Tools Section -->
+                        <div class="tprompt-section outer-loop-section">
+                            <div class="section-header">
+                                <h3>Outer Loop Tools</h3>
+                                <p>Tools for production deployment and monitoring</p>
+                            </div>
+                            
+                            <!-- SEVAL Integration and Results -->
+                            <div class="outer-loop-content">
+                            <h3>Outer Loop Tools</h3>
+                            <p>Tools for production deployment and monitoring</p>
+                        </div>
+                        
+                        <!-- SEVAL Integration and Results -->
+                        <div class="outer-loop-content">
+                            <!-- SEVAL Launch Section -->
+                            <div class="seval-launch-section">
+                                <div class="seval-header">
+                                    <h4>🔍 SEVAL - Production Evaluation</h4>
+                                    <p>Launch SEVAL with pre-configured agent settings for production evaluation</p>
+                                </div>
+                                
+                                <div class="seval-config">
+                                    <div class="agent-info">
+                                        <label>Agent ID:</label>
+                                        <span class="agent-id">github-copilot-chat-agent-v2</span>
+                                        <button class="btn-icon-small" title="Copy Agent ID">📋</button>
+                                    </div>
+                                    <button class="btn-primary seval-launch-btn" onclick="launchSEVAL()">
+                                        🚀 Launch SEVAL Evaluation
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Previous Run Results -->
+                            <div class="seval-results-section">
+                                <div class="results-header">
+                                    <h4>📊 Previous SEVAL Runs</h4>
+                                    <div class="results-actions">
+                                        <button class="btn-outline-small" onclick="refreshSEVALResults()">🔄 Refresh</button>
+                                        <button class="btn-outline-small" onclick="exportSEVALResults()">📤 Export</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="seval-table-container">
+                                    <table class="seval-results-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Run Date</th>
+                                                <th>Agent ID</th>
+                                                <th>Evaluation Type</th>
+                                                <th>Overall Score</th>
+                                                <th>Status</th>
+                                                <th>Duration</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="seval-results-tbody">
+                                            <tr class="result-row">
+                                                <td>Sep 7, 2025 14:32</td>
+                                                <td>github-copilot-chat-agent-v2</td>
+                                                <td>Production Eval</td>
+                                                <td><span class="score-badge success">87.3%</span></td>
+                                                <td><span class="status-badge success">✅ Completed</span></td>
+                                                <td>24m 15s</td>
+                                                <td>
+                                                    <button class="btn-icon-small" title="View Details" onclick="viewSEVALDetails('run-001')">👁️</button>
+                                                    <button class="btn-icon-small" title="Download Report" onclick="downloadSEVALReport('run-001')">📥</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="result-row">
+                                                <td>Sep 6, 2025 09:15</td>
+                                                <td>github-copilot-chat-agent-v2</td>
+                                                <td>Regression Test</td>
+                                                <td><span class="score-badge warning">72.8%</span></td>
+                                                <td><span class="status-badge success">✅ Completed</span></td>
+                                                <td>18m 42s</td>
+                                                <td>
+                                                    <button class="btn-icon-small" title="View Details" onclick="viewSEVALDetails('run-002')">👁️</button>
+                                                    <button class="btn-icon-small" title="Download Report" onclick="downloadSEVALReport('run-002')">�</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="result-row">
+                                                <td>Sep 5, 2025 16:48</td>
+                                                <td>github-copilot-chat-agent-v1</td>
+                                                <td>A/B Comparison</td>
+                                                <td><span class="score-badge success">91.2%</span></td>
+                                                <td><span class="status-badge success">✅ Completed</span></td>
+                                                <td>31m 07s</td>
+                                                <td>
+                                                    <button class="btn-icon-small" title="View Details" onclick="viewSEVALDetails('run-003')">👁️</button>
+                                                    <button class="btn-icon-small" title="Download Report" onclick="downloadSEVALReport('run-003')">📥</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="result-row">
+                                                <td>Sep 4, 2025 11:20</td>
+                                                <td>github-copilot-chat-agent-v2</td>
+                                                <td>Stress Test</td>
+                                                <td><span class="score-badge error">65.4%</span></td>
+                                                <td><span class="status-badge warning">⚠️ Issues Found</span></td>
+                                                <td>45m 33s</td>
+                                                <td>
+                                                    <button class="btn-icon-small" title="View Details" onclick="viewSEVALDetails('run-004')">👁️</button>
+                                                    <button class="btn-icon-small" title="Download Report" onclick="downloadSEVALReport('run-004')">📥</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="result-row">
+                                                <td>Sep 3, 2025 13:55</td>
+                                                <td>github-copilot-chat-agent-v2</td>
+                                                <td>Performance Benchmark</td>
+                                                <td><span class="score-badge running">⏳ Running</span></td>
+                                                <td><span class="status-badge running">🔄 In Progress</span></td>
+                                                <td>12m 28s</td>
+                                                <td>
+                                                    <button class="btn-icon-small" title="View Progress" onclick="viewSEVALProgress('run-005')">👁️</button>
+                                                    <button class="btn-icon-small" title="Cancel Run" onclick="cancelSEVALRun('run-005')">❌</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
