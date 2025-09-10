@@ -234,6 +234,13 @@ body {
     background-color: var(--background-secondary);
 }
 
+/* Small button variants for task actions */
+.btn-sm, .btn-primary.btn-sm, .btn-outline.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 4px;
+}
+
 /* No Agents State */
 .no-agents-section {
     text-align: center;
@@ -948,7 +955,7 @@ body {
 }
 
 .tasks-table td {
-    padding: 1.5rem 1rem;
+    padding: 1rem 0.75rem;
     border-bottom: 1px solid var(--border-color);
     vertical-align: top;
 }
@@ -956,13 +963,13 @@ body {
 .task-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .task-icon {
-    font-size: 1.2rem;
-    margin-top: 0.1rem;
+    font-size: 1.1rem;
+    margin-top: 0.05rem;
 }
 
 .task-details {
@@ -972,18 +979,27 @@ body {
 .task-title {
     font-weight: 500;
     color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.task-description {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
+    line-height: 1.3;
 }
 
 .task-badges {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
 }
 
 .task-badge {
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.75rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -996,6 +1012,41 @@ body {
 .task-badge.user-story {
     background-color: #e3f2fd;
     color: #1565c0;
+}
+
+.task-badge.evaluation {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.task-badge.nexus {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+.task-badge.datagen {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.task-badge.comet {
+    background-color: #e1f5fe;
+    color: #0277bd;
+}
+
+.task-badge.playground {
+    background-color: #f1f8e9;
+    color: #558b2f;
+}
+
+.task-badge.tprompt {
+    background-color: #fce4ec;
+    color: #c2185b;
+}
+
+.task-badge.seval {
+    background-color: #e8eaf6;
+    color: #3f51b5;
 }
 
 .task-children {
@@ -1011,6 +1062,31 @@ body {
     gap: 0.5rem;
     font-size: 0.875rem;
     color: var(--text-secondary);
+}
+
+.task-subtasks {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.subtask-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 0.125rem 0;
+}
+
+.subtask-icon {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.subtask-text {
+    flex: 1;
 }
 
 .task-icon-small {
@@ -1091,19 +1167,19 @@ body {
 .task-actions {
     display: flex;
     flex-direction: row;
-    gap: 0.5rem;
+    gap: 0.375rem;
     flex-wrap: nowrap;
     align-items: center;
 }
 
-.action-link {
+.action-link, .btn {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.375rem 0.75rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 4px;
     text-decoration: none;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     transition: all 0.2s ease;
     border: 1px solid;
@@ -2123,6 +2199,17 @@ body {
     border: 1px solid var(--border-color);
     cursor: pointer;
     transition: var(--transition);
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    margin: 0.125rem;
 }
 
 /* Help Widget */
@@ -5701,5 +5788,256 @@ input:checked + .toggle-slider:before {
     .seval-results-table th,
     .seval-results-table td {
         padding: 0.5rem 0.25rem;
+    }
+}
+
+/* Evaluation Workflow Styles */
+.evaluation-workflow {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.evaluation-workflow h3 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.workflow-steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.workflow-step {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border: 2px solid var(--border-color);
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.workflow-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.workflow-step.completed {
+    border-color: var(--success-color);
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.workflow-step.active {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+}
+
+.workflow-step.pending {
+    border-color: #e5e7eb;
+    background: #f9fafb;
+    opacity: 0.7;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--border-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0 auto 1rem auto;
+    transition: all 0.3s ease;
+}
+
+.workflow-step.completed .step-number {
+    background: var(--success-color);
+}
+
+.workflow-step.active .step-number {
+    background: var(--primary-color);
+}
+
+.workflow-step.pending .step-number {
+    background: #9ca3af;
+}
+
+.step-content {
+    text-align: center;
+}
+
+.step-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.step-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.step-tools {
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.workflow-step.completed .step-tools {
+    color: var(--success-color);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.workflow-step.pending .step-tools {
+    color: #6b7280;
+    background: rgba(107, 114, 128, 0.1);
+}
+
+.step-status {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.workflow-arrow {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    font-weight: bold;
+    flex-shrink: 0;
+    margin: 0 0.5rem;
+}
+
+.workflow-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.legend-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid;
+}
+
+.legend-icon.completed {
+    background: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.legend-icon.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.legend-icon.pending {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.workflow-status {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.status-summary {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Responsive adjustments for workflow */
+@media (max-width: 1024px) {
+    .workflow-steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .workflow-arrow {
+        display: none;
+    }
+    
+    .workflow-step {
+        min-width: auto;
+        margin-bottom: 1rem;
+    }
+    
+    .workflow-legend {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .evaluation-workflow {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .workflow-step {
+        padding: 1rem;
+    }
+    
+    .step-number {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .step-title {
+        font-size: 0.9rem;
+    }
+    
+    .step-description {
+        font-size: 0.8rem;
+    }
+    
+    .workflow-legend {
+        gap: 0.75rem;
+        font-size: 0.8rem;
     }
 }

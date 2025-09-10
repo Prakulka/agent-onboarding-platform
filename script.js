@@ -1829,32 +1829,108 @@ class AgentManager {
         const evaluateTasksBody = document.getElementById('evaluate-tasks-tbody');
         if (!evaluateTasksBody) return;
 
-        // Define the same tasks directly instead of parsing from Configure Agent section
+        // Define the evaluation step tasks
         const tasks = [
             {
-                title: 'Enable TCS Assessment',
+                title: 'Step 1: Onboard Agent to Nexus',
+                description: 'Create Agent Manifest and test using DevUI',
+                badges: [
+                    { text: 'Evaluation Step', class: 'evaluation' },
+                    { text: 'Nexus Platform', class: 'nexus' }
+                ],
+                icon: '🤖',
+                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 },
+                subtasks: [
+                    { icon: '📋', text: 'Create Agent Manifest configuration' },
+                    { icon: '🧪', text: 'Test manifest using DevUI' },
+                    { icon: '✅', text: 'Validate agent configuration' }
+                ],
+                actions: [
+                    { text: 'View Manifest', class: 'btn-outline btn-sm', onclick: 'viewManifest()' },
+                    { text: 'Launch DevUI', class: 'btn-outline btn-sm', onclick: 'launchDevUI()' }
+                ]
+            },
+            {
+                title: 'Step 2: Generate Evaluation Dataset',
+                description: 'Create comprehensive test scenarios and evaluation data',
+                badges: [
+                    { text: 'Evaluation Step', class: 'evaluation' },
+                    { text: 'DataGen', class: 'datagen' }
+                ],
+                icon: '📊',
+                status: { name: 'in-progress', label: 'IN PROGRESS', color: '#fef3c7', textColor: '#92400e', progress: 65 },
+                subtasks: [
+                    { icon: '🎯', text: 'Define test scenarios based on agent capabilities' },
+                    { icon: '⚠️', text: 'Generate edge cases and failure scenarios' },
+                    { icon: '📈', text: 'Validate dataset quality and coverage' }
+                ],
+                actions: [
+                    { text: 'Generate Dataset', class: 'btn-primary btn-sm', onclick: 'generateDataset()' },
+                    { text: 'View Samples', class: 'btn-outline btn-sm', onclick: 'viewDatasetSamples()' }
+                ]
+            },
+            {
+                title: 'Step 3: Generate Evaluation Metrics',
+                description: 'Define custom quality metrics using CoMet platform',
+                badges: [
+                    { text: 'Evaluation Step', class: 'evaluation' },
+                    { text: 'CoMet', class: 'comet' }
+                ],
                 icon: '�',
-                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
+                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 },
+                subtasks: [
+                    { icon: '🎯', text: 'Define business-specific metrics' },
+                    { icon: '📊', text: 'Set quality thresholds and success criteria' },
+                    { icon: '📋', text: 'Create custom evaluation scorecards' }
+                ],
+                actions: [
+                    { text: 'Launch CoMet', class: 'btn-outline btn-sm', onclick: 'launchCoMet()' },
+                    { text: 'View Templates', class: 'btn-outline btn-sm', onclick: 'viewMetricTemplates()' }
+                ]
             },
             {
-                title: 'LLM Capacity Sign off',
-                icon: '📝',
-                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
-            },
-            {
-                title: 'DevUI E2E Testing',
+                title: 'Step 4: Test Model Performance',
+                description: 'Validate agent performance using Playground and T-Prompt',
+                badges: [
+                    { text: 'Evaluation Step', class: 'evaluation' },
+                    { text: 'Playground', class: 'playground' },
+                    { text: 'T-Prompt', class: 'tprompt' }
+                ],
                 icon: '🧪',
-                status: { name: 'in-progress', label: 'IN PROGRESS', color: '#fef3c7', textColor: '#92400e', progress: 67 }
+                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 },
+                subtasks: [
+                    { icon: '🎮', text: 'Test agent in Copilot Playground' },
+                    { icon: '⚡', text: 'Optimize prompts using T-Prompt tools' },
+                    { icon: '📊', text: 'Measure and analyze performance metrics' }
+                ],
+                actions: [
+                    { text: 'Launch Playground', class: 'btn-outline btn-sm', onclick: 'launchPlayground()' },
+                    { text: 'Run T-Prompt', class: 'btn-outline btn-sm', onclick: 'runTPrompt()' }
+                ]
             },
             {
-                title: 'Monitors & Dashboards',
-                icon: '�',
-                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 }
+                title: 'Step 5: Run SEVAL Evaluation',
+                description: 'Final comprehensive evaluation before production',
+                badges: [
+                    { text: 'Evaluation Step', class: 'evaluation' },
+                    { text: 'SEVAL', class: 'seval' }
+                ],
+                icon: '🚀',
+                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 },
+                subtasks: [
+                    { icon: '🛡️', text: 'Run comprehensive safety assessment' },
+                    { icon: '📊', text: 'Execute performance benchmarking' },
+                    { icon: '✅', text: 'Validate production readiness' }
+                ],
+                actions: [
+                    { text: 'Run SEVAL', class: 'btn-outline btn-sm', onclick: 'runSEVAL()' },
+                    { text: 'View Report', class: 'btn-outline btn-sm', onclick: 'viewReadinessReport()' }
+                ]
             }
         ];
 
-        // Generate task rows
-        const taskRows = tasks.map(task => this.generateTaskRow(task.title, '', task.status, task.icon, false));
+        // Generate task rows using the enhanced task structure
+        const taskRows = tasks.map(task => this.generateEnhancedTaskRow(task));
         evaluateTasksBody.innerHTML = taskRows.join('');
     }
 
@@ -2055,6 +2131,65 @@ class AgentManager {
                 <span class="action-icon">🆘</span>
                 Help
             </a>
+        `;
+    }
+
+    /**
+     * Generate enhanced task row HTML for evaluation tasks with full details
+     */
+    generateEnhancedTaskRow(task) {
+        // Generate badges HTML
+        const badgesHtml = task.badges ? task.badges.map(badge => 
+            `<span class="task-badge ${badge.class}">${badge.text}</span>`
+        ).join('') : '';
+
+        // Generate subtasks HTML
+        const subtasksHtml = task.subtasks ? task.subtasks.map(subtask =>
+            `<div class="subtask-item">
+                <span class="subtask-icon">${subtask.icon}</span>
+                <span class="subtask-text">${subtask.text}</span>
+            </div>`
+        ).join('') : '';
+
+        // Generate actions HTML
+        const actionsHtml = task.actions ? task.actions.map(action =>
+            `<button class="btn ${action.class}" onclick="${action.onclick}">${action.text}</button>`
+        ).join('') : '';
+
+        const taskItemHtml = `
+            <div class="task-item main-task">
+                <span class="task-icon">${task.icon}</span>
+                <div class="task-details">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-description">${task.description}</div>
+                    <div class="task-badges">${badgesHtml}</div>
+                    <div class="task-subtasks">${subtasksHtml}</div>
+                </div>
+            </div>
+        `;
+
+        return `
+            <tr>
+                <td>${taskItemHtml}</td>
+                <td class="status-cell">
+                    <div class="status-indicator">
+                        <span class="status-badge ${task.status.name}" style="background-color: ${task.status.color}; color: ${task.status.textColor};">
+                            ${task.status.label}
+                        </span>
+                        <div class="status-details">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${task.status.progress}%;"></div>
+                            </div>
+                            <span class="progress-text">${task.status.progress}% complete</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="actions-cell">
+                    <div class="task-actions">
+                        ${actionsHtml}
+                    </div>
+                </td>
+            </tr>
         `;
     }
 

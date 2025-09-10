@@ -1648,6 +1648,90 @@
                         <h2>Evaluate Agent</h2>
                         <p>Optimize your agent prompts for better performance</p>
                     </div>
+
+                    <!-- Agent Evaluation Workflow Visualization -->
+                    <div class="evaluation-workflow">
+                        <h3>Agent Evaluation Process</h3>
+                        <div class="workflow-steps">
+                            <div class="workflow-step completed" data-step="1">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <div class="step-title">Onboard Agent to Nexus</div>
+                                    <div class="step-description">Create Agent Manifest</div>
+                                    <div class="step-tools">DevUI Testing</div>
+                                </div>
+                                <div class="step-status">✓</div>
+                            </div>
+                            
+                            <div class="workflow-arrow">→</div>
+                            
+                            <div class="workflow-step active" data-step="2">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <div class="step-title">Generate Dataset</div>
+                                    <div class="step-description">Create evaluation datasets</div>
+                                    <div class="step-tools">DataGen Platform</div>
+                                </div>
+                                <div class="step-status">⏳</div>
+                            </div>
+                            
+                            <div class="workflow-arrow">→</div>
+                            
+                            <div class="workflow-step pending" data-step="3">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <div class="step-title">Generate Metrics</div>
+                                    <div class="step-description">Define evaluation criteria</div>
+                                    <div class="step-tools">CoMet Platform</div>
+                                </div>
+                                <div class="step-status">⏸️</div>
+                            </div>
+                            
+                            <div class="workflow-arrow">→</div>
+                            
+                            <div class="workflow-step pending" data-step="4">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <div class="step-title">Check Performance</div>
+                                    <div class="step-description">Test against metrics</div>
+                                    <div class="step-tools">Playground & T-Prompt</div>
+                                </div>
+                                <div class="step-status">⏸️</div>
+                            </div>
+                            
+                            <div class="workflow-arrow">→</div>
+                            
+                            <div class="workflow-step pending" data-step="5">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <div class="step-title">Run SEVAL</div>
+                                    <div class="step-description">Final evaluation</div>
+                                    <div class="step-tools">SEVAL Framework</div>
+                                </div>
+                                <div class="step-status">⏸️</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-legend">
+                            <div class="legend-item">
+                                <div class="legend-icon completed"></div>
+                                <span>Completed</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-icon active"></div>
+                                <span>In Progress</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-icon pending"></div>
+                                <span>Pending</span>
+                            </div>
+                        </div>
+
+                        <!-- Evaluation workflow legend and status info -->
+                        <div class="workflow-status">
+                            <div class="status-summary">
+                                <p>Track your agent evaluation progress through these essential steps. Each step builds upon the previous one to ensure a comprehensive evaluation process.</p>
+                    </div>
                     
                     <!-- Navigation Tabs -->
                     <div class="evaluate-tabs">
@@ -1674,34 +1758,78 @@
                                         </tr>
                                     </thead>
                                     <tbody id="evaluate-tasks-tbody">
+                                        <!-- Step 1: Onboard Agent to Nexus -->
                                         <tr>
                                             <td>
                                                 <div class="task-item">
-                                                    <span class="task-icon">📋</span>
+                                                    <span class="task-icon">🤖</span>
                                                     <div class="task-details">
-                                                        <div class="task-title">[photosagent] Copilot 1P Agent registration request</div>
+                                                        <div class="task-title">Step 1: Onboard Agent to Nexus</div>
+                                                        <div class="task-description">Create Agent Manifest and test using DevUI</div>
                                                         <div class="task-badges">
-                                                            <span class="task-badge root">Root Task</span>
-                                                            <span class="task-badge user-story">User Story</span>
+                                                            <span class="task-badge evaluation">Evaluation Step</span>
+                                                            <span class="task-badge nexus">Nexus Platform</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="task-children">
                                                     <div class="task-child">
-                                                        <span class="task-icon-small">📝</span>
-                                                        <span>[photosagent] [Ring:MSIT] Enable TCS Assessment</span>
-                                                    </div>
-                                                    <div class="task-child">
-                                                        <span class="task-icon-small">📝</span>
-                                                        <span>[photosagent] [Ring:MSIT] LLM Capacity Sign off</span>
+                                                        <span class="task-icon-small">📋</span>
+                                                        <span>Create Agent Manifest configuration</span>
                                                     </div>
                                                     <div class="task-child">
                                                         <span class="task-icon-small">🧪</span>
-                                                        <span>[photosagent] [Ring:MSIT] DevUI E2E Testing</span>
+                                                        <span>Test manifest using DevUI</span>
                                                     </div>
                                                     <div class="task-child">
-                                                        <span class="task-icon-small">📊</span>
-                                                        <span>[photosagent] [Ring:MSIT] Monitors & Dashboards</span>
+                                                        <span class="task-icon-small">✅</span>
+                                                        <span>Validate agent configuration</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="status-cell">
+                                                <div class="status-indicator">
+                                                    <span class="status-badge completed">Completed</span>
+                                                    <div class="status-details">
+                                                        <div class="progress-bar">
+                                                            <div class="progress-fill" style="width: 100%;"></div>
+                                                        </div>
+                                                        <span class="progress-text">All subtasks completed</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <button class="btn-outline btn-sm" onclick="viewManifest()">View Manifest</button>
+                                                <button class="btn-outline btn-sm" onclick="launchDevUI()">Launch DevUI</button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Step 2: Generate Dataset -->
+                                        <tr>
+                                            <td>
+                                                <div class="task-item">
+                                                    <span class="task-icon">📊</span>
+                                                    <div class="task-details">
+                                                        <div class="task-title">Step 2: Generate Evaluation Dataset</div>
+                                                        <div class="task-description">Create comprehensive test scenarios and evaluation data</div>
+                                                        <div class="task-badges">
+                                                            <span class="task-badge evaluation">Evaluation Step</span>
+                                                            <span class="task-badge datagen">DataGen</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="task-children">
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">🎯</span>
+                                                        <span>Define test scenarios based on agent capabilities</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">⚠️</span>
+                                                        <span>Generate edge cases and failure scenarios</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📈</span>
+                                                        <span>Validate dataset quality and coverage</span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -1710,11 +1838,154 @@
                                                     <span class="status-badge in-progress">In Progress</span>
                                                     <div class="status-details">
                                                         <div class="progress-bar">
-                                                            <div class="progress-fill" style="width: 60%;"></div>
+                                                            <div class="progress-fill" style="width: 65%;"></div>
                                                         </div>
-                                                        <span class="progress-text">3 of 5 subtasks completed</span>
+                                                        <span class="progress-text">2 of 3 subtasks completed</span>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <button class="btn-primary btn-sm" onclick="generateDataset()">Generate Dataset</button>
+                                                <button class="btn-outline btn-sm" onclick="viewDatasetSamples()">View Samples</button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Step 3: Generate Metrics -->
+                                        <tr>
+                                            <td>
+                                                <div class="task-item">
+                                                    <span class="task-icon">📈</span>
+                                                    <div class="task-details">
+                                                        <div class="task-title">Step 3: Generate Evaluation Metrics</div>
+                                                        <div class="task-description">Define custom quality metrics using CoMet platform</div>
+                                                        <div class="task-badges">
+                                                            <span class="task-badge evaluation">Evaluation Step</span>
+                                                            <span class="task-badge comet">CoMet</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="task-children">
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">🎯</span>
+                                                        <span>Define business-specific metrics</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📊</span>
+                                                        <span>Set quality thresholds and success criteria</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📋</span>
+                                                        <span>Create custom evaluation scorecards</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="status-cell">
+                                                <div class="status-indicator">
+                                                    <span class="status-badge pending">Pending</span>
+                                                    <div class="status-details">
+                                                        <div class="progress-bar">
+                                                            <div class="progress-fill" style="width: 0%;"></div>
+                                                        </div>
+                                                        <span class="progress-text">0 of 3 subtasks completed</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <button class="btn-outline btn-sm" onclick="launchCoMet()">Launch CoMet</button>
+                                                <button class="btn-outline btn-sm" onclick="viewMetricTemplates()">View Templates</button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Step 4: Check Performance -->
+                                        <tr>
+                                            <td>
+                                                <div class="task-item">
+                                                    <span class="task-icon">🧪</span>
+                                                    <div class="task-details">
+                                                        <div class="task-title">Step 4: Test Model Performance</div>
+                                                        <div class="task-description">Validate agent performance using Playground and T-Prompt</div>
+                                                        <div class="task-badges">
+                                                            <span class="task-badge evaluation">Evaluation Step</span>
+                                                            <span class="task-badge playground">Playground</span>
+                                                            <span class="task-badge tprompt">T-Prompt</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="task-children">
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">🎮</span>
+                                                        <span>Test agent in Copilot Playground</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">⚡</span>
+                                                        <span>Optimize prompts using T-Prompt tools</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📊</span>
+                                                        <span>Measure and analyze performance metrics</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="status-cell">
+                                                <div class="status-indicator">
+                                                    <span class="status-badge pending">Pending</span>
+                                                    <div class="status-details">
+                                                        <div class="progress-bar">
+                                                            <div class="progress-fill" style="width: 0%;"></div>
+                                                        </div>
+                                                        <span class="progress-text">0 of 3 subtasks completed</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <button class="btn-outline btn-sm" onclick="launchPlayground()">Launch Playground</button>
+                                                <button class="btn-outline btn-sm" onclick="runTPrompt()">Run T-Prompt</button>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Step 5: Run SEVAL -->
+                                        <tr>
+                                            <td>
+                                                <div class="task-item">
+                                                    <span class="task-icon">🚀</span>
+                                                    <div class="task-details">
+                                                        <div class="task-title">Step 5: Run SEVAL Evaluation</div>
+                                                        <div class="task-description">Final comprehensive evaluation before production</div>
+                                                        <div class="task-badges">
+                                                            <span class="task-badge evaluation">Evaluation Step</span>
+                                                            <span class="task-badge seval">SEVAL</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="task-children">
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">🛡️</span>
+                                                        <span>Run comprehensive safety assessment</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📊</span>
+                                                        <span>Execute performance benchmarking</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">✅</span>
+                                                        <span>Validate production readiness</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="status-cell">
+                                                <div class="status-indicator">
+                                                    <span class="status-badge pending">Pending</span>
+                                                    <div class="status-details">
+                                                        <div class="progress-bar">
+                                                            <div class="progress-fill" style="width: 0%;"></div>
+                                                        </div>
+                                                        <span class="progress-text">0 of 3 subtasks completed</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <button class="btn-outline btn-sm" onclick="runSEVAL()">Run SEVAL</button>
+                                                <button class="btn-outline btn-sm" onclick="viewReadinessReport()">View Report</button>
                                             </td>
                                         </tr>
                                     </tbody>
