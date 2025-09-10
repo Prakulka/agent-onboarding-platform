@@ -26,6 +26,9 @@ class AgentManager {
         this.updateConfigManifest(); // Initialize config manifest
         this.syncDashboardMetrics(); // Sync dashboard metrics with KPIs
         
+        // Initialize Evaluate Agent tasks so they're available immediately
+        this.populateEvaluateTasks();
+        
         // Show onboarding for first-time users
         if (this.isFirstVisit) {
             setTimeout(() => this.showOnboarding(), 1000);
@@ -215,6 +218,18 @@ class AgentManager {
         });
         document.getElementById(`${view}-view`).classList.add('active');
 
+        // Special handling for specific views
+        if (view === 'tprompt') {
+            // Initialize with tasks tab active and populate tasks immediately
+            this.switchEvaluateTab('tasks');
+            // Ensure tasks are populated even if Configure Agent hasn't been visited
+            setTimeout(() => {
+                this.populateEvaluateTasks();
+            }, 100);
+        } else if (view === 'configure') {
+            // Keep existing configure logic
+        }
+
         // Update page title
         const titles = {
             dashboard: 'Agent Dashboard',
@@ -255,6 +270,28 @@ class AgentManager {
         // Populate tasks when tasks tab is selected
         if (tabName === 'tasks') {
             this.populateConfigureTasks();
+        }
+    }
+
+    /**
+     * Switch between evaluate agent tabs
+     */
+    switchEvaluateTab(tabName) {
+        // Update tab buttons
+        document.querySelectorAll('.evaluate-tabs .tab-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[onclick="agentManager.switchEvaluateTab('${tabName}')"]`).classList.add('active');
+
+        // Update tab content
+        document.querySelectorAll('#tprompt-view .tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        document.getElementById(`evaluate-${tabName}-tab`).classList.add('active');
+
+        // Populate tasks when tasks tab is selected
+        if (tabName === 'tasks') {
+            this.populateEvaluateTasks();
         }
     }
 
@@ -1792,108 +1829,32 @@ class AgentManager {
         const evaluateTasksBody = document.getElementById('evaluate-tasks-tbody');
         if (!evaluateTasksBody) return;
 
-        // Get tasks from Configure Agent section
-        const configureTasksTable = document.querySelector('#configure-tasks-tab .tasks-table');
-        if (!configureTasksTable) {
-            // If no configure tasks table found, show placeholder
-            evaluateTasksBody.innerHTML = `
-                <tr>
-                    <td colspan="3" class="no-tasks-message">
-                        <div class="placeholder-content">
-                            <div class="placeholder-icon">📋</div>
-                            <h4>No Tasks Found</h4>
-                            <p>Configure tasks in the Configure Agent section to see them here.</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        // Parse existing tasks from Configure Agent section
-        const configureRows = configureTasksTable.querySelectorAll('tbody tr, tr');
-        if (configureRows.length === 0) {
-            evaluateTasksBody.innerHTML = `
-                <tr>
-                    <td colspan="3" class="no-tasks-message">
-                        <div class="placeholder-content">
-                            <div class="placeholder-icon">📋</div>
-                            <h4>No Tasks Configured</h4>
-                            <p>Add tasks in the Configure Agent section to track them here.</p>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        // Generate individual task rows
-        const taskRows = [];
-        
-        Array.from(configureRows).forEach((row, index) => {
-            const taskDetails = row.querySelector('td:first-child');
-            if (!taskDetails) return;
-
-            // Get main task info
-            const mainTaskElement = taskDetails.querySelector('.task-item');
-            const subtasksElement = taskDetails.querySelector('.task-children');
-            
-            if (!mainTaskElement) return;
-
-            const mainTaskTitle = mainTaskElement.querySelector('.task-title')?.textContent || 'Unknown Task';
-            const mainTaskBadges = mainTaskElement.querySelector('.task-badges')?.innerHTML || '';
-            
-            // Generate status options
-            const statuses = [
-                { name: 'completed', label: 'Completed', color: '#d1fae5', textColor: '#065f46', progress: 100 },
-                { name: 'in-progress', label: 'In Progress', color: '#fef3c7', textColor: '#92400e', progress: Math.floor(Math.random() * 70) + 30 },
-                { name: 'pending', label: 'Pending', color: '#f3f4f6', textColor: '#374151', progress: 0 },
-                { name: 'blocked', label: 'Blocked', color: '#fee2e2', textColor: '#991b1b', progress: Math.floor(Math.random() * 40) }
-            ];
-
-            // Add main task row
-            const mainStatus = statuses[index % statuses.length];
-            taskRows.push(this.generateTaskRow(mainTaskTitle, mainTaskBadges, mainStatus, '📋', true));
-
-            // Add individual subtask rows
-            if (subtasksElement) {
-                const subtasks = subtasksElement.querySelectorAll('.task-child');
-                Array.from(subtasks).forEach((subtask, subtaskIndex) => {
-                    const subtaskIcon = subtask.querySelector('.task-icon-small')?.textContent || '📝';
-                    
-                    // Extract clean task text by removing icon and extra whitespace
-                    let subtaskText = subtask.textContent.replace(subtaskIcon, '').trim();
-                    
-                    // Clean up and extract meaningful task names
-                    if (subtaskText.includes('TCS Assessment')) {
-                        subtaskText = 'Enable TCS Assessment';
-                    } else if (subtaskText.includes('LLM Capacity')) {
-                        subtaskText = 'LLM Capacity Sign off';
-                    } else if (subtaskText.includes('DevUI E2E')) {
-                        subtaskText = 'DevUI E2E Testing';
-                    } else if (subtaskText.includes('Monitors')) {
-                        subtaskText = 'Monitors & Dashboards';
-                    }
-                    
-                    // Assign specific statuses to different types of subtasks
-                    let subtaskStatus;
-                    if (subtaskText.includes('TCS Assessment')) {
-                        subtaskStatus = statuses[0]; // Completed
-                    } else if (subtaskText.includes('LLM Capacity')) {
-                        subtaskStatus = statuses[0]; // Completed
-                    } else if (subtaskText.includes('DevUI E2E')) {
-                        subtaskStatus = statuses[1]; // In Progress
-                    } else if (subtaskText.includes('Monitors')) {
-                        subtaskStatus = statuses[2]; // Pending
-                    } else {
-                        subtaskStatus = statuses[(subtaskIndex + 1) % statuses.length];
-                    }
-                    
-                    taskRows.push(this.generateTaskRow(subtaskText, '', subtaskStatus, subtaskIcon, false));
-                });
+        // Define the same tasks directly instead of parsing from Configure Agent section
+        const tasks = [
+            {
+                title: 'Enable TCS Assessment',
+                icon: '�',
+                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
+            },
+            {
+                title: 'LLM Capacity Sign off',
+                icon: '📝',
+                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
+            },
+            {
+                title: 'DevUI E2E Testing',
+                icon: '🧪',
+                status: { name: 'in-progress', label: 'IN PROGRESS', color: '#fef3c7', textColor: '#92400e', progress: 67 }
+            },
+            {
+                title: 'Monitors & Dashboards',
+                icon: '�',
+                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 }
             }
-        });
+        ];
 
+        // Generate task rows
+        const taskRows = tasks.map(task => this.generateTaskRow(task.title, '', task.status, task.icon, false));
         evaluateTasksBody.innerHTML = taskRows.join('');
     }
 

@@ -1649,75 +1649,83 @@
                         <p>Optimize your agent prompts for better performance</p>
                     </div>
                     
-                    <!-- Tasks Section -->
-                    <div class="evaluate-tasks-section">
-                        <div class="section-header">
-                            <h3>Tasks</h3>
-                            <p>View and track tasks from Configure Agent section</p>
-                        </div>
-                        
-                        <div class="tasks-table-container">
-                            <table class="tasks-table">
-                                <thead>
-                                    <tr>
-                                        <th>Task Details</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="evaluate-tasks-tbody">
-                                    <tr>
-                                        <td>
-                                            <div class="task-item">
-                                                <span class="task-icon">📋</span>
-                                                <div class="task-details">
-                                                    <div class="task-title">[photosagent] Copilot 1P Agent registration request</div>
-                                                    <div class="task-badges">
-                                                        <span class="task-badge root">Root Task</span>
-                                                        <span class="task-badge user-story">User Story</span>
+                    <!-- Navigation Tabs -->
+                    <div class="evaluate-tabs">
+                        <button class="tab-button active" onclick="agentManager.switchEvaluateTab('tasks')">Tasks</button>
+                        <button class="tab-button" onclick="agentManager.switchEvaluateTab('inner-loop')">Inner Loop Tools</button>
+                        <button class="tab-button" onclick="agentManager.switchEvaluateTab('outer-loop')">Outer Loop Tools</button>
+                    </div>
+
+                    <!-- Tasks Tab Content -->
+                    <div id="evaluate-tasks-tab" class="tab-content active">
+                        <div class="evaluate-section tasks-section">
+                            <div class="section-header">
+                                <h3>Tasks</h3>
+                                <p>View and track tasks from Configure Agent section</p>
+                            </div>
+                            
+                            <div class="tasks-table-container">
+                                <table class="tasks-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Task Details</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="evaluate-tasks-tbody">
+                                        <tr>
+                                            <td>
+                                                <div class="task-item">
+                                                    <span class="task-icon">📋</span>
+                                                    <div class="task-details">
+                                                        <div class="task-title">[photosagent] Copilot 1P Agent registration request</div>
+                                                        <div class="task-badges">
+                                                            <span class="task-badge root">Root Task</span>
+                                                            <span class="task-badge user-story">User Story</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="task-children">
-                                                <div class="task-child">
-                                                    <span class="task-icon-small">📝</span>
-                                                    <span>[photosagent] [Ring:MSIT] Enable TCS Assessment</span>
-                                                </div>
-                                                <div class="task-child">
-                                                    <span class="task-icon-small">📝</span>
-                                                    <span>[photosagent] [Ring:MSIT] LLM Capacity Sign off</span>
-                                                </div>
-                                                <div class="task-child">
-                                                    <span class="task-icon-small">🧪</span>
-                                                    <span>[photosagent] [Ring:MSIT] DevUI E2E Testing</span>
-                                                </div>
-                                                <div class="task-child">
-                                                    <span class="task-icon-small">📊</span>
-                                                    <span>[photosagent] [Ring:MSIT] Monitors & Dashboards</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="status-cell">
-                                            <div class="status-indicator">
-                                                <span class="status-badge in-progress">In Progress</span>
-                                                <div class="status-details">
-                                                    <div class="progress-bar">
-                                                        <div class="progress-fill" style="width: 60%;"></div>
+                                                <div class="task-children">
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📝</span>
+                                                        <span>[photosagent] [Ring:MSIT] Enable TCS Assessment</span>
                                                     </div>
-                                                    <span class="progress-text">3 of 5 subtasks completed</span>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📝</span>
+                                                        <span>[photosagent] [Ring:MSIT] LLM Capacity Sign off</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">🧪</span>
+                                                        <span>[photosagent] [Ring:MSIT] DevUI E2E Testing</span>
+                                                    </div>
+                                                    <div class="task-child">
+                                                        <span class="task-icon-small">📊</span>
+                                                        <span>[photosagent] [Ring:MSIT] Monitors & Dashboards</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            </td>
+                                            <td class="status-cell">
+                                                <div class="status-indicator">
+                                                    <span class="status-badge in-progress">In Progress</span>
+                                                    <div class="status-details">
+                                                        <div class="progress-bar">
+                                                            <div class="progress-fill" style="width: 60%;"></div>
+                                                        </div>
+                                                        <span class="progress-text">3 of 5 subtasks completed</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Two-Column Layout for Inner and Outer Loop Tools -->
-                    <div class="tools-layout">
-                        <!-- Inner Loop Tools Section -->
-                        <div class="tprompt-section inner-loop-section">
+
+                    <!-- Inner Loop Tools Tab Content -->
+                    <div id="evaluate-inner-loop-tab" class="tab-content">
+                        <div class="evaluate-section inner-loop-section">
                             <div class="section-header">
                                 <h3>Inner Loop Tools</h3>
                                 <p>Tools for rapid iteration and prompt optimization</p>
@@ -2037,9 +2045,11 @@
                         </div>
                     </div>
                         </div>
-                        
-                        <!-- Outer Loop Tools Section -->
-                        <div class="tprompt-section outer-loop-section">
+                    </div>
+
+                    <!-- Outer Loop Tools Tab Content -->
+                    <div id="evaluate-outer-loop-tab" class="tab-content">
+                        <div class="evaluate-section outer-loop-section">
                             <div class="section-header">
                                 <h3>Outer Loop Tools</h3>
                                 <p>Tools for production deployment and monitoring</p>
@@ -2047,55 +2057,49 @@
                             
                             <!-- SEVAL Integration and Results -->
                             <div class="outer-loop-content">
-                            <h3>Outer Loop Tools</h3>
-                            <p>Tools for production deployment and monitoring</p>
-                        </div>
-                        
-                        <!-- SEVAL Integration and Results -->
-                        <div class="outer-loop-content">
-                            <!-- SEVAL Launch Section -->
-                            <div class="seval-launch-section">
-                                <div class="seval-header">
-                                    <h4>🔍 SEVAL - Production Evaluation</h4>
-                                    <p>Launch SEVAL with pre-configured agent settings for production evaluation</p>
-                                </div>
-                                
-                                <div class="seval-config">
-                                    <div class="agent-info">
-                                        <label>Agent ID:</label>
-                                        <span class="agent-id">github-copilot-chat-agent-v2</span>
-                                        <button class="btn-icon-small" title="Copy Agent ID">📋</button>
+                                <!-- SEVAL Launch Section -->
+                                <div class="seval-launch-section">
+                                    <div class="seval-header">
+                                        <h4>🔍 SEVAL - Production Evaluation</h4>
+                                        <p>Launch SEVAL with pre-configured agent settings for production evaluation</p>
                                     </div>
-                                    <button class="btn-primary seval-launch-btn" onclick="launchSEVAL()">
-                                        🚀 Launch SEVAL Evaluation
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Previous Run Results -->
-                            <div class="seval-results-section">
-                                <div class="results-header">
-                                    <h4>📊 Previous SEVAL Runs</h4>
-                                    <div class="results-actions">
-                                        <button class="btn-outline-small" onclick="refreshSEVALResults()">🔄 Refresh</button>
-                                        <button class="btn-outline-small" onclick="exportSEVALResults()">📤 Export</button>
+                                    
+                                    <div class="seval-config">
+                                        <div class="agent-info">
+                                            <label>Agent ID:</label>
+                                            <span class="agent-id">github-copilot-chat-agent-v2</span>
+                                            <button class="btn-icon-small" title="Copy Agent ID">📋</button>
+                                        </div>
+                                        <button class="btn-primary seval-launch-btn" onclick="launchSEVAL()">
+                                            🚀 Launch SEVAL Evaluation
+                                        </button>
                                     </div>
                                 </div>
                                 
-                                <div class="seval-table-container">
-                                    <table class="seval-results-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Run Date</th>
-                                                <th>Agent ID</th>
-                                                <th>Evaluation Type</th>
-                                                <th>Overall Score</th>
-                                                <th>Status</th>
-                                                <th>Duration</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="seval-results-tbody">
+                                <!-- Previous Run Results -->
+                                <div class="seval-results-section">
+                                    <div class="results-header">
+                                        <h4>📊 Previous SEVAL Runs</h4>
+                                        <div class="results-actions">
+                                            <button class="btn-outline-small" onclick="refreshSEVALResults()">🔄 Refresh</button>
+                                            <button class="btn-outline-small" onclick="exportSEVALResults()">📤 Export</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="seval-table-container">
+                                        <table class="seval-results-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Run Date</th>
+                                                    <th>Agent ID</th>
+                                                    <th>Evaluation Type</th>
+                                                    <th>Overall Score</th>
+                                                    <th>Status</th>
+                                                    <th>Duration</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="seval-results-tbody">
                                             <tr class="result-row">
                                                 <td>Sep 7, 2025 14:32</td>
                                                 <td>github-copilot-chat-agent-v2</td>
