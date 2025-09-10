@@ -1017,6 +1017,262 @@ body {
     font-size: 1rem;
 }
 
+/* Enhanced Task Child Layout for Individual Rows */
+.task-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.task-child:last-child {
+    border-bottom: none;
+}
+
+.task-child span:not(.task-status-badge) {
+    flex: 1;
+}
+
+/* Main Task and Subtask Styling */
+.task-item.main-task {
+    background-color: #f8fafc;
+    border-left: 4px solid #3b82f6;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.task-item.main-task .task-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #1e40af;
+}
+
+.task-item.subtask {
+    background-color: #ffffff;
+    border-left: 3px solid #e5e7eb;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-left: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.task-item.subtask .task-title {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.task-item.subtask .task-icon {
+    font-size: 0.875rem;
+}
+
+/* Enhanced task table styling */
+.tasks-table tr:hover {
+    background-color: #f9fafb;
+}
+
+.tasks-table tr:hover .task-item.main-task {
+    background-color: #eff6ff;
+}
+
+.tasks-table tr:hover .task-item.subtask {
+    background-color: #f8fafc;
+}
+
+/* Actions Cell Styles - Compact Horizontal Layout */
+.actions-cell {
+    vertical-align: top;
+    width: 35%;
+    padding: 0.5rem;
+}
+
+.task-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.action-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid;
+    white-space: nowrap;
+    min-width: auto;
+    background: transparent;
+}
+
+.action-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.action-link.primary {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.action-link.primary:hover {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.action-link.secondary {
+    border-color: #6b7280;
+    color: #6b7280;
+}
+
+.action-link.secondary:hover {
+    background-color: #6b7280;
+    color: white;
+}
+
+.action-link.success {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.action-link.success:hover {
+    background-color: #10b981;
+    color: white;
+}
+
+.action-link.danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.action-link.danger:hover {
+    background-color: #dc2626;
+}
+
+.action-link.warning {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.action-link.warning:hover {
+    background-color: #d97706;
+}
+
+.action-icon {
+    font-size: 0.75rem;
+}
+
+/* Make table more compact */
+.tasks-table {
+    font-size: 0.875rem;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tasks-table th:nth-child(1) {
+    width: 40%;
+}
+
+.tasks-table th:nth-child(2) {
+    width: 25%;
+}
+
+.tasks-table th:nth-child(3) {
+    width: 35%;
+}
+
+.tasks-table td {
+    padding: 0.5rem;
+    vertical-align: top;
+    word-wrap: break-word;
+}
+
+.task-item {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.task-item.main-task {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.task-item.subtask {
+    padding: 0.375rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.125rem;
+}
+
+.status-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-start;
+}
+
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    width: 100%;
+}
+
+.progress-text {
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+/* Enhanced Responsive Design for Tasks Table */
+@media (max-width: 768px) {
+    .task-actions {
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+    
+    .action-link {
+        padding: 0.25rem 0.375rem;
+        font-size: 0.7rem;
+        flex: none;
+    }
+    
+    .action-icon {
+        font-size: 0.6rem;
+    }
+    
+    .actions-cell {
+        width: 100px;
+    }
+    
+    .tasks-table {
+        font-size: 0.8rem;
+    }
+    
+    .task-status-badge {
+        font-size: 0.6rem;
+        padding: 0.15rem 0.4rem;
+    }
+    
+    .task-item {
+        padding: 0.375rem;
+    }
+    
+    .task-item.subtask {
+        padding: 0.25rem;
+        margin-left: 0.25rem;
+    }
+    
+    .tasks-table td {
+        padding: 0.375rem;
+    }
+}
+
 .status-cell {
     width: 40%;
 }
@@ -5210,6 +5466,82 @@ input:checked + .toggle-slider:before {
 .status-badge.running {
     background-color: #dbeafe;
     color: #1e40af;
+}
+
+.status-badge.in-progress {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.completed {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.pending {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.status-badge.blocked {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+
+.status-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.evaluate-tasks-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.no-tasks-message {
+    text-align: center;
+    padding: 2rem;
+}
+
+.no-tasks-message .placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.no-tasks-message .placeholder-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.no-tasks-message h4 {
+    margin: 0;
+    color: #374151;
+    font-size: 1.125rem;
+}
+
+.no-tasks-message p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.875rem;
 }
 
 /* Responsive Design for Platform Overview */

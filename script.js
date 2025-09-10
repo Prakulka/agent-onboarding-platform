@@ -231,6 +231,8 @@ class AgentManager {
         if (view === 'metrics') {
             this.initializeCharts();
             this.renderMetricsTable();
+        } else if (view === 'tprompt') {
+            this.populateEvaluateTasks();
         }
     }
 
@@ -249,6 +251,11 @@ class AgentManager {
             content.classList.remove('active');
         });
         document.getElementById(`configure-${tabName}-tab`).classList.add('active');
+
+        // Populate tasks when tasks tab is selected
+        if (tabName === 'tasks') {
+            this.populateConfigureTasks();
+        }
     }
 
     /**
@@ -1776,6 +1783,354 @@ class AgentManager {
                 <td>${this.generateRandomScore(80, 95)}%</td>
             </tr>
         `).join('');
+    }
+
+    /**
+     * Populate tasks from Configure Agent section into Evaluate Agent Tasks section
+     */
+    populateEvaluateTasks() {
+        const evaluateTasksBody = document.getElementById('evaluate-tasks-tbody');
+        if (!evaluateTasksBody) return;
+
+        // Get tasks from Configure Agent section
+        const configureTasksTable = document.querySelector('#configure-tasks-tab .tasks-table');
+        if (!configureTasksTable) {
+            // If no configure tasks table found, show placeholder
+            evaluateTasksBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="no-tasks-message">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">📋</div>
+                            <h4>No Tasks Found</h4>
+                            <p>Configure tasks in the Configure Agent section to see them here.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        // Parse existing tasks from Configure Agent section
+        const configureRows = configureTasksTable.querySelectorAll('tbody tr, tr');
+        if (configureRows.length === 0) {
+            evaluateTasksBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="no-tasks-message">
+                        <div class="placeholder-content">
+                            <div class="placeholder-icon">📋</div>
+                            <h4>No Tasks Configured</h4>
+                            <p>Add tasks in the Configure Agent section to track them here.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        // Generate individual task rows
+        const taskRows = [];
+        
+        Array.from(configureRows).forEach((row, index) => {
+            const taskDetails = row.querySelector('td:first-child');
+            if (!taskDetails) return;
+
+            // Get main task info
+            const mainTaskElement = taskDetails.querySelector('.task-item');
+            const subtasksElement = taskDetails.querySelector('.task-children');
+            
+            if (!mainTaskElement) return;
+
+            const mainTaskTitle = mainTaskElement.querySelector('.task-title')?.textContent || 'Unknown Task';
+            const mainTaskBadges = mainTaskElement.querySelector('.task-badges')?.innerHTML || '';
+            
+            // Generate status options
+            const statuses = [
+                { name: 'completed', label: 'Completed', color: '#d1fae5', textColor: '#065f46', progress: 100 },
+                { name: 'in-progress', label: 'In Progress', color: '#fef3c7', textColor: '#92400e', progress: Math.floor(Math.random() * 70) + 30 },
+                { name: 'pending', label: 'Pending', color: '#f3f4f6', textColor: '#374151', progress: 0 },
+                { name: 'blocked', label: 'Blocked', color: '#fee2e2', textColor: '#991b1b', progress: Math.floor(Math.random() * 40) }
+            ];
+
+            // Add main task row
+            const mainStatus = statuses[index % statuses.length];
+            taskRows.push(this.generateTaskRow(mainTaskTitle, mainTaskBadges, mainStatus, '📋', true));
+
+            // Add individual subtask rows
+            if (subtasksElement) {
+                const subtasks = subtasksElement.querySelectorAll('.task-child');
+                Array.from(subtasks).forEach((subtask, subtaskIndex) => {
+                    const subtaskIcon = subtask.querySelector('.task-icon-small')?.textContent || '📝';
+                    
+                    // Extract clean task text by removing icon and extra whitespace
+                    let subtaskText = subtask.textContent.replace(subtaskIcon, '').trim();
+                    
+                    // Clean up and extract meaningful task names
+                    if (subtaskText.includes('TCS Assessment')) {
+                        subtaskText = 'Enable TCS Assessment';
+                    } else if (subtaskText.includes('LLM Capacity')) {
+                        subtaskText = 'LLM Capacity Sign off';
+                    } else if (subtaskText.includes('DevUI E2E')) {
+                        subtaskText = 'DevUI E2E Testing';
+                    } else if (subtaskText.includes('Monitors')) {
+                        subtaskText = 'Monitors & Dashboards';
+                    }
+                    
+                    // Assign specific statuses to different types of subtasks
+                    let subtaskStatus;
+                    if (subtaskText.includes('TCS Assessment')) {
+                        subtaskStatus = statuses[0]; // Completed
+                    } else if (subtaskText.includes('LLM Capacity')) {
+                        subtaskStatus = statuses[0]; // Completed
+                    } else if (subtaskText.includes('DevUI E2E')) {
+                        subtaskStatus = statuses[1]; // In Progress
+                    } else if (subtaskText.includes('Monitors')) {
+                        subtaskStatus = statuses[2]; // Pending
+                    } else {
+                        subtaskStatus = statuses[(subtaskIndex + 1) % statuses.length];
+                    }
+                    
+                    taskRows.push(this.generateTaskRow(subtaskText, '', subtaskStatus, subtaskIcon, false));
+                });
+            }
+        });
+
+        evaluateTasksBody.innerHTML = taskRows.join('');
+    }
+
+    /**
+     * Generate individual task row HTML
+     */
+    generateTaskRow(taskTitle, badges, status, icon, isMainTask) {
+        // Generate actions based on task type and status
+        let actions = this.generateTaskActions(taskTitle, status);
+
+        // Only include original badges (like "Root Task", "User Story"), not status badges
+        const badgesHtml = badges ? `<div class="task-badges">${badges}</div>` : '';
+
+        const taskClass = isMainTask ? 'main-task' : 'subtask';
+        const taskItemHtml = `
+            <div class="task-item ${taskClass}">
+                <span class="task-icon">${icon}</span>
+                <div class="task-details">
+                    <div class="task-title">${taskTitle}</div>
+                    ${badgesHtml}
+                </div>
+            </div>
+        `;
+
+        return `
+            <tr>
+                <td>${taskItemHtml}</td>
+                <td class="status-cell">
+                    <div class="status-indicator">
+                        <span class="status-badge ${status.name}" style="background-color: ${status.color}; color: ${status.textColor};">
+                            ${status.label}
+                        </span>
+                        <div class="status-details">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${status.progress}%;"></div>
+                            </div>
+                            <span class="progress-text">${status.progress}% complete</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="actions-cell">
+                    <div class="task-actions">
+                        ${actions}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    /**
+     * Generate task-specific actions
+     */
+    generateTaskActions(taskTitle, status) {
+        const taskType = this.getTaskType(taskTitle);
+        
+        if (status.name === 'pending') {
+            return this.getPendingActions(taskType);
+        } else if (status.name === 'in-progress') {
+            return this.getInProgressActions(taskType);
+        } else if (status.name === 'completed') {
+            return this.getCompletedActions(taskType);
+        } else if (status.name === 'blocked') {
+            return this.getBlockedActions(taskType);
+        }
+        
+        return '';
+    }
+
+    /**
+     * Determine task type from title
+     */
+    getTaskType(taskTitle) {
+        if (taskTitle.includes('TCS Assessment')) return 'tcs';
+        if (taskTitle.includes('LLM Capacity')) return 'llm';
+        if (taskTitle.includes('DevUI E2E')) return 'testing';
+        if (taskTitle.includes('Monitors')) return 'monitoring';
+        if (taskTitle.includes('registration request')) return 'registration';
+        return 'general';
+    }
+
+    /**
+     * Get actions for pending tasks
+     */
+    getPendingActions(taskType) {
+        const actions = {
+            'tcs': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">🛡️</span>
+                    Start TCS
+                </a>`,
+            'llm': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">🔧</span>
+                    Configure
+                </a>`,
+            'testing': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('playground'); return false;">
+                    <span class="action-icon">🧪</span>
+                    Start Testing
+                </a>`,
+            'monitoring': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('metrics'); return false;">
+                    <span class="action-icon">📊</span>
+                    Setup
+                </a>`,
+            'registration': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">📝</span>
+                    Start
+                </a>`,
+            'general': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">🚀</span>
+                    Start
+                </a>`
+        };
+        
+        return actions[taskType] || actions['general'];
+    }
+
+    /**
+     * Get actions for in-progress tasks
+     */
+    getInProgressActions(taskType) {
+        const actions = {
+            'tcs': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">⚙️</span>
+                    Continue
+                </a>
+                <a href="#" class="action-link secondary" onclick="agentManager.showToast('Checking TCS status...', 'info'); return false;">
+                    <span class="action-icon">🔍</span>
+                    Status
+                </a>`,
+            'llm': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">⚙️</span>
+                    Update
+                </a>
+                <a href="#" class="action-link secondary" onclick="agentManager.switchView('metrics'); return false;">
+                    <span class="action-icon">📊</span>
+                    Monitor
+                </a>`,
+            'testing': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('playground'); return false;">
+                    <span class="action-icon">🧪</span>
+                    Continue
+                </a>
+                <a href="#" class="action-link secondary" onclick="agentManager.showToast('Opening test results...', 'info'); return false;">
+                    <span class="action-icon">📋</span>
+                    Results
+                </a>`,
+            'monitoring': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('metrics'); return false;">
+                    <span class="action-icon">📊</span>
+                    Update
+                </a>
+                <a href="#" class="action-link secondary" onclick="agentManager.showToast('Opening dashboard...', 'info'); return false;">
+                    <span class="action-icon">📈</span>
+                    Dashboard
+                </a>`,
+            'general': `
+                <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                    <span class="action-icon">⚙️</span>
+                    Continue
+                </a>`
+        };
+        
+        return actions[taskType] || actions['general'];
+    }
+
+    /**
+     * Get actions for completed tasks
+     */
+    getCompletedActions(taskType) {
+        return `
+            <a href="#" class="action-link success" onclick="agentManager.switchView('metrics'); return false;">
+                <span class="action-icon">📊</span>
+                View Results
+            </a>
+            <a href="#" class="action-link secondary" onclick="agentManager.switchView('configure'); return false;">
+                <span class="action-icon">🔄</span>
+                Update
+            </a>
+        `;
+    }
+
+    /**
+     * Get actions for blocked tasks
+     */
+    getBlockedActions(taskType) {
+        return `
+            <a href="#" class="action-link primary" onclick="agentManager.switchView('configure'); return false;">
+                <span class="action-icon">🔧</span>
+                Resolve
+            </a>
+            <a href="#" class="action-link secondary" onclick="agentManager.showToast('Support ticket created', 'info'); return false;">
+                <span class="action-icon">🆘</span>
+                Help
+            </a>
+        `;
+    }
+
+    /**
+     * Populate Configure Agent tasks table with individual task rows
+     */
+    populateConfigureTasks() {
+        const configureTasksBody = document.getElementById('configure-tasks-tbody');
+        if (!configureTasksBody) return;
+
+        // Define the same tasks that appear in the child task structure
+        const tasks = [
+            {
+                title: 'Enable TCS Assessment',
+                icon: '📝',
+                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
+            },
+            {
+                title: 'LLM Capacity Sign off',
+                icon: '📝',
+                status: { name: 'completed', label: 'COMPLETED', color: '#d1fae5', textColor: '#065f46', progress: 100 }
+            },
+            {
+                title: 'DevUI E2E Testing',
+                icon: '🧪',
+                status: { name: 'in-progress', label: 'IN PROGRESS', color: '#fef3c7', textColor: '#92400e', progress: 67 }
+            },
+            {
+                title: 'Monitors & Dashboards',
+                icon: '📊',
+                status: { name: 'pending', label: 'PENDING', color: '#f3f4f6', textColor: '#374151', progress: 0 }
+            }
+        ];
+
+        // Generate task rows
+        const taskRows = tasks.map(task => this.generateTaskRow(task.title, '', task.status, task.icon, false));
+        configureTasksBody.innerHTML = taskRows.join('');
     }
 
     /**

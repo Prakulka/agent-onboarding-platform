@@ -751,46 +751,22 @@
             <!-- Tasks Tab Content -->
             <div id="configure-tasks-tab" class="tab-content">
                 <div class="tasks-container">
+                    <div class="section-header">
+                        <h3>Tasks</h3>
+                        <p>Manage and track tasks for this agent configuration</p>
+                    </div>
+                    
                     <div class="tasks-table-container">
                         <table class="tasks-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <div class="task-item">
-                                            <span class="task-icon">📋</span>
-                                            <div class="task-details">
-                                                <div class="task-title">[photosagent] Copilot 1P Agent registration request</div>
-                                                <div class="task-badges">
-                                                    <span class="task-badge root">Root Task</span>
-                                                    <span class="task-badge user-story">User Story</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="task-children">
-                                            <div class="task-child">
-                                                <span class="task-icon-small">📝</span>
-                                                <span>[photosagent] [Ring:MSIT] Enable TCS Assessment</span>
-                                            </div>
-                                            <div class="task-child">
-                                                <span class="task-icon-small">📝</span>
-                                                <span>[photosagent] [Ring:MSIT] LLM Capacity Sign off</span>
-                                            </div>
-                                            <div class="task-child">
-                                                <span class="task-icon-small">🧪</span>
-                                                <span>[photosagent] [Ring:MSIT] DevUI E2E Testing</span>
-                                            </div>
-                                            <div class="task-child">
-                                                <span class="task-icon-small">📊</span>
-                                                <span>[photosagent] [Ring:MSIT] Monitors & Dashboards</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="status-cell">
-                                        <div class="status-message">
-                                            The root task may fail to create for some reasons. 
-                                            <a href="#" class="status-link">Click here to view the tasks and recreate them.</a>
-                                        </div>
-                                    </td>
+                                    <th class="task-header">Task Details</th>
+                                    <th class="status-header">Status</th>
+                                    <th class="actions-header">Actions</th>
                                 </tr>
+                            </thead>
+                            <tbody id="configure-tasks-tbody">
+                                <!-- Tasks will be dynamically populated here -->
                             </tbody>
                         </table>
                     </div>
@@ -1671,6 +1647,71 @@
                     <div class="tprompt-header">
                         <h2>Evaluate Agent</h2>
                         <p>Optimize your agent prompts for better performance</p>
+                    </div>
+                    
+                    <!-- Tasks Section -->
+                    <div class="evaluate-tasks-section">
+                        <div class="section-header">
+                            <h3>Tasks</h3>
+                            <p>View and track tasks from Configure Agent section</p>
+                        </div>
+                        
+                        <div class="tasks-table-container">
+                            <table class="tasks-table">
+                                <thead>
+                                    <tr>
+                                        <th>Task Details</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="evaluate-tasks-tbody">
+                                    <tr>
+                                        <td>
+                                            <div class="task-item">
+                                                <span class="task-icon">📋</span>
+                                                <div class="task-details">
+                                                    <div class="task-title">[photosagent] Copilot 1P Agent registration request</div>
+                                                    <div class="task-badges">
+                                                        <span class="task-badge root">Root Task</span>
+                                                        <span class="task-badge user-story">User Story</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="task-children">
+                                                <div class="task-child">
+                                                    <span class="task-icon-small">📝</span>
+                                                    <span>[photosagent] [Ring:MSIT] Enable TCS Assessment</span>
+                                                </div>
+                                                <div class="task-child">
+                                                    <span class="task-icon-small">📝</span>
+                                                    <span>[photosagent] [Ring:MSIT] LLM Capacity Sign off</span>
+                                                </div>
+                                                <div class="task-child">
+                                                    <span class="task-icon-small">🧪</span>
+                                                    <span>[photosagent] [Ring:MSIT] DevUI E2E Testing</span>
+                                                </div>
+                                                <div class="task-child">
+                                                    <span class="task-icon-small">📊</span>
+                                                    <span>[photosagent] [Ring:MSIT] Monitors & Dashboards</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="status-cell">
+                                            <div class="status-indicator">
+                                                <span class="status-badge in-progress">In Progress</span>
+                                                <div class="status-details">
+                                                    <div class="progress-bar">
+                                                        <div class="progress-fill" style="width: 60%;"></div>
+                                                    </div>
+                                                    <span class="progress-text">3 of 5 subtasks completed</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
                     <!-- Two-Column Layout for Inner and Outer Loop Tools -->
