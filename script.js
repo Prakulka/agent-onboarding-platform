@@ -313,7 +313,7 @@ class AgentManager {
     }
 
     /**
-     * Switch T-Prompt tabs (Prompt Optimization vs Quick Actions)
+     * Switch T-Prompt tabs (Copilot Playground, T-Prompt, Quick Actions)
      */
     switchTPromptTab(tabName) {
         // Update tab buttons
@@ -2349,61 +2349,6 @@ function runPlaygroundTest() {
     confidence.textContent = `${(Math.random() * 20 + 80).toFixed(1)}%`;
 }
 
-function analyzePrompt() {
-    const prompt = document.getElementById('current-prompt').value;
-    if (!prompt) {
-        alert('Please enter a prompt to analyze');
-        return;
-    }
-
-    // Simulate analysis
-    const score = Math.floor(Math.random() * 30 + 70);
-    document.querySelector('.score-value').textContent = score;
-
-    const suggestions = [
-        'Add more specific context about the agent\'s role',
-        'Include examples of expected responses',
-        'Clarify the tone and style preferences',
-        'Add constraints for response length'
-    ];
-
-    const suggestionsList = document.getElementById('suggestions-list');
-    suggestionsList.innerHTML = suggestions.map(s => `<li>${s}</li>`).join('');
-
-    document.getElementById('clarity-score').textContent = Math.floor(Math.random() * 30 + 70);
-    document.getElementById('specificity-score').textContent = Math.floor(Math.random() * 30 + 70);
-    document.getElementById('context-score').textContent = Math.floor(Math.random() * 30 + 70);
-}
-
-function suggestImprovements() {
-    analyzePrompt();
-    alert('Analysis complete! Check the suggestions panel for recommendations.');
-}
-
-function optimizePrompt() {
-    const currentPrompt = document.getElementById('current-prompt');
-    if (!currentPrompt.value) {
-        alert('Please enter a prompt to optimize');
-        return;
-    }
-
-    const optimizedPrompt = `You are a highly specialized AI assistant with expertise in ${currentPrompt.value.toLowerCase().includes('sales') ? 'sales and customer engagement' : 'problem-solving and analysis'}. 
-
-Your role is to: ${currentPrompt.value}
-
-Guidelines:
-- Provide clear, actionable responses
-- Maintain a professional yet approachable tone
-- Ask clarifying questions when needed
-- Offer specific examples and recommendations
-
-Response format: Always structure your responses with clear headings and bullet points for easy reading.`;
-
-    currentPrompt.value = optimizedPrompt;
-    analyzePrompt();
-    alert('Prompt optimized! The improved version has been applied.');
-}
-
 function saveAgentConfiguration() {
     const name = document.getElementById('compliant-agent-name').value;
     const version = document.getElementById('version-number').value;
@@ -3568,4 +3513,104 @@ function showSEVALProgressModal(runId) {
     // Create and show modal with current progress
     agentManager.showToast(`Showing progress for ${runId}`, 'info');
     // In real implementation, this would show a modal with real-time progress information
+}
+
+// Copilot Playground Functions
+/**
+ * Create a new playground session
+ */
+function createNewPlaygroundSession() {
+    agentManager.showToast('Creating new playground session...', 'info');
+    // In real implementation, this would:
+    // 1. Open a new window/tab to the Copilot Playground
+    // 2. Pre-populate with current agent configuration
+    // 3. Return the session ID for tracking
+}
+
+/**
+ * Refresh playground sessions list
+ */
+function refreshPlaygroundSessions() {
+    agentManager.showToast('Refreshing playground sessions...', 'info');
+    // In real implementation, this would:
+    // 1. Fetch latest sessions from API
+    // 2. Update the table with new data
+    // 3. Refresh the visualization chart
+}
+
+/**
+ * View detailed results for a specific session
+ */
+function viewSessionDetails(sessionId) {
+    agentManager.showToast(`Opening details for session ${sessionId}...`, 'info');
+    // In real implementation, this would:
+    // 1. Open a detailed view with session transcript
+    // 2. Show evaluation criteria breakdown
+    // 3. Display performance metrics and charts
+}
+
+/**
+ * Duplicate/clone an existing session
+ */
+function duplicateSession(sessionId) {
+    agentManager.showToast(`Cloning session ${sessionId}...`, 'info');
+    // In real implementation, this would:
+    // 1. Create a new session with same configuration
+    // 2. Copy prompts and test scenarios
+    // 3. Open the new session for editing
+}
+
+/**
+ * T-Prompt functionality
+ */
+function runTPromptOptimization() {
+    agentManager.showToast('Starting T-Prompt optimization...', 'info');
+    // In real implementation, this would:
+    // 1. Launch the T-Prompt optimization process
+    // 2. Run prompt A/B testing and analysis
+    // 3. Generate optimized prompt versions
+    // 4. Update the last run output section
+}
+
+function openTMigrate() {
+    agentManager.showToast('Opening T-Migrate...', 'info');
+    window.open('https://nexus.microsoft.com/t-migrate?agent_id=agent-2024-09-11-001', '_blank');
+}
+
+function viewFullOutput() {
+    agentManager.showToast('Opening full T-Prompt output...', 'info');
+    // In real implementation, this would:
+    // 1. Open a detailed view of the optimization run
+    // 2. Show complete logs and analysis
+    // 3. Display all tested prompt variations
+}
+
+function downloadResults() {
+    agentManager.showToast('Downloading T-Prompt results...', 'info');
+    // In real implementation, this would:
+    // 1. Generate a comprehensive report
+    // 2. Include optimization metrics and comparisons
+    // 3. Download as PDF or JSON format
+}
+
+function showPromptDiff() {
+    agentManager.showToast('Opening prompt diff viewer...', 'info');
+    // In real implementation, this would:
+    // 1. Open a side-by-side diff view
+    // 2. Highlight changes between prompt versions
+    // 3. Show impact of each change on performance
+}
+
+function trackTMigrateClick() {
+    // Analytics tracking for T-Migrate usage
+    console.log('T-Migrate link clicked');
+    agentManager.showToast('Launching T-Migrate for agent deployment...', 'success');
+}
+
+function viewMigrationHistory() {
+    agentManager.showToast('Opening migration history...', 'info');
+    // In real implementation, this would:
+    // 1. Show previous deployment attempts
+    // 2. Display rollback options
+    // 3. Show deployment status and logs
 }

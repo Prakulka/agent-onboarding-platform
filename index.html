@@ -751,10 +751,6 @@
             <!-- Tasks Tab Content -->
             <div id="configure-tasks-tab" class="tab-content">
                 <div class="tasks-container">
-                    <div class="section-header">
-                        <h3>Tasks</h3>
-                        <p>Manage and track tasks for this agent configuration</p>
-                    </div>
                     
                     <div class="tasks-table-container">
                         <table class="tasks-table">
@@ -1644,11 +1640,6 @@
             <!-- T-Prompt View -->
             <div id="tprompt-view" class="view">
                 <div class="tprompt-container">
-                    <div class="tprompt-header">
-                        <h2>Evaluate Agent</h2>
-                        <p>Optimize your agent prompts for better performance</p>
-                    </div>
-
                     <!-- Agent Evaluation Workflow Visualization -->
                     <div class="evaluation-workflow">
                         <h3>Agent Evaluation Process</h3>
@@ -1743,10 +1734,6 @@
                     <!-- Tasks Tab Content -->
                     <div id="evaluate-tasks-tab" class="tab-content active">
                         <div class="evaluate-section tasks-section">
-                            <div class="section-header">
-                                <h3>Tasks</h3>
-                                <p>View and track tasks from Configure Agent section</p>
-                            </div>
                             
                             <div class="tasks-table-container">
                                 <table class="tasks-table">
@@ -1997,21 +1984,14 @@
                     <!-- Inner Loop Tools Tab Content -->
                     <div id="evaluate-inner-loop-tab" class="tab-content">
                         <div class="evaluate-section inner-loop-section">
-                            <div class="section-header">
-                                <h3>Inner Loop Tools</h3>
-                                <p>Tools for rapid iteration and prompt optimization</p>
-                            </div>
                             
                             <!-- Navigation Tabs for Inner Loop -->
                             <div class="tprompt-nav-tabs">
-                                <button class="tprompt-nav-tab active" onclick="switchTPromptTab('optimization')">
-                                    Prompt Optimization
-                                </button>
-                                <button class="tprompt-nav-tab" onclick="switchTPromptTab('devui-tools')">
-                                    DevUITools
+                                <button class="tprompt-nav-tab active" onclick="switchTPromptTab('copilot-playground')">
+                                    Copilot Playground
                                 </button>
                                 <button class="tprompt-nav-tab" onclick="switchTPromptTab('results')">
-                                    Results
+                                    T-Prompt
                                 </button>
                                 <button class="tprompt-nav-tab" onclick="switchTPromptTab('quick-actions')">
                                     Quick Actions
@@ -2020,86 +2000,244 @@
                             
                             <!-- Tab Content Container -->
                             <div class="tprompt-tab-content-container">
-                        <!-- Prompt Optimization Tab Content -->
-                        <div id="tprompt-optimization-tab" class="tprompt-tab-content active">
-                            <div class="tprompt-layout">
-                                <div class="prompt-editor">
-                                    <h3>Prompt Editor</h3>
-                                    <div class="form-group">
-                                        <label for="current-prompt">Current Prompt</label>
-                                        <textarea id="current-prompt" rows="8" placeholder="Enter your agent prompt here..."></textarea>
-                                    </div>
-                                    
-                                    <div class="prompt-tools">
-                                        <button class="btn-outline" onclick="analyzePrompt()">Analyze Prompt</button>
-                                        <button class="btn-outline" onclick="suggestImprovements()">Suggest Improvements</button>
-                                        <button class="btn-primary" onclick="optimizePrompt()">Optimize Prompt</button>
-                                    </div>
-                                </div>
-                                
-                                <div class="prompt-analysis">
-                                    <h3>Analysis Results</h3>
-                                    <div id="analysis-results" class="analysis-content">
-                                        <div class="analysis-section">
-                                            <h4>Prompt Quality Score</h4>
-                                            <div class="score-display">
-                                                <div class="score-circle">
-                                                    <span class="score-value">-</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="analysis-section">
-                                            <h4>Improvement Suggestions</h4>
-                                            <ul id="suggestions-list" class="suggestions">
-                                                <li class="placeholder">Analyze your prompt to see suggestions</li>
-                                            </ul>
-                                        </div>
-                                        
-                                        <div class="analysis-section">
-                                            <h4>Performance Metrics</h4>
-                                            <div class="performance-grid">
-                                                <div class="performance-item">
-                                                    <span class="perf-label">Clarity:</span>
-                                                    <span class="perf-score" id="clarity-score">-</span>
-                                                </div>
-                                                <div class="performance-item">
-                                                    <span class="perf-label">Specificity:</span>
-                                                    <span class="perf-score" id="specificity-score">-</span>
-                                                </div>
-                                                <div class="performance-item">
-                                                    <span class="perf-label">Context:</span>
-                                                    <span class="perf-score" id="context-score">-</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         
-                        <!-- DevUITools Tab Content -->
-                        <div id="tprompt-devui-tools-tab" class="tprompt-tab-content">
-                            <div class="devui-tools-container">
-                                <div class="devui-tools-header">
-                                    <h3>DevUITools</h3>
-                                    <p>Development and UI tools for agent optimization</p>
+                        <!-- Copilot Playground Tab Content -->
+                        <div id="tprompt-copilot-playground-tab" class="tprompt-tab-content active">
+                            <div class="playground-container">
+                                <div class="playground-header">
+                                    <h3>Copilot Playground</h3>
+                                    <p>View and manage playground sessions associated with your agent</p>
+                                    <div class="playground-actions">
+                                        <button class="btn-primary" onclick="createNewPlaygroundSession()">
+                                            <span class="action-icon">➕</span>
+                                            New Session
+                                        </button>
+                                        <button class="btn-outline" onclick="refreshPlaygroundSessions()">
+                                            <span class="action-icon">🔄</span>
+                                            Refresh
+                                        </button>
+                                    </div>
                                 </div>
                                 
-                                <!-- Placeholder content for DevUITools -->
-                                <div class="devui-tools-placeholder">
-                                    <div class="placeholder-content">
-                                        <div class="placeholder-icon">🛠️</div>
-                                        <h4>Development Tools Coming Soon</h4>
-                                        <p>Advanced development and UI tools for agent optimization and testing will be available here.</p>
-                                        <div class="planned-features">
-                                            <h5>Planned Features:</h5>
-                                            <ul>
-                                                <li>Interactive prompt debugger</li>
-                                                <li>Real-time prompt validation</li>
-                                                <li>Agent behavior simulator</li>
-                                                <li>UI component testing tools</li>
-                                            </ul>
+                                <!-- Agent ID Display -->
+                                <div class="agent-info-card">
+                                    <div class="agent-info-header">
+                                        <span class="info-label">Current Agent ID:</span>
+                                        <span class="agent-id-value">agent-2024-09-11-001</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Playground Sessions Table -->
+                                <div class="playground-sessions-container">
+                                    <h4>Playground Sessions</h4>
+                                    <div class="sessions-table-wrapper">
+                                        <table class="playground-sessions-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Session #</th>
+                                                    <th>Name</th>
+                                                    <th>Default Criteria</th>
+                                                    <th>TPrompt Criteria</th>
+                                                    <th>TPrompt Criteria</th>
+                                                    <th>Final Score <span class="sort-icon">↓</span></th>
+                                                    <th>Output Tokens</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="playground-sessions-tbody">
+                                                <!-- Session data will be populated by JavaScript -->
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Customer Support Agent v1.0</td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">7.67</span>
+                                                            <span class="score-details">(3 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">10.00</span>
+                                                            <span class="score-details">(3 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">10.00</span>
+                                                            <span class="score-details">(3 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="final-score">
+                                                            <span class="score-value highlighted">27.67</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="token-count">200</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="session-actions">
+                                                            <button class="btn-sm btn-outline" onclick="viewSessionDetails(1)">
+                                                                <span class="action-icon">👁️</span>
+                                                                View
+                                                            </button>
+                                                            <button class="btn-sm btn-outline" onclick="duplicateSession(1)">
+                                                                <span class="action-icon">📋</span>
+                                                                Clone
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Customer Support Agent v1.1</td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">8.23</span>
+                                                            <span class="score-details">(5 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">9.45</span>
+                                                            <span class="score-details">(5 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">9.12</span>
+                                                            <span class="score-details">(5 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="final-score">
+                                                            <span class="score-value">26.80</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="token-count">184</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="session-actions">
+                                                            <button class="btn-sm btn-outline" onclick="viewSessionDetails(2)">
+                                                                <span class="action-icon">👁️</span>
+                                                                View
+                                                            </button>
+                                                            <button class="btn-sm btn-outline" onclick="duplicateSession(2)">
+                                                                <span class="action-icon">📋</span>
+                                                                Clone
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Customer Support Agent v2.0</td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">6.89</span>
+                                                            <span class="score-details">(4 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">8.76</span>
+                                                            <span class="score-details">(4 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="criteria-score">
+                                                            <span class="score-value">8.34</span>
+                                                            <span class="score-details">(4 rows)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="final-score">
+                                                            <span class="score-value">23.99</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="token-count">156</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="session-actions">
+                                                            <button class="btn-sm btn-outline" onclick="viewSessionDetails(3)">
+                                                                <span class="action-icon">👁️</span>
+                                                                View
+                                                            </button>
+                                                            <button class="btn-sm btn-outline" onclick="duplicateSession(3)">
+                                                                <span class="action-icon">📋</span>
+                                                                Clone
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Results Visualization -->
+                                <div class="results-visualization">
+                                    <h4>Session Results Comparison</h4>
+                                    <div class="chart-container">
+                                        <div class="chart-legend">
+                                            <div class="legend-item">
+                                                <span class="legend-color default-criteria"></span>
+                                                <span class="legend-label">Default Criteria</span>
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color tprompt-criteria-1"></span>
+                                                <span class="legend-label">TPrompt Criteria</span>
+                                            </div>
+                                            <div class="legend-item">
+                                                <span class="legend-color tprompt-criteria-2"></span>
+                                                <span class="legend-label">TPrompt Criteria</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Chart visualization -->
+                                        <div class="chart-visualization">
+                                            <div class="chart-content">
+                                                <!-- Y-axis labels -->
+                                                <div class="y-axis">
+                                                    <div class="y-label">30</div>
+                                                    <div class="y-label">25</div>
+                                                    <div class="y-label">20</div>
+                                                    <div class="y-label">15</div>
+                                                    <div class="y-label">10</div>
+                                                    <div class="y-label">5</div>
+                                                    <div class="y-label">0</div>
+                                                </div>
+                                                
+                                                <!-- Chart bars -->
+                                                <div class="chart-bars">
+                                                    <div class="bar-group">
+                                                        <div class="stacked-bar">
+                                                            <div class="bar-segment default-criteria" style="height: 25.6%" title="Default Criteria: 7.67"></div>
+                                                            <div class="bar-segment tprompt-criteria-1" style="height: 33.3%" title="TPrompt Criteria: 10.00"></div>
+                                                            <div class="bar-segment tprompt-criteria-2" style="height: 33.3%" title="TPrompt Criteria: 10.00"></div>
+                                                        </div>
+                                                        <div class="bar-label">Session 1</div>
+                                                    </div>
+                                                    <div class="bar-group">
+                                                        <div class="stacked-bar">
+                                                            <div class="bar-segment default-criteria" style="height: 27.4%" title="Default Criteria: 8.23"></div>
+                                                            <div class="bar-segment tprompt-criteria-1" style="height: 31.5%" title="TPrompt Criteria: 9.45"></div>
+                                                            <div class="bar-segment tprompt-criteria-2" style="height: 30.4%" title="TPrompt Criteria: 9.12"></div>
+                                                        </div>
+                                                        <div class="bar-label">Session 2</div>
+                                                    </div>
+                                                    <div class="bar-group">
+                                                        <div class="stacked-bar">
+                                                            <div class="bar-segment default-criteria" style="height: 22.9%" title="Default Criteria: 6.89"></div>
+                                                            <div class="bar-segment tprompt-criteria-1" style="height: 29.2%" title="TPrompt Criteria: 8.76"></div>
+                                                            <div class="bar-segment tprompt-criteria-2" style="height: 27.8%" title="TPrompt Criteria: 8.34"></div>
+                                                        </div>
+                                                        <div class="bar-label">Session 3</div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2109,25 +2247,125 @@
                         <!-- Results Tab Content -->
                         <div id="tprompt-results-tab" class="tprompt-tab-content">
                             <div class="results-container">
-                                <div class="results-header">
-                                    <h3>Results</h3>
-                                    <p>View evaluation results and performance metrics</p>
-                                </div>
-                                
-                                <!-- Placeholder content for Results -->
+                                <!-- Placeholder content for T-Prompt -->
                                 <div class="results-placeholder">
                                     <div class="placeholder-content">
-                                        <div class="placeholder-icon">📊</div>
-                                        <h4>Results Dashboard Coming Soon</h4>
-                                        <p>Comprehensive evaluation results and performance analytics will be displayed here.</p>
-                                        <div class="planned-features">
-                                            <h5>Planned Features:</h5>
-                                            <ul>
-                                                <li>Evaluation run history</li>
-                                                <li>Performance trend analysis</li>
-                                                <li>Comparison charts</li>
-                                                <li>Export and reporting tools</li>
-                                            </ul>
+                                        <!-- T-Prompt Action Buttons -->
+                                        <div class="tprompt-actions">
+                                            <button class="btn-primary" onclick="runTPromptOptimization()">
+                                                <span class="action-icon">🚀</span>
+                                                Run T-Prompt
+                                            </button>
+                                            <button class="btn-outline" onclick="openTMigrate()">
+                                                <span class="action-icon">🔄</span>
+                                                T-Migrate
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Last T-Prompt Run Output -->
+                                        <div class="last-run-section">
+                                            <h5>Last T-Prompt Run Output</h5>
+                                            <div class="run-output-card">
+                                                <div class="run-meta">
+                                                    <div class="run-info">
+                                                        <span class="run-id">Run ID: tprompt-2024-09-11-15:32:07</span>
+                                                        <span class="run-status completed">Completed</span>
+                                                    </div>
+                                                    <div class="run-timestamp">
+                                                        <span class="timestamp">September 11, 2024 at 3:32 PM</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="output-content">
+                                                    <div class="output-summary">
+                                                        <div class="metric">
+                                                            <span class="metric-label">Optimization Score</span>
+                                                            <span class="metric-value success">+23.5%</span>
+                                                        </div>
+                                                        <div class="metric">
+                                                            <span class="metric-label">Iterations</span>
+                                                            <span class="metric-value">12</span>
+                                                        </div>
+                                                        <div class="metric">
+                                                            <span class="metric-label">Best Model</span>
+                                                            <span class="metric-value">GPT-4o</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="output-actions">
+                                                        <button class="btn-sm btn-outline" onclick="viewFullOutput()">
+                                                            <span class="action-icon">📄</span>
+                                                            View Full Output
+                                                        </button>
+                                                        <button class="btn-sm btn-outline" onclick="downloadResults()">
+                                                            <span class="action-icon">💾</span>
+                                                            Download
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Prompt Comparison -->
+                                        <div class="prompt-comparison-section">
+                                            <h5>Prompt Comparison</h5>
+                                            <div class="comparison-container">
+                                                <div class="prompt-versions">
+                                                    <div class="prompt-version old">
+                                                        <div class="version-header">
+                                                            <span class="version-label">Original Prompt</span>
+                                                            <span class="version-tag old">v1.0</span>
+                                                        </div>
+                                                        <div class="prompt-content">
+                                                            <code>You are a helpful customer support agent. Respond to customer inquiries with accurate information and maintain a professional tone.</code>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="diff-link-container">
+                                                        <button class="diff-link" onclick="showPromptDiff()">
+                                                            <span class="diff-icon">⚡</span>
+                                                            <span class="diff-text">View Diff</span>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div class="prompt-version new">
+                                                        <div class="version-header">
+                                                            <span class="version-label">Optimized Prompt</span>
+                                                            <span class="version-tag new">v2.0</span>
+                                                        </div>
+                                                        <div class="prompt-content">
+                                                            <code>You are an expert customer support specialist with deep product knowledge. When responding to customer inquiries: 1) Acknowledge their concern immediately, 2) Provide specific, actionable solutions, 3) Offer additional relevant resources, and 4) Maintain an empathetic, solution-focused tone throughout.</code>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- T-Migrate Integration -->
+                                        <div class="tmigrate-section">
+                                            <h5>T-Migrate Integration</h5>
+                                            <div class="tmigrate-card">
+                                                <div class="tmigrate-info">
+                                                    <div class="tmigrate-icon">🔄</div>
+                                                    <div class="tmigrate-details">
+                                                        <span class="tmigrate-title">Migrate to Production</span>
+                                                        <p>Use T-Migrate to safely deploy your optimized prompts to production environments with automated rollback capabilities.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="tmigrate-actions">
+                                                    <a href="https://nexus.microsoft.com/t-migrate?agent_id=agent-2024-09-11-001" 
+                                                       target="_blank" 
+                                                       class="btn-primary tmigrate-link"
+                                                       onclick="trackTMigrateClick()">
+                                                        <span class="action-icon">🚀</span>
+                                                        Launch T-Migrate
+                                                    </a>
+                                                    <button class="btn-outline" onclick="viewMigrationHistory()">
+                                                        <span class="action-icon">📋</span>
+                                                        Migration History
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2321,10 +2559,6 @@
                     <!-- Outer Loop Tools Tab Content -->
                     <div id="evaluate-outer-loop-tab" class="tab-content">
                         <div class="evaluate-section outer-loop-section">
-                            <div class="section-header">
-                                <h3>Outer Loop Tools</h3>
-                                <p>Tools for production deployment and monitoring</p>
-                            </div>
                             
                             <!-- SEVAL Integration and Results -->
                             <div class="outer-loop-content">
