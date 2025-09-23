@@ -267,9 +267,11 @@ class AgentManager {
         });
         document.getElementById(`configure-${tabName}-tab`).classList.add('active');
 
-        // Populate tasks when tasks tab is selected
+        // Initialize specific tabs
         if (tabName === 'tasks') {
             this.populateConfigureTasks();
+        } else if (tabName === 'catalog') {
+            this.initializeFeatureCatalog();
         }
     }
 
@@ -778,13 +780,32 @@ class AgentManager {
         });
         document.querySelector(`[data-step="${step}"]`).classList.add('active');
 
+        // Special handling for deploy step
+        if (step === 'deploy') {
+            // If we have a current agent, show its deploy page
+            if (this.currentAgent) {
+                this.switchView('deploy');
+                this.showAgentHeader(this.currentAgent);
+            } else {
+                // If no current agent, use first available agent or show generic deploy page
+                const firstAgent = this.agents.length > 0 ? this.agents[0] : null;
+                if (firstAgent) {
+                    this.currentAgent = firstAgent;
+                    this.switchView('deploy');
+                    this.showAgentHeader(this.currentAgent);
+                } else {
+                    this.switchView('deploy');
+                }
+            }
+            return;
+        }
+
         // Map steps to views
         const stepViewMap = {
             create: 'create',
             configure: 'configure',
             evaluate: 'playground',
             'evaluate-prompts': 'tprompt',
-            deploy: 'dashboard',
             monitor: 'metrics'
         };
 
@@ -2271,18 +2292,31 @@ class AgentManager {
     }
 
     deployAgent(id) {
-        // Update lifecycle step to highlight "Deploy"
-        document.querySelectorAll('.lifecycle-step').forEach(s => {
-            s.classList.remove('active');
-        });
-        document.querySelector('[data-step="deploy"]').classList.add('active');
+        // Set current agent and switch to deploy view
+        this.currentAgent = this.agents.find(a => a.id === id);
+        if (this.currentAgent) {
+            // Switch to deploy view
+            this.switchView('deploy');
+            
+            // Update lifecycle step to highlight "Deploy"
+            document.querySelectorAll('.lifecycle-step').forEach(s => {
+                s.classList.remove('active');
+            });
+            document.querySelector('[data-step="deploy"]').classList.add('active');
+            
+            // Show agent header
+            this.showAgentHeader(this.currentAgent);
+        }
+    }
+
+    showAgentHeader(agent) {
+        // Update the deploy page header with agent information
+        const titleElement = document.getElementById('deploy-agent-title');
+        const subtitleElement = document.getElementById('deploy-agent-subtitle');
         
-        const agent = this.agents.find(a => a.id === id);
-        if (agent) {
-            agent.status = 'Active';
-            this.saveAgents();
-            this.renderAgentsTable();
-            alert(`${agent.name} deployed successfully!`);
+        if (titleElement && subtitleElement) {
+            titleElement.textContent = `🚀 Deploy ${agent.name}`;
+            subtitleElement.textContent = `Manage deployment lifecycle for ${agent.name} - ${agent.product}`;
         }
     }
 
@@ -3613,4 +3647,287 @@ function viewMigrationHistory() {
     // 1. Show previous deployment attempts
     // 2. Display rollback options
     // 3. Show deployment status and logs
+}
+
+/**
+ * Feature Catalog functionality
+ */
+class FeatureCatalog {
+    constructor() {
+        this.catalog = [];
+        this.results = [];
+        this.toastTimeout = null;
+        this.isInitialized = false;
+    }
+
+    async loadCatalog() {
+        try {
+            const response = await fetch('/data/feature-catalog.json');
+            this.catalog = await response.json();
+            return true;
+        } catch (error) {
+            console.error('Failed to load feature catalog:', error);
+            return false;
+        }
+    }
+
+    initializeSearch() {
+        const searchInput = document.getElementById('catalog-search');
+        if (searchInput && !this.isInitialized) {
+            searchInput.addEventListener('input', (e) => this.handleSearch(e));
+            this.isInitialized = true;
+        }
+    }
+
+    handleSearch(e) {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+            this.results = [];
+            this.renderResults();
+            return;
+        }
+
+        // Search with relevance scoring
+        this.results = this.catalog
+            .map(entry => {
+                let score = 0;
+                if (entry.name && entry.name.toLowerCase().includes(query)) score += 100;
+                if (entry.synonyms && entry.synonyms.some(s => s.toLowerCase().includes(query))) score += 60;
+                if (entry.tags && entry.tags.some(t => t.toLowerCase().includes(query))) score += 40;
+                if (entry.capabilities && entry.capabilities.some(c => c.toLowerCase().includes(query))) score += 30;
+                if (entry.description && entry.description.toLowerCase().includes(query)) score += 10;
+                return { ...entry, _score: score };
+            })
+            .filter(e => e._score > 0)
+            .sort((a, b) => b._score - a._score);
+
+        this.renderResults();
+    }
+
+    renderResults() {
+        const container = document.getElementById('catalog-results');
+        if (!container) return;
+
+        if (!this.results.length) {
+            container.innerHTML = `
+                <div class="no-results-message">
+                    No matching features — try terms like <strong>context switching</strong>, <strong>retrieval</strong>, <strong>summarization</strong>.
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = this.results.map(entry => {
+            const snippet = JSON.stringify(entry.manifestSnippet, null, 2);
+            return `
+                <div class="catalog-feature-card">
+                    <div class="catalog-feature-header">
+                        <div>
+                            <h4 class="catalog-feature-title">${this.escapeHTML(entry.name)}</h4>
+                            <p class="catalog-feature-description">${this.escapeHTML(entry.description)}</p>
+                        </div>
+                        <div class="catalog-feature-badges">
+                            <span class="catalog-badge type" title="Type">${this.escapeHTML(entry.type)}</span>
+                            <span class="catalog-badge status" title="Status">${this.escapeHTML(entry.status)}</span>
+                            <span class="catalog-badge risk" title="Risk">${this.escapeHTML(entry.risk)}</span>
+                        </div>
+                    </div>
+                    <div class="catalog-manifest-section">
+                        <pre class="catalog-manifest-code">${this.escapeHTML(snippet)}</pre>
+                        <button type="button" class="catalog-copy-button" onclick="featureCatalog.copySnippet('${this.escapeHTML(snippet).replace(/'/g, "\\'")}')">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    copySnippet(snippet) {
+        try {
+            // Unescape HTML entities
+            const cleanSnippet = snippet
+                .replace(/&quot;/g, '"')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&#39;/g, "'")
+                .replace(/&amp;/g, '&');
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(cleanSnippet);
+            } else {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = cleanSnippet;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+            this.showToast('Snippet copied');
+        } catch (error) {
+            console.error('Failed to copy snippet:', error);
+            this.showToast('Failed to copy snippet');
+        }
+    }
+
+    showToast(message) {
+        let toast = document.querySelector('.catalog-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'catalog-toast';
+            document.body.appendChild(toast);
+        }
+        
+        toast.textContent = message;
+        toast.style.display = 'block';
+        
+        clearTimeout(this.toastTimeout);
+        this.toastTimeout = setTimeout(() => {
+            toast.style.display = 'none';
+        }, 2000);
+    }
+
+    escapeHTML(str) {
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, function(c) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c];
+        });
+    }
+
+    async initialize() {
+        const success = await this.loadCatalog();
+        if (success) {
+            this.initializeSearch();
+        } else {
+            const container = document.getElementById('catalog-results');
+            if (container) {
+                container.innerHTML = '<div class="no-results-message" style="color: #dc2626;">Failed to load feature catalog.</div>';
+            }
+        }
+    }
+}
+
+// Initialize Feature Catalog
+const featureCatalog = new FeatureCatalog();
+
+// Add to AgentManager
+if (typeof agentManager !== 'undefined') {
+    agentManager.initializeFeatureCatalog = function() {
+        featureCatalog.initialize();
+    };
+}
+
+// Deploy View Functions
+function switchEvaluationTab(tabName) {
+    // Remove active class from all tabs and panels
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+    
+    // Add active class to selected tab and panel
+    document.querySelector(`[onclick="switchEvaluationTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(tabName + '-tab').classList.add('active');
+}
+
+function refreshEvaluations() {
+    // Simulate refresh action
+    console.log('Refreshing evaluations...');
+    // Add refresh logic here
+}
+
+function pauseAll() {
+    // Simulate pause action
+    console.log('Pausing all evaluations...');
+    // Add pause logic here
+}
+
+/**
+ * Explore dataset functionality
+ * @param {string} datasetName - Name of the dataset to explore
+ */
+function exploreDataset(datasetName) {
+    try {
+        console.log(`Exploring dataset: ${datasetName}`);
+        
+        // Show a notification or modal
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            font-size: 0.875rem;
+            font-weight: 500;
+        `;
+        notification.textContent = `Opening dataset explorer for ${datasetName}...`;
+        document.body.appendChild(notification);
+        
+        // Simulate opening dataset explorer
+        setTimeout(() => {
+            notification.textContent = `Dataset ${datasetName} explorer opened successfully!`;
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 2000);
+        }, 1000);
+        
+        // In a real implementation, this would open a dataset exploration interface
+        // window.open(`/dataset-explorer?dataset=${encodeURIComponent(datasetName)}`, '_blank');
+        
+    } catch (error) {
+        console.error('Error exploring dataset:', error);
+    }
+}
+
+/**
+ * Export dataset functionality
+ * @param {string} datasetName - Name of the dataset to export
+ */
+function exportDataset(datasetName) {
+    try {
+        console.log(`Exporting dataset: ${datasetName}`);
+        
+        // Show a notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            font-size: 0.875rem;
+            font-weight: 500;
+        `;
+        notification.textContent = `Preparing export for ${datasetName}...`;
+        document.body.appendChild(notification);
+        
+        // Simulate export process
+        setTimeout(() => {
+            notification.textContent = `Export initiated for ${datasetName}. Check downloads for completion.`;
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }, 1500);
+        
+        // In a real implementation, this would initiate dataset export
+        // const exportUrl = `/api/datasets/${encodeURIComponent(datasetName)}/export`;
+        // window.location.href = exportUrl;
+        
+    } catch (error) {
+        console.error('Error exporting dataset:', error);
+    }
 }
