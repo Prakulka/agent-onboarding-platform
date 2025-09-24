@@ -289,14 +289,14 @@
 
                 <!-- Deploy Agent Process -->
                 <div class="platform-section">
-                    <h3>� Deploy Agent Process</h3>
+                    <h3>🚀 Deploy Agent Process</h3>
                     <div class="workflow-steps">
                         <div class="workflow-step" data-step="1">
                             <div class="step-number">1</div>
                             <div class="step-content">
-                                <div class="step-title">Test Deployment</div>
-                                <div class="step-description">Deploy to test environment</div>
-                                <div class="step-tools">Deployment Pipeline</div>
+                                <div class="step-title">Set Flights</div>
+                                <div class="step-description">Configure feature flags and deployment rings</div>
+                                <div class="step-tools">Flight Configuration</div>
                             </div>
                         </div>
                         
@@ -305,9 +305,13 @@
                         <div class="workflow-step" data-step="2">
                             <div class="step-number">2</div>
                             <div class="step-content">
-                                <div class="step-title">Set Flights</div>
-                                <div class="step-description">Configure feature flags and rings</div>
-                                <div class="step-tools">Flight Configuration</div>
+                                <div class="step-title">Create Experiments</div>
+                                <div class="step-description">Generate query sets and datasets for T-Prompt, SEVAL, Shadow A/B</div>
+                                <div class="step-tools">
+                                    <span class="tool-tag tprompt">T-Prompt</span>
+                                    <span class="tool-tag seval">SEVAL</span>
+                                    <span class="tool-tag shadow">Shadow A/B</span>
+                                </div>
                             </div>
                         </div>
                         
@@ -316,9 +320,9 @@
                         <div class="workflow-step" data-step="3">
                             <div class="step-number">3</div>
                             <div class="step-content">
-                                <div class="step-title">Run SEVAL</div>
-                                <div class="step-description">Production evaluation testing</div>
-                                <div class="step-tools">SEVAL Framework</div>
+                                <div class="step-title">Provision Capacity</div>
+                                <div class="step-description">Scale infrastructure resources for deployment</div>
+                                <div class="step-tools">Resource Management</div>
                             </div>
                         </div>
                         
@@ -327,9 +331,9 @@
                         <div class="workflow-step" data-step="4">
                             <div class="step-number">4</div>
                             <div class="step-content">
-                                <div class="step-title">Shadow A/B Testing</div>
-                                <div class="step-description">Shadow testing with real traffic</div>
-                                <div class="step-tools">A/B Testing Platform</div>
+                                <div class="step-title">Full Deployment</div>
+                                <div class="step-description">Deploy agent to production environment</div>
+                                <div class="step-tools">Production Pipeline</div>
                             </div>
                         </div>
                         
@@ -338,9 +342,9 @@
                         <div class="workflow-step" data-step="5">
                             <div class="step-number">5</div>
                             <div class="step-content">
-                                <div class="step-title">Provision Capacity</div>
-                                <div class="step-description">Scale infrastructure resources</div>
-                                <div class="step-tools">Resource Management</div>
+                                <div class="step-title">Online A/B Experiment</div>
+                                <div class="step-description">Execute live production experiments</div>
+                                <div class="step-tools">Live Testing Platform</div>
                             </div>
                         </div>
                         
@@ -349,47 +353,49 @@
                         <div class="workflow-step" data-step="6">
                             <div class="step-number">6</div>
                             <div class="step-content">
-                                <div class="step-title">Full Deployment</div>
-                                <div class="step-description">Deploy to production environment</div>
-                                <div class="step-tools">Production Pipeline</div>
-                            </div>
-                        </div>
-                        
-                        <div class="workflow-arrow">→</div>
-                        
-                        <div class="workflow-step" data-step="7">
-                            <div class="step-number">7</div>
-                            <div class="step-content">
-                                <div class="step-title">Online A/B Testing</div>
-                                <div class="step-description">Live production testing</div>
-                                <div class="step-tools">Live Testing Platform</div>
-                            </div>
-                        </div>
-                        
-                        <div class="workflow-arrow">→</div>
-                        
-                        <div class="workflow-step" data-step="8">
-                            <div class="step-number">8</div>
-                            <div class="step-content">
-                                <div class="step-title">Enable Traffic</div>
-                                <div class="step-description">Gradually increase traffic allocation</div>
-                                <div class="step-tools">Traffic Management</div>
-                            </div>
-                        </div>
-                        
-                        <div class="workflow-arrow">→</div>
-                        
-                        <div class="workflow-step" data-step="9">
-                            <div class="step-number">9</div>
-                            <div class="step-content">
                                 <div class="step-title">Monitor Performance</div>
                                 <div class="step-description">Continuous monitoring and analytics</div>
-                                <div class="step-tools">Monitoring Dashboard</div>
+                                <div class="step-tools">Performance Dashboard</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-arrow repeat-arrow">⟲</div>
+                        
+                        <div class="workflow-step repeat-step" data-step="7">
+                            <div class="step-number">⟲</div>
+                            <div class="step-content">
+                                <div class="step-title">Repeat Per Ring</div>
+                                <div class="step-description">Iterate process for each deployment ring</div>
+                                <div class="step-tools">Ring Management</div>
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Ring Visual -->
+                    <div class="deployment-rings">
+                        <h4>Deployment Rings</h4>
+                        <div class="rings-container">
+                            <div class="ring ring-1">
+                                <div class="ring-label">Ring 0</div>
+                                <div class="ring-description">Canary (1%)</div>
+                            </div>
+                            <div class="ring ring-2">
+                                <div class="ring-label">Ring 1</div>
+                                <div class="ring-description">Early (5%)</div>
+                            </div>
+                            <div class="ring ring-3">
+                                <div class="ring-label">Ring 2</div>
+                                <div class="ring-description">Broad (25%)</div>
+                            </div>
+                            <div class="ring ring-4">
+                                <div class="ring-label">Ring 3</div>
+                                <div class="ring-description">Full (100%)</div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="workflow-note">
-                        <p><em>Deploy agent cycle with outer loop evaluations repeats per ring</em></p>
+                        <p><em>🔄 Deploy agent cycle with monitoring and evaluation repeats for each deployment ring</em></p>
                     </div>
                 </div>
 
@@ -2347,10 +2353,541 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- T-Prompt View -->
+                    <!-- Experiments Section -->
+                    <div class="experiments-section">
+                        <div class="experiments-header">
+                            <h3>Experiments</h3>
+                            <button class="btn-primary" onclick="openExperimentWizard()">Set Up Experiments</button>
+                        </div>
+                        
+                        <div class="experiments-table">
+                            <table class="exp-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Experiment Name</th>
+                                        <th>Progression Name</th>
+                                        <th>Exp Name</th>
+                                        <th>Experiment Types</th>
+                                        <th>Blockers</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="experiment-row active">
+                                        <td><button class="expand-btn">▶</button></td>
+                                        <td><a href="#" class="experiment-link">ShipCheck</a> <span class="info-icon">ℹ️</span></td>
+                                        <td>Default <span class="info-icon">ℹ️</span></td>
+                                        <td>
+                                            <div class="shadow-experiments">
+                                                <div>ShadowAB_ShipCheck_Control</div>
+                                                <div>ShadowAB_ShipCheck_Treatment</div>
+                                            </div>
+                                        </td>
+                                        <td><span class="experiment-type shadow">Shadow</span></td>
+                                        <td><span class="blocker">ControlTowerGate</span></td>
+                                    </tr>
+                                    <tr class="experiment-row active">
+                                        <td><button class="expand-btn">▶</button></td>
+                                        <td><a href="#" class="experiment-link">PRAssistant</a> <span class="info-icon">ℹ️</span></td>
+                                        <td>Default <span class="info-icon">ℹ️</span></td>
+                                        <td>
+                                            <div class="shadow-experiments">
+                                                <div>ShadowAB_PRAssistant_Control</div>
+                                                <div>ShadowAB_PRAssistant_Treatment</div>
+                                            </div>
+                                        </td>
+                                        <td><span class="experiment-type shadow">Shadow</span></td>
+                                        <td><span class="blocker">ControlTowerGate</span></td>
+                                    </tr>
+                                    <tr class="experiment-row active">
+                                        <td><button class="expand-btn">▶</button></td>
+                                        <td><a href="#" class="experiment-link">ShipCheck</a> <span class="info-icon">ℹ️</span></td>
+                                        <td>Default <span class="info-icon">ℹ️</span></td>
+                                        <td>
+                                            <div class="exp-name">T-Prompt_ShipCheck</div>
+                                        </td>
+                                        <td><span class="experiment-type tprompt">T-Prompt</span></td>
+                                        <td><span class="blocker">ControlTowerGate</span></td>
+                                    </tr>
+                                    <tr class="experiment-row active">
+                                        <td><button class="expand-btn">▶</button></td>
+                                        <td><a href="#" class="experiment-link">ShipCheck</a> <span class="info-icon">ℹ️</span></td>
+                                        <td>Default <span class="info-icon">ℹ️</span></td>
+                                        <td>
+                                            <div class="exp-name">OnlineExperiment_ShipCheck</div>
+                                        </td>
+                                        <td><span class="experiment-type online">Online Experiment</span></td>
+                                        <td><span class="blocker">ControlTowerGate</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Performance Section -->
+                    <div class="performance-section">
+                        <div class="performance-header">
+                            <div class="performance-title">
+                                <h3>Performance Dashboard</h3>
+                                <p class="performance-subtitle">System performance and responsiveness metrics</p>
+                            </div>
+                            <div class="performance-actions">
+                                <button class="btn-icon" title="System Health">
+                                    <span class="health-icon">⚡</span>
+                                    System Health
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Performance Hero Banner -->
+                        <div class="performance-hero">
+                            <div class="hero-gradient"></div>
+                        </div>
+
+                        <!-- Key Metrics Row -->
+                        <div class="performance-metrics-grid">
+                            <div class="metric-card positive">
+                                <div class="metric-header">
+                                    <h4>Response Time P95</h4>
+                                    <div class="metric-indicator positive">●</div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="value">1.2s</span>
+                                    <span class="change positive">-3.4%</span>
+                                </div>
+                                <div class="metric-threshold">Threshold: 2.0s</div>
+                            </div>
+
+                            <div class="metric-card warning">
+                                <div class="metric-header">
+                                    <h4>ChatSAT Score</h4>
+                                    <div class="metric-indicator warning">●</div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="value">4.1/5</span>
+                                    <span class="change positive">+5.2%</span>
+                                </div>
+                                <div class="metric-threshold">Threshold: 3.8/5</div>
+                            </div>
+
+                            <div class="metric-card positive">
+                                <div class="metric-header">
+                                    <h4>System Latency</h4>
+                                    <div class="metric-indicator positive">●</div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="value">284ms</span>
+                                    <span class="change negative">+2.1%</span>
+                                </div>
+                                <div class="metric-threshold">Threshold: 500ms</div>
+                            </div>
+
+                            <div class="metric-card positive">
+                                <div class="metric-header">
+                                    <h4>Error Rate</h4>
+                                    <div class="metric-indicator positive">●</div>
+                                </div>
+                                <div class="metric-value">
+                                    <span class="value">0.12%</span>
+                                    <span class="change negative">-34.2%</span>
+                                </div>
+                                <div class="metric-threshold">Threshold: 0.5%</div>
+                            </div>
+                        </div>
+
+                        <!-- System Resource Utilization -->
+                        <div class="resource-utilization">
+                            <h4>System Resource Utilization</h4>
+                            <div class="resource-grid">
+                                <div class="resource-item">
+                                    <div class="resource-header">
+                                        <span class="resource-name">CPU</span>
+                                        <span class="resource-percentage">65%</span>
+                                    </div>
+                                    <div class="resource-bar">
+                                        <div class="resource-fill warning" style="width: 65%"></div>
+                                    </div>
+                                    <div class="resource-status warning">Moderate Usage</div>
+                                </div>
+
+                                <div class="resource-item">
+                                    <div class="resource-header">
+                                        <span class="resource-name">Memory</span>
+                                        <span class="resource-percentage">72%</span>
+                                    </div>
+                                    <div class="resource-bar">
+                                        <div class="resource-fill warning" style="width: 72%"></div>
+                                    </div>
+                                    <div class="resource-status warning">Moderate Usage</div>
+                                </div>
+
+                                <div class="resource-item">
+                                    <div class="resource-header">
+                                        <span class="resource-name">Network</span>
+                                        <span class="resource-percentage">45%</span>
+                                    </div>
+                                    <div class="resource-bar">
+                                        <div class="resource-fill normal" style="width: 45%"></div>
+                                    </div>
+                                    <div class="resource-status normal">Normal</div>
+                                </div>
+
+                                <div class="resource-item">
+                                    <div class="resource-header">
+                                        <span class="resource-name">Storage</span>
+                                        <span class="resource-percentage">38%</span>
+                                    </div>
+                                    <div class="resource-bar">
+                                        <div class="resource-fill normal" style="width: 38%"></div>
+                                    </div>
+                                    <div class="resource-status normal">Normal</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Summary Cards -->
+                        <div class="performance-summary">
+                            <div class="summary-card positive">
+                                <div class="summary-icon">✓</div>
+                                <div class="summary-content">
+                                    <h5>Response Time</h5>
+                                    <p>P95 under target</p>
+                                </div>
+                            </div>
+
+                            <div class="summary-card info">
+                                <div class="summary-icon">ℹ️</div>
+                                <div class="summary-content">
+                                    <h5>Latency</h5>
+                                    <p>Excellent performance</p>
+                                </div>
+                            </div>
+
+                            <div class="summary-card warning">
+                                <div class="summary-icon">⚠️</div>
+                                <div class="summary-content">
+                                    <h5>Error Rate</h5>
+                                    <p>Minimal errors detected</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experiment Wizard Modal -->
+                <div id="experiment-wizard-modal" class="modal-overlay" style="display: none;">
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <h3>Create New Experiment</h3>
+                            <button class="modal-close" onclick="closeExperimentWizard()">×</button>
+                        </div>
+                        
+                        <div class="wizard-progress">
+                            <div class="progress-step active" data-step="1">
+                                <div class="step-number">1</div>
+                                <span>Agreement</span>
+                            </div>
+                            <div class="progress-step" data-step="2">
+                                <div class="step-number">2</div>
+                                <span>Basic Information</span>
+                            </div>
+                            <div class="progress-step" data-step="3">
+                                <div class="step-number">3</div>
+                                <span>Definition</span>
+                            </div>
+                            <div class="progress-step" data-step="4">
+                                <div class="step-number">4</div>
+                                <span>Config</span>
+                            </div>
+                            <div class="progress-step" data-step="5">
+                                <div class="step-number">5</div>
+                                <span>Review</span>
+                            </div>
+                            <div class="progress-step" data-step="6">
+                                <div class="step-number">6</div>
+                                <span>Create</span>
+                            </div>
+                        </div>
+                        
+                        <div class="wizard-content">
+                            <!-- Step 1: Agreement -->
+                            <div class="wizard-step active" data-step="1">
+                                <div class="step-content">
+                                    <p>By proceeding, you agree to follow the experimental guidelines and safety protocols.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 2: Basic Information -->
+                            <div class="wizard-step" data-step="2">
+                                <div class="step-content">
+                                    <h4>Basic Information</h4>
+                                    
+                                    <div class="form-group">
+                                        <label>System Type <span class="required">*</span></label>
+                                        <div class="radio-group">
+                                            <div class="radio-option">
+                                                <input type="radio" id="bizChat" name="systemType" value="bizChat" checked>
+                                                <label for="bizChat">
+                                                    <strong>BizChat</strong>
+                                                    <div class="radio-description">Shadow experiment for BizChat.</div>
+                                                </label>
+                                            </div>
+                                            <div class="radio-option">
+                                                <input type="radio" id="userp" name="systemType" value="userp">
+                                                <label for="userp">
+                                                    <strong>USERP</strong>
+                                                    <div class="radio-description">Shadow experiment for USERP ( 'adhub search' scenario ).</div>
+                                                </label>
+                                            </div>
+                                            <div class="radio-option">
+                                                <input type="radio" id="traditional" name="systemType" value="traditional">
+                                                <label for="traditional">
+                                                    <strong>Traditional SERP</strong>
+                                                    <div class="radio-description">Shadow experiment for Traditional SERP</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="expName">Name <span class="required">*</span></label>
+                                        <input type="text" id="expName" placeholder="Single word identifier, only uppercase and lowercase letters, numbers are allowed, and the length must not exceed 30 characters">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="notificationAlias">Notification Alias</label>
+                                        <div class="alias-input">
+                                            <input type="text" id="notificationAlias" placeholder="Press the Enter key or click the Add button on the right to add your input as a new notification alias.">
+                                            <button type="button" class="add-alias-btn">+</button>
+                                        </div>
+                                        <div class="alias-tag">
+                                            <span class="tag">prakulka <button class="remove-tag">×</button></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="managementGroup">Management Group</label>
+                                        <input type="text" id="managementGroup" value="/msaiexp/bizchatsdadow" readonly>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="description">Description <span class="required">*</span></label>
+                                        <textarea id="description" rows="4"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <div class="checkbox-group">
+                                            <input type="checkbox" id="useExpBranch">
+                                            <label for="useExpBranch">Use experimentation branch</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 3: Definition -->
+                            <div class="wizard-step" data-step="3">
+                                <div class="step-content">
+                                    <h4>Definition - Specific</h4>
+                                    
+                                    <div class="definition-layout">
+                                        <div class="definition-column">
+                                            <h5>Basic parameters</h5>
+                                            
+                                            <div class="form-group">
+                                                <label>Id <span class="required">*</span></label>
+                                                <input type="text" placeholder="ShadowAB_a_Control" readonly>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>ShadowFlight <span class="required">*</span></label>
+                                                <input type="text" placeholder="ShadowAB_DoubleForkControl_a" readonly>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>ExperimentFlights</label>
+                                                <div class="flight-input">
+                                                    <input type="text">
+                                                    <button type="button" class="add-flight-btn">+</button>
+                                                </div>
+                                                <div class="flight-tag">
+                                                    <span class="tag">EvaluationContractV2 <button class="remove-tag">×</button></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <details class="advanced-section">
+                                                <summary>Advanced parameters</summary>
+                                                <div class="advanced-content">
+                                                    <!-- Advanced parameters content -->
+                                                </div>
+                                            </details>
+                                        </div>
+                                        
+                                        <div class="definition-column">
+                                            <h5>Basic parameters</h5>
+                                            
+                                            <div class="form-group">
+                                                <label>Id <span class="required">*</span></label>
+                                                <input type="text" placeholder="ShadowAB_a_Treatment" readonly>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>ShadowFlight <span class="required">*</span></label>
+                                                <input type="text" placeholder="ShadowAB_DoubleForkTreatment_a" readonly>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label>ExperimentFlights</label>
+                                                <div class="flight-input">
+                                                    <input type="text">
+                                                    <button type="button" class="add-flight-btn">+</button>
+                                                </div>
+                                                <div class="flight-tag">
+                                                    <span class="tag">EvaluationContractV2 <button class="remove-tag">×</button></span>
+                                                </div>
+                                            </div>
+                                            
+                                            <details class="advanced-section">
+                                                <summary>Advanced parameters</summary>
+                                                <div class="advanced-content">
+                                                    <!-- Advanced parameters content -->
+                                                </div>
+                                            </details>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 4: Definition - Common -->
+                            <div class="wizard-step" data-step="4">
+                                <div class="step-content">
+                                    <h4>Definition - Common</h4>
+                                    
+                                    <div class="form-section">
+                                        <h5>Filters</h5>
+                                        <p>All of the filters below are optional.</p>
+                                        
+                                        <div class="form-group">
+                                            <label>TenantIdFilter</label>
+                                            <div class="filter-input">
+                                                <input type="text">
+                                                <button type="button" class="add-filter-btn">+</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>PluginNameFilter</label>
+                                            <select>
+                                                <option>Select an option or input your value</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>DAFilter</label>
+                                            <select>
+                                                <option>Select an option</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <details class="advanced-section">
+                                            <summary>Advanced parameters</summary>
+                                            <div class="advanced-content">
+                                                <!-- Advanced parameters content -->
+                                            </div>
+                                        </details>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Step 5: Review -->
+                            <div class="wizard-step" data-step="5">
+                                <div class="step-content">
+                                    <h4>Review</h4>
+                                    
+                                    <div class="review-layout">
+                                        <div class="review-section">
+                                            <h5>Basic Information</h5>
+                                            
+                                            <div class="review-item">
+                                                <span class="review-label">Name</span>
+                                                <span class="review-value" id="review-name">a</span>
+                                            </div>
+                                            
+                                            <div class="review-item">
+                                                <span class="review-label">Notification Alias</span>
+                                                <div class="review-aliases">
+                                                    <span class="alias-tag">prakulka</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="review-item">
+                                                <span class="review-label">Description</span>
+                                                <span class="review-value" id="review-description">a</span>
+                                            </div>
+                                            
+                                            <div class="review-item">
+                                                <span class="review-label">Use experimentation branch</span>
+                                                <span class="review-value">false</span>
+                                            </div>
+                                            
+                                            <h6>Progression</h6>
+                                            <div class="review-item">
+                                                <span class="review-label">Shadow Traffic Exposure</span>
+                                                <span class="review-value">0</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="review-section">
+                                            <h5>Definition and flights</h5>
+                                            
+                                            <div class="flight-review">
+                                                <div class="flight-item">
+                                                    <div class="flight-header">
+                                                        <span class="flight-name">ShadowAB_DoubleForkTrigger_a</span>
+                                                        <span class="flight-type">Control Flight</span>
+                                                    </div>
+                                                    
+                                                    <h6>Treatment Variables</h6>
+                                                    <div class="treatment-variables">
+                                                        <div class="variable-item">
+                                                            <span class="variable-name">ExperimentDefinitions_ShadowAB_DoubleForkTrigger_a</span>
+                                                            <div class="variable-value">
+                                                                <strong>Value:</strong> [List of treatment values and configurations...]
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <button class="details-btn">Details</button>
+                                                </div>
+                                                
+                                                <div class="flight-item">
+                                                    <div class="flight-header">
+                                                        <span class="flight-name">ShadowAB_DoubleForkControl_a</span>
+                                                        <span class="flight-type">Control Flight</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="flight-item">
+                                                    <div class="flight-header">
+                                                        <span class="flight-name">ShadowAB_DoubleForkTreatment_a</span>
+                                                        <span class="flight-type">Treatment Flight</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="wizard-footer">
+                            <button class="btn-secondary" onclick="previousWizardStep()" id="backBtn" style="display: none;">Back</button>
+                            <button class="btn-secondary" onclick="closeExperimentWizard()">Cancel</button>
+                            <button class="btn-primary" onclick="nextWizardStep()" id="nextBtn">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>            <!-- T-Prompt View -->
             <div id="tprompt-view" class="view">
                 <div class="tprompt-container">
                     <!-- Agent Evaluation Workflow Visualization -->

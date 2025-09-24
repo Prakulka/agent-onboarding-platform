@@ -3931,3 +3931,301 @@ function exportDataset(datasetName) {
         console.error('Error exporting dataset:', error);
     }
 }
+
+/**
+ * Experiment Wizard functionality
+ */
+let currentWizardStep = 1;
+const totalWizardSteps = 5;
+
+/**
+ * Open the experiment wizard modal
+ */
+function openExperimentWizard() {
+    try {
+        const modal = document.getElementById('experiment-wizard-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            currentWizardStep = 1;
+            updateWizardStep();
+        }
+    } catch (error) {
+        console.error('Error opening experiment wizard:', error);
+    }
+}
+
+/**
+ * Close the experiment wizard modal
+ */
+function closeExperimentWizard() {
+    try {
+        const modal = document.getElementById('experiment-wizard-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            resetWizardForm();
+        }
+    } catch (error) {
+        console.error('Error closing experiment wizard:', error);
+    }
+}
+
+/**
+ * Navigate to the next wizard step
+ */
+function nextWizardStep() {
+    try {
+        if (validateCurrentStep()) {
+            if (currentWizardStep < totalWizardSteps) {
+                currentWizardStep++;
+                updateWizardStep();
+            } else {
+                // Final step - create experiment
+                createExperiment();
+            }
+        }
+    } catch (error) {
+        console.error('Error navigating to next wizard step:', error);
+    }
+}
+
+/**
+ * Navigate to the previous wizard step
+ */
+function previousWizardStep() {
+    try {
+        if (currentWizardStep > 1) {
+            currentWizardStep--;
+            updateWizardStep();
+        }
+    } catch (error) {
+        console.error('Error navigating to previous wizard step:', error);
+    }
+}
+
+/**
+ * Update the wizard step display and navigation
+ */
+function updateWizardStep() {
+    try {
+        // Update progress indicators
+        const progressSteps = document.querySelectorAll('.wizard-progress .progress-step');
+        progressSteps.forEach((step, index) => {
+            if (index + 1 <= currentWizardStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update wizard step content
+        const wizardSteps = document.querySelectorAll('.wizard-step');
+        wizardSteps.forEach((step, index) => {
+            if (index + 1 === currentWizardStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update navigation buttons
+        const backBtn = document.getElementById('backBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        
+        if (backBtn) {
+            backBtn.style.display = currentWizardStep > 1 ? 'inline-block' : 'none';
+        }
+        
+        if (nextBtn) {
+            if (currentWizardStep === totalWizardSteps) {
+                nextBtn.textContent = 'Create';
+                nextBtn.className = 'btn-primary';
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.className = 'btn-primary';
+            }
+        }
+    } catch (error) {
+        console.error('Error updating wizard step:', error);
+    }
+}
+
+/**
+ * Validate the current wizard step
+ * @returns {boolean} True if current step is valid
+ */
+function validateCurrentStep() {
+    try {
+        switch (currentWizardStep) {
+            case 1:
+                // Agreement step - always valid
+                return true;
+            
+            case 2:
+                // Basic Information step
+                const expName = document.getElementById('expName');
+                const description = document.getElementById('description');
+                
+                if (!expName?.value.trim()) {
+                    alert('Please enter an experiment name.');
+                    return false;
+                }
+                
+                if (!description?.value.trim()) {
+                    alert('Please enter a description.');
+                    return false;
+                }
+                
+                // Validate name format
+                if (!/^[a-zA-Z0-9]{1,30}$/.test(expName.value.trim())) {
+                    alert('Name must be 1-30 characters, letters and numbers only.');
+                    return false;
+                }
+                
+                return true;
+            
+            case 3:
+            case 4:
+            case 5:
+                // Definition and review steps - basic validation
+                return true;
+            
+            default:
+                return true;
+        }
+    } catch (error) {
+        console.error('Error validating wizard step:', error);
+        return false;
+    }
+}
+
+/**
+ * Reset the wizard form to initial state
+ */
+function resetWizardForm() {
+    try {
+        // Reset form fields
+        const form = document.querySelector('#experiment-wizard-modal');
+        if (form) {
+            const inputs = form.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(input => {
+                if (!input.readOnly) {
+                    input.value = '';
+                }
+            });
+            
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            const radios = form.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.checked = radio.value === 'bizChat';
+            });
+        }
+        
+        // Reset wizard state
+        currentWizardStep = 1;
+        updateWizardStep();
+    } catch (error) {
+        console.error('Error resetting wizard form:', error);
+    }
+}
+
+/**
+ * Create the experiment based on wizard input
+ */
+function createExperiment() {
+    try {
+        // Collect form data
+        const formData = {
+            name: document.getElementById('expName')?.value || '',
+            systemType: document.querySelector('input[name="systemType"]:checked')?.value || '',
+            description: document.getElementById('description')?.value || '',
+            useExpBranch: document.getElementById('useExpBranch')?.checked || false,
+            notificationAlias: 'prakulka', // From form
+            managementGroup: '/msaiexp/bizchatsdadow'
+        };
+        
+        // Simulate experiment creation
+        console.log('Creating experiment with data:', formData);
+        
+        // Show success message
+        showNotification('Experiment created successfully!', 'success');
+        
+        // Close wizard
+        closeExperimentWizard();
+        
+        // In a real implementation, you would make an API call here
+        // const response = await fetch('/api/experiments', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(formData)
+        // });
+        
+    } catch (error) {
+        console.error('Error creating experiment:', error);
+        showNotification('Failed to create experiment. Please try again.', 'error');
+    }
+}
+
+/**
+ * Show a notification message
+ * @param {string} message - The message to display
+ * @param {string} type - The type of notification ('success', 'error', 'info')
+ */
+function showNotification(message, type = 'info') {
+    try {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 10001;
+            max-width: 300px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 3000);
+    } catch (error) {
+        console.error('Error showing notification:', error);
+    }
+}
+
+// Add event listeners for wizard modal
+document.addEventListener('DOMContentLoaded', function() {
+    // Close modal when clicking outside
+    const modal = document.getElementById('experiment-wizard-modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeExperimentWizard();
+            }
+        });
+    }
+    
+    // Handle escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('experiment-wizard-modal');
+            if (modal && modal.style.display !== 'none') {
+                closeExperimentWizard();
+            }
+        }
+    });
+});
